@@ -118,7 +118,7 @@ class _MyUploaderState extends State<Uploader> {
                   onLongPress: () {
                     // edit
                     Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Creator(editor: c, index: index,))
+                        MaterialPageRoute(builder: (context) => Creator(editor: c, index: index))
                     );
                   },
                   child: Card(

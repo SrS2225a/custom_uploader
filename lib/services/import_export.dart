@@ -9,7 +9,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'database.dart';
 
-// we use shared preferences to import/export custom uploaders for better compatibility
 class ImportExportService {
   static import ({required PlatformFile file, required BuildContext context}) async {
     readData(PlatformFile filepath) {

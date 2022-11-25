@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:custom_uploader/services/file_upload.dart';
+import 'package:custom_uploader/utils/show_message.dart';
 import 'package:custom_uploader/views/uploaders.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -94,7 +95,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         });
       }
     } else {
-      SchedulerBinding.instance.addPostFrameCallback((_) => showAlertForShare(context));
+      SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders", "Before you can begin uploading files, you need an uploader of your choice created and selected, then try again."));
     }
   }
 
@@ -163,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
               }, style: ElevatedButton.styleFrom(
                 backgroundColor: _hasBeenPressed ? Colors.blue.withOpacity(0.38) : Colors.blue,
-              ), child: _hasBeenPressed ? const Text("Uploading...") : const Text("Choose File") ,),
+              ), child: _hasBeenPressed ? const Text("Uploading...") : const Text("Choose File")),
               progressColor: Colors.green[400],
             ),
             Text(_fileName)
@@ -183,23 +184,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
     );
   }
-
-// show a dialog to the user
-showAlertForShare(BuildContext context) {
-  AlertDialog(
-      title: Text("No Custom Uploaders"),
-      content: Text("Before you can begin uploading files, you need an uploader of your choice created an selected, then try again."),
-      actions: <Widget>[
-        TextButton(
-          child: const Text("OK"),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        )
-      ]
-  );
-}
-  
 }
 
 class UploadProgress {
