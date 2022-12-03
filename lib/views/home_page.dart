@@ -63,12 +63,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _setUploadProgress(0, 0);
-    if (shareBox.isNotEmpty) {
-      if (!_hasBeenPressed) {
-        // For sharing files coming from outside the app while the app is open
-        ReceiveSharingIntent.getMediaStream().listen((
-            List<SharedMediaFile> value) {
-          setState(() async {
+    if (!_hasBeenPressed) {
+      // For sharing files coming from outside the app while the app is open
+      ReceiveSharingIntent.getMediaStream().listen((
+          List<SharedMediaFile> value) {
+        setState(() async {
+          if (shareBox.isNotEmpty) {
             if (value.isNotEmpty) {
               File file = File(value.first.path);
               FileService.fileUploadMultiPart(
@@ -76,26 +76,13 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                   onUploadProgress: _setUploadProgress,
                   context: context, onSetState: _setState);
             }
-          });
-        }, onError: (err) {
-          print("getIntentDataStream error: $err");
+          } else {
+            SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders 1 ", "Before you can begin uploading files, you need an uploader of your choice created and selected, then try again."));
+          }
         });
-
-        // For sharing files coming from outside the app while the app is closed
-        ReceiveSharingIntent.getInitialMedia().then((
-            List<SharedMediaFile> value) {
-            print(value);
-            if (value.isNotEmpty) {
-              File file = File(value.first.path);
-              FileService.fileUploadMultiPart(
-                  file: file,
-                  onUploadProgress: _setUploadProgress,
-                  context: context, onSetState: _setState);
-            }
-        });
-      }
-    } else {
-      SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders", "Before you can begin uploading files, you need an uploader of your choice created and selected, then try again."));
+      }, onError: (err) {
+        print("getIntentDataStream error: $err");
+      });
     }
   }
 

@@ -34,7 +34,6 @@ class FileService {
         if (found) {
           onSetState(file.path.split("/").last);
           Map<String, String>? headers = data.uploadHeaders;
-          headers.putIfAbsent("Content-Type", () => "multipart/form-data");
 
           getCorrectFormData(bool uploadFormData) {
             if (uploadFormData) {
@@ -73,6 +72,7 @@ class FileService {
               },
             ).then((value) => {
               onSetState(""),
+              print(value.data),
               parseAs = parseResponse(value.data, data.uploaderResponseParser), // tries to parse the url response, if it fails, it will just show that it was successful
               if (parseAs == "") {
                 showSnackBar(context, "Upload successful"),
@@ -83,6 +83,7 @@ class FileService {
                 }
             });
           } on DioError catch (error) {
+            print(error);
             onSetState("");
             if (error.response?.data != null) {
               parseAs = parseResponse(error.response?.data, data.uploaderErrorParser); // tries to parse the error response, if it fails, it will just show the error

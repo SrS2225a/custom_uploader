@@ -41,6 +41,17 @@ class ImportExportService {
         useBytes = true;
       }
 
+      getCorrectTypes(json) {
+        Map<String, String> obj = {};
+        if (json != null) {
+          for (var key in json.keys) {
+            obj[key] = json[key];
+          }
+        }
+        print(obj);
+        return obj;
+      }
+
       // makes the nested json readable
       Map<String, String> arguments = {};
       if (json["Arguments"] != null) {
@@ -59,8 +70,8 @@ class ImportExportService {
           }
         }
       }
-      
-      return Share(json["RequestURL"], json["FileFormName"], useBytes, json["Headers"] ?? {}, json["Parameters"] ?? {}, arguments, convertParser(json["URL"] ?? ""), convertParser(json["ErrorMessage"] ?? ""), false);
+      // type of json["Headers"] should be Map<String, dynamic> instead of _InternalLinkedHashMap<String, dynamic>
+      return Share(json["RequestURL"], json["FileFormName"], useBytes, getCorrectTypes(json["Headers"]), getCorrectTypes(json["Parameters"]), arguments, convertParser(json["URL"] ?? ""), convertParser(json["ErrorMessage"] ?? ""), false);
     }
 
     var json = readData(file);
