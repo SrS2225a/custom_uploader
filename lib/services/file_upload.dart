@@ -88,9 +88,9 @@ class FileService {
             if (error.response?.data != null) {
               parseAs = parseResponse(error.response?.data, data.uploaderErrorParser); // tries to parse the error response, if it fails, it will just show the error
               if (parseAs == "") {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error transferring $url - server replied: ${error.response?.statusMessage}')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: const Duration(seconds: 10), content: Text('Error transferring $url - server replied: ${error.response?.statusMessage}')));
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error transferring $url - server replied: ${error.response?.statusMessage}; $parseAs')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: const Duration(seconds: 10), content: Text('Error transferring $url - server replied: ${error.response?.statusMessage}; $parseAs')));
               }
             } else {
               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to connect to server')));

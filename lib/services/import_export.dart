@@ -41,6 +41,7 @@ class ImportExportService {
         useBytes = true;
       }
 
+      // for converting to Map<String, String>
       getCorrectTypes(json) {
         Map<String, String> obj = {};
         if (json != null) {
@@ -144,7 +145,7 @@ class ImportExportService {
       showAlert(context, "Failed to export", "Failed to export the uploader. \n\nError: ${e.toString()}");
     } finally {
       // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The uploader was exported to ${await getFilePath()}")));
-      showSnackBar(context, "The uploader was exported to ${await getFilePath()}");
+      showSnackBar(context, "The uploader was exported to your downloads");
     }
   }
 }
