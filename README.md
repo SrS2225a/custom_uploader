@@ -5,6 +5,7 @@
     <img src="https://img.shields.io/github/v/release/SrS2225a/custom_uploader?display_name=tag&style=flat-square" />
     <img src="https://img.shields.io/github/stars/SrS2225a/custom_uploader?style=flat-square" />
     <img src="https://img.shields.io/github/issues/SrS2225a/custom_uploader?style=flat-square" />
+    <img src="https://img.shields.io/liberapay/patrons/Eris.svg?logo=liberapay">
     <img src="https://img.shields.io/snyk/vulnerabilities/github/SrS2225a/custom_uploader?style=flat-square" />
     <img src="https://img.shields.io/github/workflow/status/SrS2225a/custom_uploader/CI?style=flat-square" />
 </p>
@@ -23,4 +24,7 @@ Custom Uploader is a simple, lightweight, and easy to use file uploader built us
 You can get the latest version of the app from the [releases](https://github.com/SrS2225a/custom-uploader/releases) page.
 
 The latest versions can also be found on the [Google Play Store](https://play.google.com/store/apps/details?id=com.nyx.custom_uploader) or the [F-Droid Store](https://f-droid.org/en/packages/com.nyx.custom_uploader/).
+
+# Donate
+Like the app? Consider [donating](https://liberapay.com/Eris/donate) to support the development of the app.
 
