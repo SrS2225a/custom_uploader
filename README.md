@@ -7,7 +7,7 @@
     <img src="https://img.shields.io/github/issues/SrS2225a/custom_uploader?style=flat-square" />
     <img src="https://img.shields.io/liberapay/patrons/Eris.svg?logo=liberapay">
     <img src="https://img.shields.io/snyk/vulnerabilities/github/SrS2225a/custom_uploader?style=flat-square" />
-    <img src="https://img.shields.io/github/actions/workflow/status/SrS2225a/custom_uploader/CI.yml?branch=master?style=flat-square" />
+    <img src="https://img.shields.io/github/actions/workflow/status/SrS2225a/custom_uploader/CI.yml?branch=master&style=flat-square" />
 </p>
 
 Custom Uploader is a simple, lightweight, and easy to use file uploader built using flutter for android devices that allows you to upload files to a file host of your choice.
