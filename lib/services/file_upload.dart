@@ -73,7 +73,7 @@ class FileService {
             ).then((value) => {
               onSetState(""),
               print(value.data),
-              parseAs = parseResponse(value.data, data.uploaderResponseParser, true), // tries to parse the url response, if it fails, it will just show that it was successful
+              parseAs = parseResponse(value.data, data.uploaderResponseParser), // tries to parse the url response, if it fails, it will just show that it was successful
               if (parseAs == "") {
                 showSnackBar(context, "Upload successful"),
               } else
@@ -86,7 +86,7 @@ class FileService {
             print(error);
             onSetState("");
             if (error.response?.data != null) {
-              parseAs = parseResponse(error.response?.data, data.uploaderErrorParser, false); // tries to parse the error response, if it fails, it will just show the error
+              parseAs = parseResponse(error.response?.data, data.uploaderErrorParser); // tries to parse the error response, if it fails, it will just show the error
               if (parseAs == "") {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: const Duration(seconds: 10), content: Text('Error transferring $url - server replied: ${error.response?.statusMessage}')));
               } else {
