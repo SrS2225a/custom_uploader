@@ -21,7 +21,7 @@ Custom Uploader is a simple, lightweight, and easy to use file uploader built us
 
 ## Getting Started
 
-You can get the latest version of the app from the [releases](https://github.com/SrS2225a/custom-uploader/releases) page.
+You can get the latest version of the app from the [releases](https://github.com/SrS2225a/custom_uploader/releases) page.
 
 The latest versions can also be found on the [Google Play Store](https://play.google.com/store/apps/details?id=com.nyx.custom_uploader) or the [F-Droid Store](https://f-droid.org/en/packages/com.nyx.custom_uploader/).
 
