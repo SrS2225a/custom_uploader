@@ -2,7 +2,7 @@
 
 <p align="center">
     <img src="https://img.shields.io/github/license/SrS2225a/custom_uploader?style=flat-square" />
-    <img src="https://img.shields.io/github/v/release/SrS2225a/custom_uploader?display_name=tag&style=flat-square" />
+    <img src="https://img.shields.io/github/v/release/SrS2225a/custom_uploader?style=flat-square" />
     <img src="https://img.shields.io/github/stars/SrS2225a/custom_uploader?style=flat-square" />
     <img src="https://img.shields.io/github/issues/SrS2225a/custom_uploader?style=flat-square" />
     <img src="https://img.shields.io/liberapay/patrons/Eris.svg?logo=liberapay">
