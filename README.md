@@ -10,7 +10,7 @@
     <img src="https://img.shields.io/github/actions/workflow/status/SrS2225a/custom_uploader/CI.yml?branch=master&style=flat-square" />
 </p>
 
-Custom Uploader is a simple, lightweight, and easy to use file uploader built using flutter for android devices that allows you to upload files to a file host of your choice.
+Custom Uploader is a user-friendly file uploading tool that makes it easy for you to transfer files to your preferred hosting service. It is designed to be lightweight and efficient, with a straightforward interface that allows you to upload files quickly and easily. With Custom Uploader, you can upload a variety of different file types, including documents, images, videos, and more. The versatile tool is perfect for anyone who needs a reliable and convenient way to upload files for storage or sharing. Whenever you are a business owner, a student, or a professional, Custom Uploader can your you manage and share your files with ease.
 
 ## Features
 * Easily upload anything to your host of choice (images, videos, documents, etc.) with a simple and easy to use interface.
