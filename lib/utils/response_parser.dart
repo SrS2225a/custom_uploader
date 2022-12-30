@@ -1,7 +1,7 @@
 import 'package:xml/xml.dart';
 
 
-String? parseResponse(response, String parse, bool statusCode) {
+String? parseResponse(response, String parse) {
   try {
     final parseAs = parse.split("\$");
     final values = [];
@@ -54,12 +54,10 @@ String? parseResponse(response, String parse, bool statusCode) {
         }
       } else if (parseAs[i] == "response") {
         values.add(response);
-      } else {
-        values.add(parseAs[i]);
       }
     }
     // if the user did not specify a parse, try to regex the url from the response body
-    if (values.isNotEmpty && statusCode == false) {
+    if (values.isNotEmpty) {
       return values.join("");
     } else {
       final regexesRegex = RegExp(r"[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?");

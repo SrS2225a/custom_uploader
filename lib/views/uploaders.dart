@@ -122,9 +122,10 @@ class _MyUploaderState extends State<Uploader> {
                     );
                   },
                   child: Card(
+                    margin: const EdgeInsets.all(10),
                     color: c!.selectedUploader ? Colors.blueAccent : null,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(10.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
@@ -181,17 +182,16 @@ class _MyUploaderState extends State<Uploader> {
       ),
 
 
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // add new
-          Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => Creator(editor: null, index: 0,))
-          );
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(right: 30),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => Creator(editor: null, index: 0,)));
         },
-        tooltip: 'Add new',
-        child: const Icon(Icons.add),
+          child: const Icon(Icons.add),
+        ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
-
   }
 }
