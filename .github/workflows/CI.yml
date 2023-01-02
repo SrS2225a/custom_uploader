@@ -22,5 +22,5 @@ jobs:
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
       - run: flutter pub get
-      - run: flutter build apk --release
-#      - run: flutter build ios --release --no-codesign
+      - run: flutter build apk --debug
+#      - run: flutter build ios --debug --no-codesign
