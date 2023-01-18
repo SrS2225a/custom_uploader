@@ -10,14 +10,14 @@
     <img src="https://img.shields.io/github/actions/workflow/status/SrS2225a/custom_uploader/CI.yml?branch=master&style=flat-square" />
 </p>
 
-Custom Uploader is a user-friendly file uploading tool that makes it easy for you to transfer files to your preferred hosting service. It is designed to be lightweight and efficient, with a straightforward interface that allows you to upload files quickly and easily. With Custom Uploader, you can upload a variety of different file types, including documents, images, videos, and more. The versatile tool is perfect for anyone who needs a reliable and convenient way to upload files for storage or sharing. Whenever you are a business owner, a student, or a professional, Custom Uploader can your you manage and share your files with ease.
+Custom Uploader is a user-friendly file uploading tool that makes it easy for you to transfer files to your preferred hosting service. It is designed to be lightweight and efficient, with a straightforward interface that allows you to upload files quickly and easily. With Custom Uploader, you can upload a variety of different file types, including documents, images, videos, and more. The versatile tool is perfect for anyone who needs a reliable and convenient way to upload files for storage or sharing. Whenever you are a business owner, a student, or a professional, Custom Uploader can help you manage and share your files with ease.
 
 ## Features
 * Easily upload anything to your host of choice (images, videos, documents, etc.) with a simple and easy to use interface.
 * Easily create multiple uploaders for different hosts, and switch between them.
 * Upload files from your gallery, camera, or any other app that supports sharing.
 * Import/Export your uploaders to share them with others, with support for sharex's uploader format.
-* Comes with a powerful url parser that allows you to extract the url of the uploaded file from the response of the host.
+* Comes with a powerful url parser that allows you to get the url of the uploaded file from the response of the host.
 
 ## Getting Started
 
