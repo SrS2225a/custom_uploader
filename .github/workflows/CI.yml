@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       JAVA_VERSION: "11"
-      FLUTTER_VERSION: "3.3.8"
+      FLUTTER_VERSION: "3.3.10"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
