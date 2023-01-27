@@ -48,7 +48,7 @@ String? parseResponse(response, String parse) {
         final regexesMatch = regex.split("??");
         final regexesRegex = RegExp(regexesMatch[0]);
         final posAt = regexesMatch.length > 1 ? int.parse(regexesMatch[1]) - 1 : 0;
-        final matches = regexesRegex.allMatches(response!).map((m) => m.group(0));
+        final matches = regexesRegex.allMatches(response.toString()).map((m) => m.group(0));
         if (matches.isNotEmpty) {
           values.add(matches.elementAt(posAt));
         }
