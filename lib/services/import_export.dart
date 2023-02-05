@@ -49,7 +49,6 @@ class ImportExportService {
             obj[key] = json[key];
           }
         }
-        print(obj);
         return obj;
       }
 
@@ -122,7 +121,7 @@ class ImportExportService {
       if (share.uploadFormData) "Body": "MultipartFormData",
       if (share.uploadHeaders.isNotEmpty) "Headers": share.uploadHeaders,
       if (share.uploadParameters.isNotEmpty) "Parameters": share.uploadParameters,
-      if (share.uploaderUrl.isNotEmpty) "Arguments": share.uploadArguments,
+      if (share.uploadArguments.isNotEmpty) "Arguments": share.uploadArguments,
       if (share.uploaderResponseParser.isNotEmpty) "URL": share.uploaderResponseParser,
       if (share.uploaderErrorParser.isNotEmpty) "ErrorMessage": share.uploaderErrorParser
     };

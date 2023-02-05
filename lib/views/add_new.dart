@@ -304,7 +304,6 @@ class MyCustomFormState extends State<MyCustomForm> {
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
 
     return Form(
       key: _formKey,
@@ -312,7 +311,6 @@ class MyCustomFormState extends State<MyCustomForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
-            // The validator receives the text that the user has entered.
             decoration: const InputDecoration(
               hintText: "The URL to upload to.",
               labelText: "Upload URL *",
@@ -390,8 +388,6 @@ class MyCustomFormState extends State<MyCustomForm> {
                         if (_formKey.currentState!.validate()) {
                           Box<Share> shareBox = Hive.box<Share>("custom_upload");
                           _formKey.currentState?.save();
-
-                          // convert table rows to a map as Map<String, String>
 
                           cursor.uploadHeaders = stateManager.rows.fold<Map<String, String>>({}, (previousValue, element) {
                             previousValue[element.cells["key"]!.value] = element.cells["value"]!.value;

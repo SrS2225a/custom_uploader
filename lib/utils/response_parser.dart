@@ -48,12 +48,10 @@ String? parseResponse(response, String parse) {
         final regexesMatch = regex.split("??");
         final regexesRegex = RegExp(regexesMatch[0]);
         final posAt = regexesMatch.length > 1 ? int.parse(regexesMatch[1]) - 1 : 0;
-        final matches = regexesRegex.allMatches(response.toString()).map((m) => m.group(0));
+        final matches = regexesRegex.allMatches(response!.toString()).map((m) => m.group(0));
         if (matches.isNotEmpty) {
           values.add(matches.elementAt(posAt));
         }
-      } else if (parseAs[i] == "response") {
-        values.add(response);
       }
     }
     // if the user did not specify a parse, try to regex the url from the response body

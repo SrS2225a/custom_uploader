@@ -1,10 +1,7 @@
-
 import 'package:custom_uploader/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_uploader/views/home_page.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
-
 
 Future<void> main() async {
   // connects to hive database

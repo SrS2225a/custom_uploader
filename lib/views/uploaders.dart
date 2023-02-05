@@ -60,14 +60,12 @@ class _MyUploaderState extends State<Uploader> {
                     final file = value.files.first;
                     final path = file.path;
                     if (path != null) {
-                      // import from file
                       ImportExportService.import(file: file, context: context);
                     }
                   }
                 });
               } else if (value == 1) {
                 // allow user to export to file
-                // get the users index selection
                 final shareBox = Hive.box<Share>("custom_upload");
                 final cursor = shareBox.toMap();
                 int i = 0;
@@ -116,7 +114,6 @@ class _MyUploaderState extends State<Uploader> {
                       });
                   },
                   onLongPress: () {
-                    // edit
                     Navigator.of(context).push(
                         MaterialPageRoute(builder: (context) => Creator(editor: c, index: index))
                     );

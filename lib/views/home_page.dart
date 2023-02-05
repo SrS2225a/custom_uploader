@@ -33,7 +33,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
 
   void _setUploadProgress(int sentBytes, int totalBytes) {
-    double progressValue = UploadProgress.remap(sentBytes.toDouble(), 0, totalBytes.toDouble(), 0, 1);
+
+    double uploadProgress(double value, double originalMinValue, double originalMaxValue,
+        double translatedMinValue, double translatedMaxValue) {
+      if (originalMaxValue - originalMinValue == 0) return 0;
+
+      return (value - originalMinValue) /
+          (originalMaxValue - originalMinValue) *
+          (translatedMaxValue - translatedMinValue) +
+          translatedMinValue;
+    }
+
+    double progressValue = uploadProgress(sentBytes.toDouble(), 0, totalBytes.toDouble(), 0, 1);
 
     progressValue = double.parse(progressValue.toStringAsFixed(2));
 
@@ -65,6 +76,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _setUploadProgress(0, 0);
 
     shareFile(List<SharedMediaFile> value) {
+      print("Shared: ${value.length}");
       if (shareBox.isNotEmpty) {
         if (value.isNotEmpty) {
           File file = File(value.first.path);
@@ -74,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               context: context, onSetState: _setState);
         }
       } else {
-        SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders 1 ", "Before you can begin uploading files, you need an uploader of your choice created and selected, then try again."));
+        SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders", "Before you can begin uploading files, you need an uploader of your choice created and selected, then try again."));
       }
       // clear the data from the sharing intent
       ReceiveSharingIntent.reset();
@@ -93,7 +105,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       // For sharing images coming from outside the app while the app is closed
       ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
         setState(() {
-          _setState("");
           shareFile(value);
         });
       });
@@ -132,7 +143,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 if (shareBox.isNotEmpty) {
                   // if we are already uploading a file, don't allow the user to upload another one until the first one is done
                   if (!_hasBeenPressed) {
-                    print("allow pick");
                     final filePicker = await FilePicker.platform.pickFiles(allowMultiple: false);
                     if (filePicker == null) {
                       const SnackBar(content: Text("No file has been selected. Select one then try again!"));
@@ -175,7 +185,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // show a list of custom uploaders
           Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const Uploader(title: "Custom Uploader"))
           );
@@ -184,17 +193,5 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         child: const Icon(Icons.settings),
       ),
     );
-  }
-}
-
-class UploadProgress {
-  static double remap(double value, double originalMinValue, double originalMaxValue,
-      double translatedMinValue, double translatedMaxValue) {
-    if (originalMaxValue - originalMinValue == 0) return 0;
-
-    return (value - originalMinValue) /
-        (originalMaxValue - originalMinValue) *
-        (translatedMaxValue - translatedMinValue) +
-        translatedMinValue;
   }
 }

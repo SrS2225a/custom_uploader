@@ -72,7 +72,6 @@ class FileService {
               },
             ).then((value) => {
               onSetState(""),
-              print(value.data),
               parseAs = parseResponse(value.data, data.uploaderResponseParser), // tries to parse the url response, if it fails, it will just show that it was successful
               if (parseAs == "") {
                 showSnackBar(context, "Upload successful"),
@@ -88,12 +87,12 @@ class FileService {
             if (error.response?.data != null) {
               parseAs = parseResponse(error.response?.data, data.uploaderErrorParser); // tries to parse the error response, if it fails, it will just show the error
               if (parseAs == "") {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: const Duration(seconds: 10), content: Text('Error transferring $url - server replied: ${error.response?.statusMessage}')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: const Duration(seconds: 8), content: Text('Error transferring $url - server replied: ${error.response?.statusMessage}')));
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: const Duration(seconds: 10), content: Text('Error transferring $url - server replied: ${error.response?.statusMessage}; $parseAs')));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: const Duration(seconds: 8), content: Text('Error transferring $url - server replied: ${error.response?.statusMessage}; $parseAs')));
               }
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to connect to server')));
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to connect to server. Please check your internet connection.')));
             }
         }
     } else {
