@@ -14,6 +14,8 @@ jobs:
       JAVA_VERSION: "11"
       FLUTTER_VERSION: "3.3.10"
     steps:
+      - run: mkdir /tmp/build
+      - run: cd /tmp
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
@@ -21,8 +23,6 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
-      - run: mkdir /tmp/build
-      - run: cd /tmp
       - run: flutter pub get
       - run: flutter build apk --debug
 #      - run: flutter build ios --debug --no-codesign
