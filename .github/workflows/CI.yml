@@ -12,11 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       JAVA_VERSION: "11"
-      FLUTTER_VERSION: "3.3.10"
+      FLUTTER_VERSION: "3.7.3"
     steps:
       - run: mkdir /tmp/build
       - run: cd /tmp
       - uses: actions/checkout@v2
+        with:
+          path: /tmp
       - uses: actions/setup-java@v1
         with:
           java-version: ${{ env.JAVA_VERSION }}
