@@ -22,6 +22,7 @@ jobs:
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
       - run: mkdir /tmp/build
+      - run: cd /tmp
       - run: flutter pub get
       - run: flutter build apk --debug
 #      - run: flutter build ios --debug --no-codesign
