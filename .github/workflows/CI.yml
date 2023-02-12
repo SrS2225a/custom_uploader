@@ -21,6 +21,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: ${{ env.FLUTTER_VERSION }}
+      - run: mkdir /tmp/build
       - run: flutter pub get
       - run: flutter build apk --debug
 #      - run: flutter build ios --debug --no-codesign
