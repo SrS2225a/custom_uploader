@@ -1,0 +1,35 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml:1:1-8:12
+INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml:1:1-8:12
+INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml:1:1-8:12
+	package
+		ADDED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml:2:3-43
+		INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+		INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml:1:11-69
+application
+ADDED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml:3:3-7:17
+activity#io.flutter.plugins.urllauncher.WebViewActivity
+ADDED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml:4:5-6:33
+	android:exported
+		ADDED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml:6:7-31
+	android:theme
+		ADDED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml:5:7-65
+	android:name
+		ADDED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml:4:15-76
+uses-sdk
+INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+		ADDED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+		INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+		ADDED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml
+		INJECTED from /home/sawyer/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.23/android/src/main/AndroidManifest.xml

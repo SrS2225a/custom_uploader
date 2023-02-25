@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/tmp/build/file_picker/intermediates/merged_res/release/drawable/notification_bg.xml",
+        "source": "/home/sawyer/.gradle/caches/transforms-3/acbce933e4b464a5224ed377a62db1f5/transformed/core-1.6.0/res/drawable/notification_bg.xml"
+    },
+    {
+        "merged": "/tmp/build/file_picker/intermediates/merged_res/release/drawable/notification_tile_bg.xml",
+        "source": "/home/sawyer/.gradle/caches/transforms-3/acbce933e4b464a5224ed377a62db1f5/transformed/core-1.6.0/res/drawable/notification_tile_bg.xml"
+    },
+    {
+        "merged": "/tmp/build/file_picker/intermediates/merged_res/release/drawable/notification_bg_low.xml",
+        "source": "/home/sawyer/.gradle/caches/transforms-3/acbce933e4b464a5224ed377a62db1f5/transformed/core-1.6.0/res/drawable/notification_bg_low.xml"
+    },
+    {
+        "merged": "/tmp/build/file_picker/intermediates/merged_res/release/drawable/notification_icon_background.xml",
+        "source": "/home/sawyer/.gradle/caches/transforms-3/acbce933e4b464a5224ed377a62db1f5/transformed/core-1.6.0/res/drawable/notification_icon_background.xml"
+    }
+]
