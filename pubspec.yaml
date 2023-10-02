@@ -9,17 +9,20 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^4.0.6
+  dio: ^5.3.2
   file_picker: ^5.2.2
   percent_indicator: ^4.2.2
   xml: ^6.1.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0 # contains Isar Core
-  pluto_grid: ^5.4.9
+  pluto_grid: ^7.0.2
   flutter_markdown: ^0.6.12
   receive_sharing_intent: ^1.4.5
   url_launcher: ^6.1.6
-  permission_handler: ^10.2.0
+  permission_handler: ^11.0.0
+
+#  sync_scroll_library: ^1.1.0
+#  material_floating_search_bar_2: ^0.5.0
 
 dev_dependencies:
   flutter_test:

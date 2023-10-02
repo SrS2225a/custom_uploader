@@ -77,12 +77,11 @@ class FileService {
                 showSnackBar(context, "Upload successful"),
               } else
                 {
-                  Clipboard.setData(ClipboardData(text: parseAs)),
+                  Clipboard.setData(ClipboardData(text: parseAs ?? 'default')),
                   showSnackBar(context, "File upload successfully as: $parseAs. It has been copied to your clipboard")
                 }
             });
-          } on DioError catch (error) {
-            print(error);
+          } on DioException catch (error) {
             onSetState("");
             if (error.response?.data != null) {
               parseAs = parseResponse(error.response?.data, data.uploaderErrorParser); // tries to parse the error response, if it fails, it will just show the error
