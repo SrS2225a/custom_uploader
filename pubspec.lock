@@ -392,14 +392,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
-  material_floating_search_bar_2:
-    dependency: "direct main"
-    description:
-      name: material_floating_search_bar_2
-      sha256: ab0c6d209d9491f98dd4c72f2641d0ba1dd35c87effca1f23d8679bece43add0
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.0"
   meta:
     dependency: transitive
     description:
@@ -677,14 +669,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  sync_scroll_library:
-    dependency: "direct main"
-    description:
-      name: sync_scroll_library
-      sha256: "2e266be24bb7b34686a4b9c592f8a1cd29778060fadd9f5df8535f2410caf196"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.0"
   term_glyph:
     dependency: transitive
     description:
