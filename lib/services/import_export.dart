@@ -105,13 +105,10 @@ class ImportExportService {
     Share share = shareBox.getAt(index)!;
 
     Future<String> getFilePath() async {
-      Directory? appDocumentsDirectory = Directory("/storage/emulated/0/Download");
-      String? appDocumentsPath = appDocumentsDirectory.path; // 2
-      // replace all the invalid characters
-      String fileName = share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_");
-      String filePath = '$appDocumentsPath/$fileName.sxcu.json';
 
-      return filePath;
+      // Use the legacy external storage directory for older Android versions
+      final appDocumentsDirectory = await Directory("/storage/emulated/0/Download");
+      return '${appDocumentsDirectory!.path}/${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json';
     }
 
     // convert the uploader to json
@@ -128,13 +125,15 @@ class ImportExportService {
 
     try {
       // request permission to write to storage using the permission handler plugin
-      PermissionStatus permission = await Permission.storage.request();
-      if (permission == PermissionStatus.granted) {
+     PermissionStatus permission = await Permission.manageExternalStorage.request();
+     PermissionStatus legacyPermission = await Permission.storage.request();
+      if (permission == PermissionStatus.granted || legacyPermission == PermissionStatus.granted) {
         // write the file to storage
         String filePath = await getFilePath();
         File file = File(filePath);
         // write file as type json
         file.writeAsStringSync(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
+        showSnackBar(context, "The uploader was exported to your downloads");
       } else {
         // tell the user that the permission was denied
         showAlert(context, "Failed to export", "The permission to write to storage was denied.");
@@ -142,9 +141,6 @@ class ImportExportService {
     } catch (e) {
       // tell the user why it failed
       showAlert(context, "Failed to export", "Failed to export the uploader. \n\nError: ${e.toString()}");
-    } finally {
-      // ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("The uploader was exported to ${await getFilePath()}")));
-      showSnackBar(context, "The uploader was exported to your downloads");
     }
   }
 }
