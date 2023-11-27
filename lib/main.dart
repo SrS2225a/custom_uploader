@@ -20,9 +20,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       home: const MyHomePage(title: 'Custom Uploader'),
       theme: ThemeData(
+        brightness: Brightness.light,
         primarySwatch: Colors.blue,
       ),
-
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.blue,
+      ),
+      themeMode: ThemeMode.system,
     );
   }
 }
