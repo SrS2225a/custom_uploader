@@ -6,7 +6,7 @@
     <img src="https://img.shields.io/github/stars/SrS2225a/custom_uploader?style=flat-square" />
     <img src="https://img.shields.io/github/forks/SrS2225a/custom_uploader?style=flat-square" />
     <img src="https://img.shields.io/github/issues/SrS2225a/custom_uploader?style=flat-square" />
-    <img src="https://img.shields.io/liberapay/patrons/Eris?style=flat-square&logo=librapay">
+    <img src="https://img.shields.io/liberapay/patrons/Eris?style=flat-square&logo=liberapay">
     <img src="https://img.shields.io/snyk/vulnerabilities/github/SrS2225a/custom_uploader?style=flat-square" />
     <!-- todo: replace vulnerabilites with github workflow build test (for flutter) -->
 </p>
