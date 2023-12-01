@@ -76,7 +76,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     _setUploadProgress(0, 0);
 
     shareFile(List<SharedMediaFile> value) {
-      print("Shared: ${value.length}");
       if (shareBox.isNotEmpty) {
         if (value.isNotEmpty) {
           File file = File(value.first.path);
@@ -86,7 +85,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               context: context, onSetState: _setState);
         }
       } else {
-        SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders", "Before you can begin uploading files, you need an uploader of your choice created and selected, then try again."));
+        SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders", "Before you can begin uploading files, you will need an uploader of your choice created and selected, then try again."));
       }
       // clear the data from the sharing intent
       ReceiveSharingIntent.reset();
@@ -159,7 +158,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text("No Custom Uploaders"),
-                        content: Text("Before you can begin uploading files, you need an uploader of your choice created an selected, then try again."),
+                        content: Text("Before you can begin uploading files, you will need an uploader of your choice created an selected, then try again."),
                         actions: <Widget>[
                           TextButton(
                             child: const Text("OK"),

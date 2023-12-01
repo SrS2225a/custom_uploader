@@ -87,7 +87,7 @@ class _MyUploaderState extends State<Uploader> {
         builder: (context, Box<Share> box, _) {
           if (box.values.isEmpty) {
             return Center(
-              child: Text("You have no custom uploaders. Create one now!", style: Theme.of(context).textTheme.headline6)
+              child: Text("You have no custom uploaders.", style: Theme.of(context).textTheme.titleLarge)
             );
           } else {
             return ListView.builder(
@@ -113,11 +113,6 @@ class _MyUploaderState extends State<Uploader> {
                         c.selectedUploader;
                       });
                   },
-                  onLongPress: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Creator(editor: c, index: index))
-                    );
-                  },
                   child: Card(
                     margin: const EdgeInsets.all(10),
                     color: c!.selectedUploader ? Colors.blueAccent : null,
@@ -133,7 +128,9 @@ class _MyUploaderState extends State<Uploader> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
-                              // delete button
+                              IconButton(onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Creator(editor: c, index: index)));
+                              }, icon: const Icon(Icons.edit)),
                               IconButton(
                                 onPressed: () {
                                   showDialog(
@@ -141,7 +138,7 @@ class _MyUploaderState extends State<Uploader> {
                                     barrierDismissible: true,
                                     builder: (BuildContext context) {
                                       return AlertDialog(
-                                        title: Text("Delete ${c.uploaderUrl}?"),
+                                        title: Text("Delete ${c.uploaderUrl}"),
                                         content: const Text("Are you sure you want to delete this uploader?"),
                                         actions: <Widget>[
                                           TextButton(
@@ -162,22 +159,19 @@ class _MyUploaderState extends State<Uploader> {
                                   );
                                 },
                                 icon: const Icon(Icons.delete, color: Colors.red)
-                              )
+                              ),
                             ],
                           )
                         ],
                       ),
                     ),
-
                   ),
                 );
               },
             );
           }
-
         },
       ),
-
 
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(right: 30),
