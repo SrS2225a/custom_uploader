@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:custom_uploader/services/file_upload.dart';
 import 'package:custom_uploader/utils/show_message.dart';
@@ -27,31 +28,27 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   String _fileName = "";
 
-  int _progressPercentValue = 0;
+  double _progressPercentValue = 0;
 
   bool _hasBeenPressed = false;
 
-
   void _setUploadProgress(int sentBytes, int totalBytes) {
-
     double uploadProgress(double value, double originalMinValue, double originalMaxValue,
         double translatedMinValue, double translatedMaxValue) {
-      if (originalMaxValue - originalMinValue == 0) return 0;
+      double clampedValue = value - originalMinValue;
+      double clampedRange = max(0.0, originalMaxValue - originalMinValue);
 
-      return (value - originalMinValue) /
-          (originalMaxValue - originalMinValue) *
+      return (clampedValue.clamp(0.0, clampedRange) / clampedRange) *
           (translatedMaxValue - translatedMinValue) +
           translatedMinValue;
     }
 
     double progressValue = uploadProgress(sentBytes.toDouble(), 0, totalBytes.toDouble(), 0, 1);
-
-    progressValue = double.parse(progressValue.toStringAsFixed(2));
+    progressValue = progressValue.clamp(0.0, 1.0);
 
     if (progressValue != _progressPercentValue) {
       setState(() {
-        progressValue = progressValue;
-        _progressPercentValue = (progressValue * 100.0).toInt();
+        _progressPercentValue = progressValue;
       });
     }
   }
@@ -137,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
           children: [
             CircularPercentIndicator(
               radius: 120.0,
-              percent:_progressPercentValue/100,
+              percent:_progressPercentValue,
               center: ElevatedButton(onPressed: () async {
                 if (shareBox.isNotEmpty) {
                   // if we are already uploading a file, don't allow the user to upload another one until the first one is done

@@ -4,6 +4,8 @@ import 'package:custom_uploader/views/add_new.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:dio/dio.dart';
+import 'package:xml/xml.dart' as xml;
 
 class Uploader extends StatefulWidget {
   const Uploader({super.key, required this.title});
@@ -30,6 +32,23 @@ class _MyUploaderState extends State<Uploader> {
       }
       i++;
     }
+  }
+
+  Future<String?> _getFaviconUrl(String url) async {
+    try {
+      var websiteUrl = url.split("/")[2];
+      // no need to cache it in the app, since the website caches it for us
+      Response response = await Dio().get('https://nyxgoddess.org/api/favicon/?domain=$websiteUrl&normalize-url=true');
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = response.data;
+        if (data.containsKey('icons') && data['icons'].isNotEmpty) {
+          return data['icons'][0]['src'];
+        }
+      }
+    } catch (error) {
+      print('Error fetching favicon: $error');
+    }
+    return null;
   }
 
   @override
@@ -96,6 +115,8 @@ class _MyUploaderState extends State<Uploader> {
                 // get the share object from the box
                 Share? c = box.getAt(index);
 
+                late Future<String?> _fetchFavicon = _getFaviconUrl(c!.uploaderUrl);
+
                 return InkWell(
                   onTap: () {
                       Box<Share> shareBox = Hive.box<Share>("custom_upload");
@@ -122,15 +143,39 @@ class _MyUploaderState extends State<Uploader> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           _buildDivider(),
-                          Text(c.uploaderUrl),
+                          Row(
+                            children: <Widget>[
+                              FutureBuilder<String?>(
+                                future: _fetchFavicon,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasError || snapshot.data == null) {
+                                    return Icon(Icons.public);
+                                  } else {
+                                    return Image.network(snapshot.data!, width: 32, height: 32, fit: BoxFit.fill);
+                                  }
+                                },
+                              ),
+                              SizedBox(width: 10), // Adjust the spacing as needed
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(c.uploaderUrl),
+                                  _buildDivider(),
+                                  Text(c.formDataName),
+                                ],
+                              ),
+                            ],
+                          ),
                           _buildDivider(),
-                          Text(c.formDataName),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
-                              IconButton(onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(builder: (context) => Creator(editor: c, index: index)));
-                              }, icon: const Icon(Icons.edit)),
+                              IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context) => Creator(editor: c, index: index)));
+                                },
+                                icon: const Icon(Icons.edit),
+                              ),
                               IconButton(
                                 onPressed: () {
                                   showDialog(
@@ -142,10 +187,11 @@ class _MyUploaderState extends State<Uploader> {
                                         content: const Text("Are you sure you want to delete this uploader?"),
                                         actions: <Widget>[
                                           TextButton(
-                                              onPressed: () async {
-                                                Navigator.of(context).pop();
-                                                await box.deleteAt(index);
-                                              }, child: const Text("Yes")
+                                            onPressed: () async {
+                                              Navigator.of(context).pop();
+                                              await box.deleteAt(index);
+                                            },
+                                            child: const Text("Yes"),
                                           ),
                                           TextButton(
                                             child: const Text("No"),
@@ -158,7 +204,7 @@ class _MyUploaderState extends State<Uploader> {
                                     },
                                   );
                                 },
-                                icon: const Icon(Icons.delete, color: Colors.red)
+                                icon: const Icon(Icons.delete, color: Colors.red),
                               ),
                             ],
                           )
