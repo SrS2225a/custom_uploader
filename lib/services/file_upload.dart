@@ -32,8 +32,11 @@ class FileService {
         }
 
         if (found) {
+          final url = data.uploaderUrl;
+
           onSetState(file.path.split("/").last);
           Map<String, String>? headers = data.uploadHeaders;
+          headers.addAll({"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"});
 
           getCorrectFormData(bool uploadFormData) {
             if (uploadFormData) {
@@ -54,8 +57,6 @@ class FileService {
           for (var cell in data.uploadArguments.entries) {
             formData.fields.add(MapEntry(cell.key, cell.value));
           }
-
-          final url = data.uploaderUrl;
 
           // uploads file to the chosen server with the chosen parameters
           String? parseAs;
