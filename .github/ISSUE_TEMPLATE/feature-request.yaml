@@ -1,6 +1,8 @@
 name: Feature Request
 description: Got an idea for a feature that Custom Uploader doesn't have currently? Submit your idea here!
 labels: ["enhancement"]
+assignees:
+  - SrS2225a
 body:
   - type: markdown
     attributes:
