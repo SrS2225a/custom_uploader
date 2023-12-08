@@ -2,10 +2,12 @@ name: Bug Report
 description: Found something in Custom Uploader you weren't expecting? Report it here!
 labels:
   - bug
+assignees:
+  - SrS2225a
 body:
   - type: markdown
     attributes:
-      value: >
+      value: |
         NOTE: Make sure you are using the latest release and take a moment to
         check that your issue hasn't been reported before.
   - type: textarea
@@ -44,12 +46,6 @@ body:
         If applicable, add screenshots to help explain your problem.
     validations:
       required: true
-  - type: input
-    id: logs
-    attributes:
-      label: Log Gist
-      description: Please provide a gist URL of your logs, with any sensitive
-        information (e.g. API keys) removed/hidden
   - type: textarea
     id: screenshots
     attributes:
