@@ -124,7 +124,6 @@ class MyCustomFormState extends State<MyCustomForm> {
       PlutoColumnGroup(title: "Upload Headers", fields: ['key', 'value']),
     ]);
 
-
     return PlutoGrid(
       columns: columns,
       rows: rows,
@@ -134,9 +133,18 @@ class MyCustomFormState extends State<MyCustomForm> {
         stateManager = event.stateManager;
       },
       configuration: const PlutoGridConfiguration(
-        columnSize: PlutoGridColumnSizeConfig(
-          autoSizeMode: PlutoAutoSizeMode.scale
-        ),
+          columnSize: PlutoGridColumnSizeConfig(
+              autoSizeMode: PlutoAutoSizeMode.scale,
+              resizeMode: PlutoResizeMode.none
+          ),
+          style: PlutoGridStyleConfig(
+            // since pluto grid does not respect the system theme, we have to manually set the colors
+            gridBackgroundColor: Colors.transparent,
+            rowColor: Colors.transparent,
+            cellColorInEditState: Colors.transparent,
+            cellTextStyle: TextStyle(color: Color(0xFFA0A0A0)),
+            columnTextStyle: TextStyle(color: Color(0xFFA0A0A0)),
+          )
       ),
     );
   }
@@ -209,9 +217,18 @@ class MyCustomFormState extends State<MyCustomForm> {
         state2Manager = event.stateManager;
       },
       configuration: const PlutoGridConfiguration(
-        columnSize: PlutoGridColumnSizeConfig(
-            autoSizeMode: PlutoAutoSizeMode.scale
-        ),
+          columnSize: PlutoGridColumnSizeConfig(
+              autoSizeMode: PlutoAutoSizeMode.scale,
+              resizeMode: PlutoResizeMode.none
+          ),
+          style: PlutoGridStyleConfig(
+            // since pluto grid does not respect the system theme, we have to manually set the colors
+            gridBackgroundColor: Colors.transparent,
+            rowColor: Colors.transparent,
+            cellColorInEditState: Colors.transparent,
+            cellTextStyle: TextStyle(color: Color(0xFFA0A0A0)),
+            columnTextStyle: TextStyle(color: Color(0xFFA0A0A0)),
+          )
       ),
     );
   }
@@ -284,9 +301,18 @@ class MyCustomFormState extends State<MyCustomForm> {
         state3Manager = event.stateManager;
       },
       configuration: const PlutoGridConfiguration(
-        columnSize: PlutoGridColumnSizeConfig(
-            autoSizeMode: PlutoAutoSizeMode.scale
-        ),
+          columnSize: PlutoGridColumnSizeConfig(
+              autoSizeMode: PlutoAutoSizeMode.scale,
+              resizeMode: PlutoResizeMode.none
+          ),
+          style: PlutoGridStyleConfig(
+            // since pluto grid does not respect the system theme, we have to manually set the colors
+            gridBackgroundColor: Colors.transparent,
+            rowColor: Colors.transparent,
+            cellColorInEditState: Colors.transparent,
+            cellTextStyle: TextStyle(color: Color(0xFFA0A0A0)),
+            columnTextStyle: TextStyle(color: Color(0xFFA0A0A0)),
+          )
       ),
     );
   }

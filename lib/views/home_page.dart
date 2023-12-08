@@ -147,7 +147,6 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                     File file = File(filePicker.files.first.path!);
                     await FileService.fileUploadMultiPart(
                         file: file, onUploadProgress: _setUploadProgress, context: context, onSetState: _setState);
-
                   }
                 } else {
                   showDialog(

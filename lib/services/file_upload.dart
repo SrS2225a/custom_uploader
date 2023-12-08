@@ -35,8 +35,8 @@ class FileService {
           final url = data.uploaderUrl;
 
           onSetState(file.path.split("/").last);
-          Map<String, String>? headers = data.uploadHeaders;
-          headers.addAll({"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"});
+          Map<String, String>? headers = Map.from(data.uploadHeaders ?? {});
+          headers.addEntries([const MapEntry("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36")]);
 
           getCorrectFormData(bool uploadFormData) {
             if (uploadFormData) {
@@ -87,12 +87,12 @@ class FileService {
             if (error.response?.data != null) {
               parseAs = parseResponse(error.response?.data, data.uploaderErrorParser); // tries to parse the error response, if it fails, it will just show the error
               if (parseAs == "") {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: const Duration(seconds: 10), content: Text('Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}')));
+                showSnackBar(context, "Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}");
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(duration: const Duration(seconds: 10), content: Text('Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}; $parseAs')));
+                showSnackBar(context, "Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}; $parseAs");
               }
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Failed to connect to server. Please check your internet connection.')));
+              showSnackBar(context, "Failed to connect to server. Please check your internet connection.");
             }
         }
     } else {
