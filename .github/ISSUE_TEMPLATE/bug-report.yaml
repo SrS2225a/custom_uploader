@@ -1,0 +1,55 @@
+name: Bug Report
+description: Found something in Custom Uploader you weren't expecting? Report it here!
+labels:
+  - bug
+assignees:
+  - SrS2225a
+body:
+  - type: markdown
+    attributes:
+      value: |
+        NOTE: Make sure you are using the latest release and take a moment to check that your issue hasn't been reported before.
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe The Bug
+      description: |
+        A clear and concise description of what the bug is.
+    validations:
+      required: true
+  - type: textarea
+    id: description-reproduce
+    attributes:
+      label: To Reproduce
+      description: |
+        Steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. See error
+    validations:
+      required: true
+  - type: textarea
+    id: expected-behavoir
+    attributes:
+      label: Expected Behavior
+      description: |
+        A clear and concise description of what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: |
+        If applicable, add screenshots to help explain your problem.
+  - type: input
+    id: os-ver
+    attributes:
+      label: OS Version
+      description: Your current version of Android you are running
+  - type: input
+    id: app-ver
+    attributes:
+      label: App Version
+      description: Your current version of Custom Uploader
