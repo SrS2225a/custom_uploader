@@ -60,41 +60,126 @@ class FileService {
 
           // uploads file to the chosen server with the chosen parameters
           String? parseAs;
-          try {
-            await Dio().post(
-              url,
-              queryParameters: data.uploadParameters,
-              options: Options(
-                headers: headers,
-              ),
-              data: formData,
-              onSendProgress: (int sent, int total) {
-                onUploadProgress(sent, total);
-              },
-            ).then((value) => {
-              onSetState(""),
-              parseAs = parseResponse(value.data, data.uploaderResponseParser), // tries to parse the url response, if it fails, it will just show that it was successful
-              if (parseAs == "") {
-                showSnackBar(context, "Upload successful"),
-              } else
-                {
-                  Clipboard.setData(ClipboardData(text: parseAs ?? 'default')),
-                  showSnackBar(context, "File upload successfully as: $parseAs. It has been copied to your clipboard")
+          if(data.method == "GET") {
+            try {
+              await Dio().get(
+                url,
+                queryParameters: data.uploadParameters,
+                options: Options(
+                  headers: headers,
+                  followRedirects: false,
+                ),
+                data: formData,
+              ).then((value) =>
+              {
+                onSetState(""),
+                parseAs = parseResponse(value.data, data.uploaderResponseParser),
+                // tries to parse the url response, if it fails, it will just show that it was successful
+                if (parseAs == "") {
+                  showSnackBar(context, "Upload successful"),
+                } else
+                  {
+                    Clipboard.setData(ClipboardData(text: parseAs ?? 'default')),
+                    showSnackBar(context, "File upload successfully as: $parseAs. It has been copied to your clipboard")
+                  }
+              });
+            } on DioException catch (error) {
+              onSetState("");
+              if (error.response?.data != null) {
+                parseAs = parseResponse(error.response?.data, data
+                    .uploaderErrorParser); // tries to parse the error response, if it fails, it will just show the error
+                if (parseAs == "") {
+                  showSnackBar(context, "Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}");
+                } else {
+                  showSnackBar(context, "Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}; $parseAs");
                 }
-            });
-          } on DioException catch (error) {
-            onSetState("");
-            if (error.response?.data != null) {
-              parseAs = parseResponse(error.response?.data, data.uploaderErrorParser); // tries to parse the error response, if it fails, it will just show the error
-              if (parseAs == "") {
-                showSnackBar(context, "Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}");
               } else {
-                showSnackBar(context, "Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}; $parseAs");
+                showSnackBar(context, "Failed to connect to server. Please check your internet connection.");
               }
-            } else {
-              showSnackBar(context, "Failed to connect to server. Please check your internet connection.");
+              print(error);
             }
-        }
+          } else if (data.method == "PUT") {
+            try {
+              await Dio().put(
+                url,
+                queryParameters: data.uploadParameters,
+                options: Options(
+                  headers: headers,
+                  followRedirects: false,
+                ),
+                data: formData,
+                onSendProgress: (int sent, int total) {
+                  onUploadProgress(sent, total);
+                },
+              ).then((value) =>
+              {
+                onSetState(""),
+                parseAs = parseResponse(value.data, data.uploaderResponseParser),
+                // tries to parse the url response, if it fails, it will just show that it was successful
+                if (parseAs == "") {
+                  showSnackBar(context, "Upload successful"),
+                } else
+                  {
+                    Clipboard.setData(ClipboardData(text: parseAs ?? 'default')),
+                    showSnackBar(context, "File upload successfully as: $parseAs. It has been copied to your clipboard")
+                  }
+              });
+            } on DioException catch (error) {
+              onSetState("");
+              if (error.response?.data != null) {
+                parseAs = parseResponse(error.response?.data, data
+                    .uploaderErrorParser); // tries to parse the error response, if it fails, it will just show the error
+                if (parseAs == "") {
+                  showSnackBar(context, "Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}");
+                } else {
+                  showSnackBar(context, "Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}; $parseAs");
+                }
+              } else {
+                showSnackBar(context, "Failed to connect to server. Please check your internet connection.");}
+              print(error);
+            }
+          } else {
+            try {
+              await Dio().post(
+                url,
+                queryParameters: data.uploadParameters,
+                options: Options(
+                  headers: headers,
+                  followRedirects: false,
+                ),
+                data: formData,
+                onSendProgress: (int sent, int total) {
+                  onUploadProgress(sent, total);
+                },
+              ).then((value) =>
+              {
+                onSetState(""),
+                parseAs = parseResponse(value.data, data.uploaderResponseParser),
+                // tries to parse the url response, if it fails, it will just show that it was successful
+                if (parseAs == "") {
+                  showSnackBar(context, "Upload successful"),
+                } else
+                  {
+                    Clipboard.setData(ClipboardData(text: parseAs ?? 'default')),
+                    showSnackBar(context, "File upload successfully as: $parseAs. It has been copied to your clipboard")
+                  }
+              });
+            } on DioException catch (error) {
+              onSetState("");
+              if (error.response?.data != null) {
+                parseAs = parseResponse(error.response?.data, data
+                    .uploaderErrorParser); // tries to parse the error response, if it fails, it will just show the error
+                if (parseAs == "") {
+                  showSnackBar(context, "Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}");
+                } else {
+                  showSnackBar(context, "Error transferring to $url: (${error.response?.statusCode}) ${error.response?.statusMessage}; $parseAs");
+                }
+              } else {
+                showSnackBar(context, "Failed to connect to server. Please check your internet connection.");
+              }
+              print(error);
+            }
+          }
     } else {
       showSnackBar(context, "Please select an uploader first.");
     }

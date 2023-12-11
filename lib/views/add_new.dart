@@ -324,53 +324,78 @@ class MyCustomFormState extends State<MyCustomForm> {
       cursor = widget.editor!;
       _switchValue = cursor.uploadFormData;
     } else {
-      cursor = Share("", "", false, {}, {}, {}, "", "", false);
+      cursor = Share("", "", false, {}, {}, {}, "", "", false, "POST");
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Form(
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: "The URL to upload to.",
-              labelText: "Upload URL *",
-            ),
-            validator: (value) {
-              var regex = RegExp(r"[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?").hasMatch(value!);
-              if (value.isEmpty || !regex) {
-                return 'Please enter a valid url';
-              }
-              return null;
-            },
-            initialValue: cursor.uploaderUrl,
-            onSaved: (value) {cursor.uploaderUrl = value!;},
-          ),
-          TextFormField(
-            decoration: const InputDecoration(
-              hintText: "The name of the form data field.",
-              labelText: "Form Data Name *",
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a form nme';
-              }
-              return null;
-            },
-            initialValue: cursor.formDataName,
-            onSaved: (value) {cursor.formDataName = value!;},
-          ),
           Row(
             children: [
-              Switch(value: _switchValue, onChanged: (value) {setState(() {
-                _switchValue = value;
-              });}),
-              const Text("Add file data to request body arguments")
+              Container(
+                constraints: const BoxConstraints(maxWidth: 80),
+                child: DropdownButtonFormField(items: <String>['POST', 'GET', 'PUT']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  isExpanded: true,
+                  onChanged: (String? value) { value!; },
+                  onSaved: (value) {cursor.method = value!;},
+                  value: cursor.method,
+                  decoration: const InputDecoration(
+                      labelText: "Method *"
+                  ),
+                ),
+              ),
+
+              Expanded(child: TextFormField(
+                decoration: const InputDecoration(
+                  hintText: "The URL to upload to.",
+                  labelText: "Upload URL *",
+                ),
+                validator: (value) {
+                  var regex = RegExp(r"^(?:https?|s?ftp):\/\/[-A-Za-z0-9+&@#\/\[\]%?=~_!:.]*[-A-Za-z0-9+@#\/\]%=~_|]$").hasMatch(value!);
+                  if (value.isEmpty || !regex) {
+                    return 'Please enter a valid url';
+                  }
+                  return null;
+                },
+                initialValue: cursor.uploaderUrl,
+                onSaved: (value) {cursor.uploaderUrl = value!;},
+              )
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Expanded(child: TextFormField(
+                decoration: const InputDecoration(
+                  hintText: "The name of the form data field.",
+                  labelText: "Form Data Name *",
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a form nme';
+                  }
+                  return null;
+                },
+                initialValue: cursor.formDataName,
+                onSaved: (value) {cursor.formDataName = value!;},
+              ),
+            ),
+            Switch(value: _switchValue, onChanged: (value) {setState(() {
+              _switchValue = value;
+            });}),
+             const Text("Add file data to request body"),
             ],
           ),
           // SizedBox prevents the table from overflowing

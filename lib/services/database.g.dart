@@ -26,13 +26,14 @@ class ShareAdapter extends TypeAdapter<Share> {
       fields[6] as String,
       fields[7] as String,
       fields[8] as bool,
+      fields[9] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Share obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.uploaderUrl)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class ShareAdapter extends TypeAdapter<Share> {
       ..writeByte(7)
       ..write(obj.uploaderErrorParser)
       ..writeByte(8)
-      ..write(obj.selectedUploader);
+      ..write(obj.selectedUploader)
+      ..writeByte(9)
+      ..write(obj.method);
   }
 
   @override

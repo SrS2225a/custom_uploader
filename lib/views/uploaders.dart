@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:custom_uploader/services/database.dart';
 import 'package:custom_uploader/services/import_export.dart';
 import 'package:custom_uploader/views/add_new.dart';
@@ -5,22 +7,22 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:dio/dio.dart';
-import 'package:xml/xml.dart' as xml;
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 
 class Uploader extends StatefulWidget {
   const Uploader({super.key, required this.title});
   final String title;
+
   @override
   State<Uploader> createState() => _MyUploaderState();
 }
 
 class _MyUploaderState extends State<Uploader> {
+  late Dio dio;
   int previousSelectedIndex = 0;
 
   @override
   void initState() {
-    super.initState();
-
     // for keeping track of the selected index
     Box<Share> shareBox = Hive.box<Share>("custom_upload");
     var cursor = shareBox.toMap();
@@ -32,18 +34,25 @@ class _MyUploaderState extends State<Uploader> {
       }
       i++;
     }
+
+    // for caching the responses
+    final options = CacheOptions(store: MemCacheStore(), policy: CachePolicy.forceCache, maxStale: const Duration(days: 7));
+    dio = Dio()..interceptors.add(DioCacheInterceptor(options: options));
+
+    super.initState();
   }
 
-  Future<String?> _getFaviconUrl(String url) async {
+  Future<Uint8List?> _getFavicon(String url) async {
     try {
       var websiteUrl = url.split("/")[2];
-      // no need to cache it in the app, since the website caches it for us
-      Response response = await Dio().get('https://nyxgoddess.org/api/favicon/?domain=$websiteUrl&normalize-url=true');
+      // no need to cache it in the app, since dio caches it for us
+      Response<List<int>> response = await dio.get(
+        'https://www.google.com/s2/favicons?domain=https://$websiteUrl&sz=64',
+        options: Options(responseType: ResponseType.bytes),
+      );
+
       if (response.statusCode == 200) {
-        Map<String, dynamic> data = response.data;
-        if (data.containsKey('icons') && data['icons'].isNotEmpty) {
-          return data['icons'][0]['src'];
-        }
+        return Uint8List.fromList(response.data!);
       }
     } catch (error) {
       print('Error fetching favicon: $error');
@@ -53,7 +62,27 @@ class _MyUploaderState extends State<Uploader> {
 
   @override
   Widget build(BuildContext context) {
+    Map<String, Uint8List?> faviconCache = {};
+
     Widget _buildDivider() => const SizedBox(height: 5);
+    Widget _buildFaviconImage(String uploaderUrl) {
+      if (faviconCache.containsKey(uploaderUrl)) {
+        return Image.memory(faviconCache[uploaderUrl]!, width: 32, height: 32, fit: BoxFit.fill);
+      } else {
+        return FutureBuilder<Uint8List?>(
+          future: _getFavicon(uploaderUrl),
+          builder: (context, snapshot) {
+            if (snapshot.hasError || snapshot.data == null) {
+              return const Icon(Icons.public);
+            } else {
+              faviconCache[uploaderUrl] = snapshot.data;
+              return Image.memory(snapshot.data!, width: 32, height: 32, fit: BoxFit.fill);
+            }
+          },
+        );
+      }
+    }
+
     return Scaffold(
         appBar: AppBar(
         title: Text(widget.title),
@@ -97,7 +126,7 @@ class _MyUploaderState extends State<Uploader> {
                 ImportExportService.export(context: context, index: i);
 
               }
-            },)
+            })
         ],
     ),
 
@@ -115,28 +144,23 @@ class _MyUploaderState extends State<Uploader> {
                 // get the share object from the box
                 Share? c = box.getAt(index);
 
-                late Future<String?> _fetchFavicon = _getFaviconUrl(c!.uploaderUrl);
+                Future<Uint8List?> fetchFavicon = _getFavicon(c!.uploaderUrl);
 
                 return InkWell(
                   onTap: () {
                       Box<Share> shareBox = Hive.box<Share>("custom_upload");
-
                       // sets the current selected uploader
                       var pre = shareBox.getAt(previousSelectedIndex);
                       if (pre != null) {
-                        shareBox.putAt(previousSelectedIndex, Share(pre.uploaderUrl, pre.formDataName, pre.uploadFormData, pre.uploadHeaders, c.uploadParameters, pre.uploadArguments, pre.uploaderResponseParser, pre.uploaderErrorParser, false));
+                        shareBox.putAt(previousSelectedIndex, Share(pre.uploaderUrl, pre.formDataName, pre.uploadFormData, pre.uploadHeaders, c.uploadParameters, pre.uploadArguments, pre.uploaderResponseParser, pre.uploaderErrorParser, false, pre.method));
                       }
                       previousSelectedIndex = index;
 
-                      shareBox.putAt(index, Share(c.uploaderUrl, c.formDataName, c.uploadFormData, c.uploadHeaders, c.uploadParameters, c.uploadArguments, c.uploaderResponseParser, c.uploaderErrorParser, true));
-
-                      setState(() {
-                        c.selectedUploader;
-                      });
+                      shareBox.putAt(index, Share(c.uploaderUrl, c.formDataName, c.uploadFormData, c.uploadHeaders, c.uploadParameters, c.uploadArguments, c.uploaderResponseParser, c.uploaderErrorParser, true, pre!.method));
                   },
                   child: Card(
                     margin: const EdgeInsets.all(10),
-                    color: c!.selectedUploader ? Colors.blueAccent : null,
+                    color: c.selectedUploader ? Colors.blueAccent : null,
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
@@ -145,23 +169,14 @@ class _MyUploaderState extends State<Uploader> {
                           _buildDivider(),
                           Row(
                             children: <Widget>[
-                              FutureBuilder<String?>(
-                                future: _fetchFavicon,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasError || snapshot.data == null) {
-                                    return Icon(Icons.public);
-                                  } else {
-                                    return Image.network(snapshot.data!, width: 32, height: 32, fit: BoxFit.fill);
-                                  }
-                                },
-                              ),
-                              SizedBox(width: 10), // Adjust the spacing as needed
+                              _buildFaviconImage(c.uploaderUrl),
+                              const SizedBox(width: 10),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(c.uploaderUrl),
                                   _buildDivider(),
-                                  Text(c.formDataName),
+                                  Text('Upload Method: ${c.method ?? "POST"}'),
                                 ],
                               ),
                             ],
@@ -190,6 +205,10 @@ class _MyUploaderState extends State<Uploader> {
                                             onPressed: () async {
                                               Navigator.of(context).pop();
                                               await box.deleteAt(index);
+                                              // fix index out of range error when deleting the last uploader
+                                              if (index == previousSelectedIndex) {
+                                                previousSelectedIndex = 0;
+                                              }
                                             },
                                             child: const Text("Yes"),
                                           ),

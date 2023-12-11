@@ -3,7 +3,6 @@ part 'database.g.dart';
 
 @HiveType(typeId: 0) // 1
 class Share {
-
   // defines the type of the field
   @HiveField(0)
   String uploaderUrl;
@@ -23,6 +22,8 @@ class Share {
   String uploaderErrorParser;
   @HiveField(8)
   bool selectedUploader;
+  @HiveField(9)
+  String? method;
 
-  Share(this.uploaderUrl, this.formDataName, this.uploadFormData, this.uploadHeaders, this.uploadParameters, this.uploadArguments, this.uploaderResponseParser, this.uploaderErrorParser, this.selectedUploader);
+  Share(this.uploaderUrl, this.formDataName, this.uploadFormData, this.uploadHeaders, this.uploadParameters, this.uploadArguments, this.uploaderResponseParser, this.uploaderErrorParser, this.selectedUploader, this.method);
 }

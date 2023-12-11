@@ -70,27 +70,36 @@ class ImportExportService {
           }
         }
       }
+
+
       // type of json["Headers"] should be Map<String, dynamic> instead of _InternalLinkedHashMap<String, dynamic>
-      return Share(json["RequestURL"], json["FileFormName"], useBytes, getCorrectTypes(json["Headers"]), getCorrectTypes(json["Parameters"]), arguments, convertParser(json["URL"] ?? ""), convertParser(json["ErrorMessage"] ?? ""), false);
+      return Share(json["RequestURL"], json["FileFormName"], useBytes, getCorrectTypes(json["Headers"]), getCorrectTypes(json["Parameters"]), arguments, convertParser(json["URL"] ?? ""), convertParser(json["ErrorMessage"] ?? ""), false, json["RequestMethod"]);
     }
 
     var json = readData(file);
     if (json != null) {
       // check if the file is a valid uploader
-      if (json["RequestURL"] != null && json["FileFormName"] != null) {
-        Box<Share> shareBox = Hive.box<Share>("custom_upload");
-        if (shareBox.values.where((element) => element.uploaderUrl == json["RequestURL"]).isNotEmpty) {
-          // tell the user that the uploader already exists
-          showAlert(context, "Failed to import", "The uploader you are trying to import already exists.");
-        } else {
-          // add the uploader to the database
-          Share? share = readJson(json);
-          if (share != null) {
-            shareBox.add(share);
+      if (json["RequestURL"] != null && json["FileFormName"] != null && json["RequestMethod"] != null) {
+        // Check if the RequestMethod is one of the supported methods
+        String requestMethod = json["RequestMethod"].toUpperCase();
+        if (requestMethod == "GET" || requestMethod == "POST" || requestMethod == "PUT") {
+          Box<Share> shareBox = Hive.box<Share>("custom_upload");
+          if (shareBox.values.where((element) => element.uploaderUrl == json["RequestURL"]).isNotEmpty) {
+            // tell the user that the uploader already exists
+            showAlert(context, "Failed to import", "The uploader you are trying to import already exists.");
           } else {
-            // tell the user that the uploader is invalid
-            showAlert(context, "Failed to import", "The uploader you are trying to import is invalid.");
+            // add the uploader to the database
+            Share? share = readJson(json);
+            if (share != null) {
+              shareBox.add(share);
+            } else {
+              // tell the user that the uploader is invalid
+              showAlert(context, "Failed to import", "The uploader you are trying to import is invalid.");
+            }
           }
+        } else {
+          // tell the user that the request method is not supported
+          showAlert(context, "Failed to import", "The request method (${json["RequestMethod"]}) is not supported.");
         }
       } else {
         // tell the user that the file is not a valid uploader
@@ -105,16 +114,16 @@ class ImportExportService {
     Share share = shareBox.getAt(index)!;
 
     Future<String> getFilePath() async {
-
       // Use the legacy external storage directory for older Android versions
-      final appDocumentsDirectory = await Directory("/storage/emulated/0/Download");
-      return '${appDocumentsDirectory!.path}/${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json';
+      final appDocumentsDirectory = Directory("/storage/emulated/0/Download");
+      return '${appDocumentsDirectory.path}/${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json';
     }
 
     // convert the uploader to json
     Map<String, dynamic> json = {
       "RequestURL": share.uploaderUrl,
       "FileFormName": share.formDataName,
+      "RequestMethod": share.method,
       if (share.uploadFormData) "Body": "MultipartFormData",
       if (share.uploadHeaders.isNotEmpty) "Headers": share.uploadHeaders,
       if (share.uploadParameters.isNotEmpty) "Parameters": share.uploadParameters,
