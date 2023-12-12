@@ -44,10 +44,9 @@ class _MyUploaderState extends State<Uploader> {
 
   Future<Uint8List?> _getFavicon(String url) async {
     try {
-      var websiteUrl = url.split("/")[2];
       // no need to cache it in the app, since dio caches it for us
       Response<List<int>> response = await dio.get(
-        'https://www.google.com/s2/favicons?domain=https://$websiteUrl&sz=64',
+        'https://www.google.com/s2/favicons?domain=$url&sz=64',
         options: Options(responseType: ResponseType.bytes),
       );
 
@@ -174,7 +173,10 @@ class _MyUploaderState extends State<Uploader> {
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(c.uploaderUrl),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width - 86,
+                                    child: Text(c.uploaderUrl, overflow: TextOverflow.ellipsis, maxLines: 1),
+                                  ),
                                   _buildDivider(),
                                   Text('Upload Method: ${c.method ?? "POST"}'),
                                 ],

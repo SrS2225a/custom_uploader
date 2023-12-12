@@ -2,6 +2,7 @@ import 'package:custom_uploader/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_uploader/views/home_page.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:flutter/services.dart';
 
 Future<void> main() async {
   // connects to hive database
@@ -17,6 +18,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of the application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       home: const MyHomePage(title: 'Custom Uploader'),
       theme: ThemeData(
