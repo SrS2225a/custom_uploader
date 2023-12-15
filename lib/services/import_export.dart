@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:custom_uploader/utils/show_message.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 import 'database.dart';
 
@@ -113,11 +115,28 @@ class ImportExportService {
     Box<Share> shareBox = Hive.box<Share>("custom_upload");
     Share share = shareBox.getAt(index)!;
 
+    Future<void> _saveFileToMediaStore(File file, String name) async {
+      const channel = MethodChannel('flutter_media_store');
+
+      Future<void> addItem({required File file, required String name}) async {
+        await channel.invokeMethod('addItem', {'path': file.path, 'name': name});
+        await file.delete();
+      }
+
+      addItem(file: file, name: name);
+    }
+
     Future<String> getFilePath() async {
       // Use the legacy external storage directory for older Android versions
       final appDocumentsDirectory = Directory("/storage/emulated/0/Download");
       return '${appDocumentsDirectory.path}/${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json';
     }
+
+    Future<String> getMediaStorePath() async {
+      // Use the legacy external storage directory for older Android versions
+      return '/data/user/0/com.nyx.custom_uploader/cache/${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json';
+    }
+
 
     // convert the uploader to json
     Map<String, dynamic> json = {
@@ -134,21 +153,32 @@ class ImportExportService {
 
     try {
       // request permission to write to storage using the permission handler plugin
-     PermissionStatus permission = await Permission.manageExternalStorage.request();
      PermissionStatus legacyPermission = await Permission.storage.request();
-      if (permission == PermissionStatus.granted || legacyPermission == PermissionStatus.granted) {
+      if (legacyPermission == PermissionStatus.granted) {
         // write the file to storage
         String filePath = await getFilePath();
         File file = File(filePath);
         // write file as type json
-        file.writeAsStringSync(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
+        await file.writeAsString(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
         showSnackBar(context, "The uploader was exported to your downloads");
       } else {
-        // tell the user that the permission was denied
-        showAlert(context, "Failed to export", "The permission to write to storage was denied.");
+        // check if version is Android 10 or higher
+        AndroidDeviceInfo osVersion = await DeviceInfoPlugin().androidInfo;
+        if(int.parse(osVersion.version.release) >= 10) {
+          final filePath = await getMediaStorePath();
+          File tempFile = File(filePath);
+          // write file as type json
+          final exportFile = await tempFile.writeAsString(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
+          await _saveFileToMediaStore(exportFile, '${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json');
+          showSnackBar(context, "The uploader was exported to your downloads");
+        } else {
+          // tell the user that the permission was denied
+          showAlert(context, "Failed to export", "The permission to write to storage was denied.");
+        }
       }
     } catch (e) {
       // tell the user why it failed
+      print(e);
       showAlert(context, "Failed to export", "Failed to export the uploader. \n\nError: ${e.toString()}");
     }
   }

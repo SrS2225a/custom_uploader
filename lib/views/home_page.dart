@@ -33,14 +33,11 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   bool _hasBeenPressed = false;
 
   void _setUploadProgress(int sentBytes, int totalBytes) {
-    double uploadProgress(double value, double originalMinValue, double originalMaxValue,
-        double translatedMinValue, double translatedMaxValue) {
+    double uploadProgress(double value, double originalMinValue, double originalMaxValue, double translatedMinValue, double translatedMaxValue) {
       double clampedValue = value - originalMinValue;
       double clampedRange = max(0.0, originalMaxValue - originalMinValue);
 
-      return (clampedValue.clamp(0.0, clampedRange) / clampedRange) *
-          (translatedMaxValue - translatedMinValue) +
-          translatedMinValue;
+      return (clampedValue.clamp(0.0, clampedRange) / clampedRange) * (translatedMaxValue - translatedMinValue) + translatedMinValue;
     }
 
     double progressValue = uploadProgress(sentBytes.toDouble(), 0, totalBytes.toDouble(), 0, 1);

@@ -1,0 +1,2 @@
+1. Custom Uploader now uses the MediaStore API to export configs, to make google play happy.
+2. Change logs are now included in a fastlane changelog file.
