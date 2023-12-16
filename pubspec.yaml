@@ -21,7 +21,7 @@ dependencies:
   receive_sharing_intent: ^1.4.5
   url_launcher: ^6.1.6
   permission_handler: ^11.0.0
-  device_info_plus: ^9.1.1
+  sdk_int: ^0.0.1
 
 dev_dependencies:
   flutter_test:

@@ -169,22 +169,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.4"
-  device_info_plus:
-    dependency: "direct main"
-    description:
-      name: device_info_plus
-      sha256: "0042cb3b2a76413ea5f8a2b40cec2a33e01d0c937e91f0f7c211fde4f7739ba6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "9.1.1"
-  device_info_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: device_info_plus_platform_interface
-      sha256: d3b01d5868b50ae571cd1dc6e502fc94d956b665756180f7b16ead09e836fd64
-      url: "https://pub.dev"
-    source: hosted
-    version: "7.0.0"
   dio:
     dependency: "direct main"
     description:
@@ -616,6 +600,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
+  sdk_int:
+    dependency: "direct main"
+    description:
+      name: sdk_int
+      sha256: e685b4c98177d7d2a3d646c566e2458739bc208b87c3527e384e576ac321ef1a
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.1"
   shelf:
     dependency: transitive
     description:
@@ -845,14 +837,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
-  win32_registry:
-    dependency: transitive
-    description:
-      name: win32_registry
-      sha256: "41fd8a189940d8696b1b810efb9abcf60827b6cbfab90b0c43e8439e3a39d85a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.1.2"
   xdg_directories:
     dependency: transitive
     description:

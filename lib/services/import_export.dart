@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+import 'package:sdk_int/sdk_int.dart';
 
 import 'database.dart';
 
@@ -163,8 +163,8 @@ class ImportExportService {
         showSnackBar(context, "The uploader was exported to your downloads");
       } else {
         // check if version is Android 10 or higher
-        AndroidDeviceInfo osVersion = await DeviceInfoPlugin().androidInfo;
-        if(int.parse(osVersion.version.release) >= 10) {
+        // use sdk_int
+        if(await SDKInt.currentSDKVersion >= 10) {
           final filePath = await getMediaStorePath();
           File tempFile = File(filePath);
           // write file as type json
