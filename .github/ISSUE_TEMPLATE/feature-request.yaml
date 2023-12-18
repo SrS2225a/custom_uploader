@@ -11,7 +11,15 @@ body:
   - type: textarea
     id: description
     attributes:
-      label: Feature Description
+      label: What you want to be added
+      description: A clear and concise description of what you want to be added
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why you want this feature
+      description: A clear and concise description of why you want this feature
     validations:
       required: true
   - type: textarea
