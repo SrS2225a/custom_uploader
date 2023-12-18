@@ -2,7 +2,7 @@ name: custom_uploader
 description: Allows you to upload files to a custom server
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.2.1+7
+version: 1.2.1+8
 
 environment:
   sdk: '>=2.18.2 <4.0.1'
