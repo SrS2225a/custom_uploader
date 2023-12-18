@@ -1,8 +1,8 @@
 ---
 name: Question
-description: Got a question about Custom Uploader? Ask it here!
-labels: ["help wanted"]
+about: Ask for help or assistance using the App or anything related
 title: ''
+labels: question
 assignees: ''
 
 ---
