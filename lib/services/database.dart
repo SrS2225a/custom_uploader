@@ -27,3 +27,12 @@ class Share {
 
   Share(this.uploaderUrl, this.formDataName, this.uploadFormData, this.uploadHeaders, this.uploadParameters, this.uploadArguments, this.uploaderResponseParser, this.uploaderErrorParser, this.selectedUploader, this.method);
 }
+
+@HiveType(typeId: 1) // 2
+class ViewSelection {
+  // define the type of the field
+  @HiveField(0)
+  bool addNewView; // for selecting the simple or advanced view for the add uploader page
+
+  ViewSelection(this.addNewView);
+}

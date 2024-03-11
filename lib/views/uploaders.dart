@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:custom_uploader/services/database.dart';
 import 'package:custom_uploader/services/import_export.dart';
-import 'package:custom_uploader/views/add_new.dart';
+import 'package:custom_uploader/views/add_uploader.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
