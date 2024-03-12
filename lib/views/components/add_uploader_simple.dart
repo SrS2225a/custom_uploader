@@ -91,6 +91,7 @@ class SimpleViewState extends State<SimpleView> {
               ],
             ),
             const Spacer(),
+            const Text("Tip: If you need to supply arguments to an upload, try the advanced view", textAlign: TextAlign.center,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               mainAxisSize: MainAxisSize.min,
