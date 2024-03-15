@@ -33,6 +33,8 @@ class ViewSelection {
   // define the type of the field
   @HiveField(0)
   bool addNewView; // for selecting the simple or advanced view for the add uploader page
+  @HiveField(1)
+  bool shouldLoadPresets; // for if the default uploader presets should be loaded
 
-  ViewSelection(this.addNewView);
+  ViewSelection(this.addNewView, this.shouldLoadPresets);
 }

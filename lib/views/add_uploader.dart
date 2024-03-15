@@ -16,7 +16,7 @@ class Creator extends StatefulWidget {
 }
 
 class _MyCreatorState extends State<Creator> {
-  var viewBox =  Hive.openBox("add_new_view");
+  var viewBox =  Hive.openBox("custom_view");
   bool _isAdvancedView = false;
 
   @override

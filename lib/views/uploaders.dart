@@ -46,7 +46,7 @@ class _MyUploaderState extends State<Uploader> {
     try {
       // no need to cache it in the app, since dio caches it for us
       Response<List<int>> response = await dio.get(
-        'https://www.google.com/s2/favicons?domain=$url&sz=64',
+        'https://www.google.com/s2/favicons?domain=$url&sz=128',
         options: Options(responseType: ResponseType.bytes),
       );
 
