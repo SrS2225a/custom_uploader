@@ -1,0 +1,70 @@
+###################################################################################################
+
+# This YAML file contains upload presets for various services.
+# Each preset includes configurations for uploading files, such as URLs, parameters,
+# headers, and request methods.
+#
+# Each preset is represented as a mapping and includes the following fields:
+#   - RequestURL*: The URL to which the file will be uploaded
+#   - FileFormName*: The name of the form field where the file will be attached
+#   - UseByes*: A boolean indicating whether to use bytes for file upload
+#   - Headers: Additional headers to include in the request
+#   - Parameters: Additional parameters to include in the request
+#   - Arguments: Additional arguments for the request (form data)
+#   - URL: How the app should parse the returned url from the server. Custom Uploader will attempt
+#     to get the returned url automatically, but some services may break up the returned url, in
+#     which case this field should be used
+#   - ErrorMessage: How the app should parse the error returned from the server in case the upload
+#     failed
+#   - RequestMethod*: The HTTP request method to use (POST, PUT, GET)
+#
+# Each preset may have a different set of fields depending on the service.
+# Additionally, fields marked with an "*" are required.
+# Feel free to add more presets following the same structure.
+
+###################################################################################################
+
+# 0x0
+- RequestURL: "0x0.st"
+  FileFormName: "file"
+  UseBytes: false
+  RequestMethod: "POST"
+
+# Catbox (Litterbox)
+- RequestURL: "https://litterbox.catbox.moe/resources/internals/api.php"
+  FileFormName: "fileToUpload"
+  UseBytes: false
+  Arguments:
+    reqtype: "filetoupload"
+    time: "72h"
+  RequestMethod: "POST"
+
+# Imgur
+- RequestURL: "https://api.imgur.com/3/image"
+  FileFormName: "image"
+  UseBytes: false
+  Headers:
+    Authorization: Client-ID <your_secret_here>
+  RequestMethod: "POST"
+  URLResponse: "$json:data.link$"
+  ErrorResponse: "$json:data.error"
+
+# Giphy
+- RequestURL: "upload.giphy.com/v1/gifs"
+  FileFormName: "file"
+  UseBytes: false
+  Arguments:
+    api_key: "<your_key_here>"
+  RequestMethod: "POST"
+
+
+# Pastebin
+- RequestURL: "https://pastebin.com/api/api_post.php"
+  FileFormName: "api_paste_code"
+  UseBytes: true
+  Arguments:
+    api_dev_key: "<your_key_here>"
+    api_option: "paste"
+    api_paste_name: "Custom Uploader Paste"
+  RequestMethod: "POST"
+  ErrorResponse: "$response$"

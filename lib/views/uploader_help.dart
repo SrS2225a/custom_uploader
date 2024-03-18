@@ -24,7 +24,7 @@ class _MyUploaderState extends State<Help> {
 
     return FutureBuilder(
       future: DefaultAssetBundle.of(context).loadString
-        ("lib/views/markdown/contents.md"),
+        ("lib/assets/contents.md"),
       builder: (BuildContext context, AsyncSnapshot<String> snapshot){
         if (snapshot.hasData) {
           return Markdown(data: snapshot.data!);

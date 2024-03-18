@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:custom_uploader/views/home_page.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:flutter/services.dart';
+import 'package:yaml/yaml.dart';
 
 Future<void> main() async {
   // connects to hive database
@@ -12,20 +13,52 @@ Future<void> main() async {
   Hive.registerAdapter(ShareAdapter());
   await Hive.openBox<Share>("custom_upload");
 
-  var viewBox =  Hive.openBox("custom_view");
-  viewBox.then((box) async {
-    bool? loadPresets = box.get('shouldLoadPresets', defaultValue: false);
-    if(!loadPresets!) {
-      String jsonPresetLoader = await rootBundle.loadString('assets/preset_uploaders.json');
-      Box<Share> shareBox = Hive.box<Share>("custom_upload");
-      for(var item in jsonDecode(jsonPresetLoader)) {
-        shareBox.add(Share(item["RequestURL"], item["FileFormName"], item["UseByes"], item["Headers"], item["Parameters"], item["Arguments"], item["URL"], item["ErrorMessage"], false, item['RequestMethod']));
-      }
+  var viewBox = await Hive.openBox('custom_view');
+  bool? loadPresets = viewBox.get('shouldLoadPresets', defaultValue: false);
 
-      box.put('shouldLoadPresets', true);
+  if (!loadPresets!) {
+    String yamlPresetLoader = await rootBundle.loadString('lib/assets/preset_uploaders.yaml');
+    var yamlList = loadYaml(yamlPresetLoader);
+
+    Box<Share> shareBox = Hive.box<Share>('custom_upload');
+
+    // Since the dart yaml package does not use an ordinary map type, we need to convert it.
+    // Why the hell would you use an custom type in this way instead of an regular type? It drives me insane
+    dynamic yamlMapToMap(dynamic value) {
+      if (value is Map) {
+        List<MapEntry<String, String>> entries = [];
+        for (final key in value.keys) {
+          entries.add(MapEntry(key, yamlMapToMap(value[key])));
+        }
+        return Map.fromEntries(entries);
+      } else if (value is List) {
+        return List.from(value.map(yamlMapToMap));
+      } else {
+        return value;
+      }
     }
-    box.close();
-  });
+
+    for (var item in yamlList) {
+      // advoid adding duplicates
+      if (!shareBox.values.where((element) => element.uploaderUrl == item["RequestURL"]).isNotEmpty) {
+        shareBox.add(Share(
+            item["RequestURL"],
+            item["FileFormName"],
+            item["UseBytes"],
+            yamlMapToMap(item["Headers"] ?? {}),
+            yamlMapToMap(item["Parameters"] ?? {}),
+            yamlMapToMap(item["Arguments"] ?? {}),
+            item["URLResponse"] ?? "",
+            item["ErrorResponse"] ?? "",
+            false,
+            item["RequestMethod"]
+        ));
+      }
+    }
+
+    viewBox.put('shouldLoadPresets', true);
+  }
+  await viewBox.close();
 
   runApp(const MyApp());
 }

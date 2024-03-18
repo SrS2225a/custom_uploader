@@ -22,6 +22,7 @@ dependencies:
   url_launcher: ^6.1.6
   permission_handler: ^11.0.0
   sdk_int: ^0.0.1
+  yaml: ^3.1.2
 
 dev_dependencies:
   flutter_test:
@@ -34,5 +35,5 @@ dev_dependencies:
 flutter:
   assets:
     - lib/assets/contents.md
-    - lib/assets/preset_uploaders.json
+    - lib/assets/preset_uploaders.yaml
   uses-material-design: true
