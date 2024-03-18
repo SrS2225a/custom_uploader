@@ -33,6 +33,6 @@ dev_dependencies:
 
 flutter:
   assets:
-    - lib/views/markdown/contents.md
+    - lib/assets/contents.md
     - lib/assets/preset_uploaders.json
   uses-material-design: true
