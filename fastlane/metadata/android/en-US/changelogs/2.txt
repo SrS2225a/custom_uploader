@@ -1,0 +1,2 @@
+1. Added an simple view for the add uploader page
+2. Uploaders are now included in the app as presets
