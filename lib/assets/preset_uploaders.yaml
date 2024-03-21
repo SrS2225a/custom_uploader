@@ -11,10 +11,10 @@
 #   - Headers: Additional headers to include in the request
 #   - Parameters: Additional parameters to include in the request
 #   - Arguments: Additional arguments for the request (form data)
-#   - URL: How the app should parse the returned url from the server. Custom Uploader will attempt
+#   - URLResponse: How the app should parse the returned url from the server. Custom Uploader will attempt
 #     to get the returned url automatically, but some services may break up the returned url, in
 #     which case this field should be used
-#   - ErrorMessage: How the app should parse the error returned from the server in case the upload
+#   - ErrorResponse: How the app should parse the error returned from the server in case the upload
 #     failed
 #   - RequestMethod*: The HTTP request method to use (POST, PUT, GET)
 #
