@@ -18,6 +18,7 @@ Custom Uploader is a user-friendly file uploading tool that makes it easy for yo
 * Easily create multiple uploaders for different hosts, and switch between them.
 * Upload files from your gallery, camera, or any other app that supports sharing.
 * Import/Export your uploaders to share them with others, with support for sharex's uploader format.
+* Comes with built in uploader presets
 * Comes with a powerful url parser that allows you to get the url of the uploaded file from the response of the host.
 
 ## Getting Started
