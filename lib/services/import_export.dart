@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:sdk_int/sdk_int.dart';
+// import 'package:sdk_int/sdk_int.dart';
 
 import 'database.dart';
 
@@ -164,17 +164,17 @@ class ImportExportService {
       } else {
         // check if version is Android 10 or higher
         // use sdk_int
-        if(await SDKInt.currentSDKVersion >= 10) {
-          final filePath = await getMediaStorePath();
-          File tempFile = File(filePath);
-          // write file as type json
-          final exportFile = await tempFile.writeAsString(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
-          await _saveFileToMediaStore(exportFile, '${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json');
-          showSnackBar(context, "The uploader was exported to your downloads");
-        } else {
-          // tell the user that the permission was denied
-          showAlert(context, "Failed to export", "The permission to write to storage was denied.");
-        }
+        // if(await SDKInt.currentSDKVersion >= 10) {
+        //   final filePath = await getMediaStorePath();
+        //   File tempFile = File(filePath);
+        //   // write file as type json
+        //   final exportFile = await tempFile.writeAsString(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
+        //   await _saveFileToMediaStore(exportFile, '${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json');
+        //   showSnackBar(context, "The uploader was exported to your downloads");
+        // } else {
+        //   // tell the user that the permission was denied
+        //   showAlert(context, "Failed to export", "The permission to write to storage was denied.");
+        // }
       }
     } catch (e) {
       // tell the user why it failed

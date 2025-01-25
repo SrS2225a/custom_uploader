@@ -82,12 +82,12 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders", "Before you can begin uploading files, you will need an uploader of your choice created and selected, then try again."));
       }
       // clear the data from the sharing intent
-      ReceiveSharingIntent.reset();
+      ReceiveSharingIntent.instance.reset();
     }
 
     if (!_hasBeenPressed) {
       // For sharing files coming from outside the app while the app is open
-      ReceiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> value) {
+      ReceiveSharingIntent.instance.getMediaStream().listen((List<SharedMediaFile> value) {
         setState(() async {
           shareFile(value);
         });
@@ -95,8 +95,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
         print("getIntentDataStream error: $err");
       });
 
-      // For sharing images coming from outside the app while the app is closed
-      ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
+      //For sharing images coming from outside the app while the app is closed
+      ReceiveSharingIntent.instance.getInitialMedia().then((List<SharedMediaFile> value) {
         setState(() {
           shareFile(value);
         });
