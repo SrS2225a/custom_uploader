@@ -116,11 +116,18 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 value: 0,
                 child: Text("View On Github"),
               ),
+              const PopupMenuItem<int>(
+                value: 1,
+                child: Text("❤️ Donate"),
+              )
             ];
           },
             onSelected: (value) {
               if (value == 0) {
                 launchUrl(Uri.parse("https://github.com/SrS2225a/custom_uploader"));
+              }
+              if(value == 1) {
+                launchUrl(Uri.parse("https://liberapay.com/Eris"));
               }
             },)
         ],
