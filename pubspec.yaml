@@ -23,6 +23,8 @@ dependencies:
   permission_handler: ^11.0.0
   device_info_plus: ^11.2.1
   yaml: ^3.1.2
+  mime: ^1.0.0
+  http_parser: ^4.1.2
 
 dev_dependencies:
   flutter_test:
