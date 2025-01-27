@@ -1,58 +1,88 @@
-***Custom uploader is is a app that allows you to upload image/text/file to hosting services. This is useful for those who host their own hosting service, or for those that want to use some kind of other hosting service.***
+# Custom Uploader Documentation
 
-# Form Data Name
-Used to reference the form data in the request body.
+The **Custom Uploader** app allows users to upload images, text, or files to hosting services. It is ideal for those hosting their own services or using third-party hosting platforms.
 
-# Upload Parameters
-URL Parameters are a way pass information about a click through its URL. You can insert URL parameters into your URLs so that your URLs track information about a click. URL parameters are made of a key and a value separated by an equals sign (=) and joined by an ampersand (&). The first parameter always comes after a question mark in a URL. For example, the following URL contains two parameters: `https://example.com?param1=value1&param2=value2`.
+---
 
-# Upload Headers
-HTTP Headers are a way to exchange additional information between the client and the server. Both in the request - the HTTP-Request - and in the server's response, some meta-information is exchanged in addition to the actual data. 
+## **Form Data Name**
+The **Form Data Name** specifies the key used to reference the form data in the request body. This is required by many APIs to identify uploaded content.
 
-# Upload Arguments
-Upload Arguments are used to pass data to the body of a request. Body arguments are passed in the body of the request and are used to send data to the server.
-They take the form of a key-value pair, where the key is the name of the argument and the value is the value of the argument.
+---
 
-# Parsing Responses
-The app Custom Uploader has a built-in URL response parser. This allows you to use the response from your upload service to get the finished URL of the uploaded file.
-***
-### response
-If the response only contains file name (or id) and would like to append it to a domain, then you can use this syntax.
-**Example:**
-```
-https://example.com/$json:response$
-```
-Or if the response contains a full URL, then you can use this syntax.
+## **Upload Parameters**
+**URL Parameters** are used to pass information via the URL in a key-value format.  
+- The key and value are separated by an equals sign (`=`).  
+- Multiple parameters are joined by an ampersand (`&`).  
+- The first parameter in a URL always follows a question mark (`?`).
 
 **Example:**
-```
-$json:response$
-```
-Notice how we use the `$json` syntax to get the JSON object from the response. Followed by the `:response`, and a `$` sign at the end to get the value property of the JSON object.
+``https://example.com?param1=value1&param2=value2``
 
-You can also combine multiple syntax's in the same url if the response is broken up into multiple parts. As an example, if the response is broken up into three parts, then you can use this syntax:
-```
-https://example.com/$json:response.hash$/$json:response.name$.$json:response.extension$
-```
-***
+Here, `param1` and `param2` are the keys, and `value1` and `value2` are their respective values.
 
-### json
-You can use jsonPath to parse the url from a JSON response.
+---
 
-**Example response:**
+## **Upload Headers**
+**HTTP Headers** provide additional meta-information during client-server communication.  
+Headers can:
+- Be included in the HTTP request to specify upload details.
+- Be part of the server's response for additional context.
+
+---
+
+## **Upload Arguments**
+**Upload Arguments** are used to pass data within the body of a request.  
+They are sent as key-value pairs, where:
+- **Key**: Name of the argument.
+- **Value**: The data being sent.
+
+These arguments are typically used for API requests that require additional data alongside the file being uploaded.
+
+---
+
+## **Parsing Responses**
+The **Custom Uploader** app includes a response parser that helps extract the finished URL or relevant details from the response. This is useful for handling services that return complex responses.
+
+### **Automatic URL Extraction**
+If you don't specify a parsing syntax, the parser will automatically attempt to extract a URL using a built-in regular expression.  
+**Example Response:**
+``https://example.com/image.png``
+
+**Automatic Parsing Result:**
+``https://example.com/image.png``
+
+### **Basic Response Parsing**
+- If the response contains **only the file name or ID**, you can append it to a base domain using this syntax: ``https://example.com/$json:response$``
+- If the response contains a **full URL**, simply use: ``$json:response$``
+
+**Combining Multiple Parts**  
+For responses with multiple parts, you can combine them into a full URL.  
+**Example Syntax:**
+``https://example.com/$json:response.hash$/$json:response.name$.$json:response.extension$``
+
+
+---
+
+### **JSON Parsing**
+Use JSON paths to extract data from JSON responses.
+
+**Example 1:**  
+**Response:**
 ```json
 {
   "status": 200,
   "data": {
-    "link": "https:\/\/example.com\/image.png"
+    "link": "https://example.com/image.png"
   }
 }
 ```
 **Syntax:**
-```
+```ruby
 $json:data.link$
 ```
-**Example response 2:**
+
+**Example 2:**
+**Response:**
 ```json
 {
   "success": true,
@@ -65,22 +95,23 @@ $json:data.link$
 }
 ```
 **Syntax:**
-```
+```ruby
 $json:files[0].url$
 ```
-***
 
-### xml
-You can use xmlPath to parse the url from a XML response.
+---
 
-**Example response:**
+### XML Parsing
+Use XML paths to extract data from XML responses.
+
+**Example Response**
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <files>
-    <file>
-        <name>image.png</name>
-        <url>https://example.com/image.png</url>
-    </file>
+  <file>
+    <name>image.png</name>
+    <url>https://example.com/image.png</url>
+  </file>
   <file>
     <name>image2.png</name>
     <url>https://example.com/image2.png</url>
@@ -88,26 +119,27 @@ You can use xmlPath to parse the url from a XML response.
 </files>
 ```
 **Syntax:**
-```
+```ruby
 $xml:files/file[0]/url$
 ```
-***
 
-### regex
-You can use regex to parse the url from a response.
+---
 
-An `??` operator can also be used to separate multiple regexes.
-As example: Use `??1` to get the first match.
+### Regex Parsing
+Use regular expressions (regex) to extract data from responses.
+  - Use the `??` operator to handle multiple matches.
+  - Specify a match position using `??1`, `??2`, etc.
 
-**Example response:**
-```
+**Example Response**
+```arduino
 https://example.com/image.png
 ```
 **Syntax:**
-```
+```ruby
 $regex:https:\/\/example.com\/(.*)??1$
 ```
-***
 
-### Note    
-You can use the same method to parse the response from the error response.
+---
+
+## Note
+The same parsing methods can also be applied to error responses to extract error-specific information.
