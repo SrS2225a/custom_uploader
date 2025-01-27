@@ -90,7 +90,10 @@ class FileService {
     required BuildContext context,
     required Share uploader,
   }) async {
-    Dio dio = Dio();
+    Dio dio = Dio(BaseOptions(
+      connectTimeout: const Duration(seconds: 30),
+      receiveTimeout: const Duration(seconds: 30),
+    ));
     Response response;
 
     switch (method.toUpperCase()) {
