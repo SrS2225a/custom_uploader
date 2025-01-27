@@ -16,7 +16,7 @@
 #     which case this field should be used
 #   - ErrorResponse: How the app should parse the error returned from the server in case the upload
 #     failed
-#   - RequestMethod*: The HTTP request method to use (POST, PUT, GET)
+#   - RequestMethod*: The HTTP request method to use (POST, PUT, GET, PATCH)
 #
 # Each preset may have a different set of fields depending on the service.
 # Additionally, fields marked with an "*" are required.
@@ -47,7 +47,7 @@
     Authorization: Client-ID <your_secret_here>
   RequestMethod: "POST"
   URLResponse: "$json:data.link$"
-  ErrorResponse: "$json:data.error"
+  ErrorResponse: "$json:data.error$"
 
 # Giphy
 - RequestURL: "upload.giphy.com/v1/gifs"
