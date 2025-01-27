@@ -113,6 +113,16 @@ class FileService {
         );
         _handleSuccess(context, uploader.uploaderResponseParser, response.data);
         break;
+      case "PATCH":
+        response = await dio.patch(
+        url,
+        queryParameters: parameters,
+        options: Options(headers: headers, followRedirects: false),
+        data: formData,
+        onSendProgress: onUploadProgress,
+        );
+        _handleSuccess(context, uploader.uploaderResponseParser, response.data);
+        break;
       default: // POST
         response = await dio.post(
           url,

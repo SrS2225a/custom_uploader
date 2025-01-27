@@ -300,7 +300,7 @@ class AdvancedViewState extends State<AdvancedView> {
               children: [
                 Container(
                   constraints: const BoxConstraints(maxWidth: 80),
-                  child: DropdownButtonFormField(items: <String>['POST', 'GET', 'PUT']
+                  child: DropdownButtonFormField(items: <String>['POST', 'GET', 'PUT', 'PATCH']
                       .map<DropdownMenuItem<String>>((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
