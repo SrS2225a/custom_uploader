@@ -38,6 +38,14 @@ body:
     validations:
       required: true
   - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual Behavior
+      description: |
+        Describe what actually happened when you encountered the issue.
+    validations:
+      required: true
+  - type: textarea
     id: screenshots
     attributes:
       label: Screenshots
