@@ -11,6 +11,7 @@ import 'package:hive/hive.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../services/database.dart';
 
@@ -69,14 +70,34 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     super.initState();
     _setUploadProgress(0, 0);
 
-    shareFile(List<SharedMediaFile> value) {
+    shareFile(List<SharedMediaFile> value) async {
       if (shareBox.isNotEmpty) {
         if (value.isNotEmpty) {
-          File file = File(value.first.path);
-          FileService.fileUploadMultiPart(
-              file: file,
-              onUploadProgress: _setUploadProgress,
-              context: context, onSetState: _setState);
+          // Check if the shared file is a text file, and if it iis convert it to a file and upload
+          if(value.first.type == SharedMediaType.text) {
+            final tempDir = await getTemporaryDirectory();
+            final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+            final textFile = File('${tempDir.path}/shared_text_$timestamp.txt');
+            await textFile.writeAsString(value.first.path);
+
+            FileService.fileUploadMultiPart(
+                file: textFile,
+                onUploadProgress: _setUploadProgress,
+                context: context,
+                onSetState: _setState).then((_) async {
+                  if(await textFile.exists()) {
+                    await textFile.delete();
+                  }
+            });
+          } else {
+            File file = File(value.first.path);
+
+            FileService.fileUploadMultiPart(
+                file: file,
+                onUploadProgress: _setUploadProgress,
+                context: context,
+                onSetState: _setState);
+          }
         }
       } else {
         SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders", "Before you can begin uploading files, you will need an uploader of your choice created and selected, then try again."));

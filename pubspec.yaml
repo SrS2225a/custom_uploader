@@ -25,6 +25,7 @@ dependencies:
   yaml: ^3.1.2
   mime: ^1.0.0
   http_parser: ^4.1.2
+  path_provider: ^2.0.1
 
 dev_dependencies:
   flutter_test:
