@@ -1,14 +1,12 @@
-import 'dart:typed_data';
-
 import 'package:custom_uploader/views/upload_logs.dart';
 import 'package:custom_uploader/services/database.dart';
 import 'package:custom_uploader/services/import_export.dart';
 import 'package:custom_uploader/views/add_uploader.dart';
+import 'package:custom_uploader/utils/build_favicon.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 
 class Uploader extends StatefulWidget {
   const Uploader({super.key, required this.title});
@@ -36,57 +34,25 @@ class _MyUploaderState extends State<Uploader> {
       i++;
     }
 
-    // for caching the responses
-    final options = CacheOptions(store: MemCacheStore(), policy: CachePolicy.forceCache, maxStale: const Duration(days: 7));
-    dio = Dio()..interceptors.add(DioCacheInterceptor(options: options));
-
     super.initState();
-  }
-
-  Future<Uint8List?> _getFavicon(String url) async {
-    try {
-      // no need to cache it in the app, since dio caches it for us
-      Response<List<int>> response = await dio.get(
-        'https://www.google.com/s2/favicons?domain=$url&sz=128',
-        options: Options(responseType: ResponseType.bytes),
-      );
-
-      if (response.statusCode == 200) {
-        return Uint8List.fromList(response.data!);
-      }
-    } catch (error) {
-      print('Error fetching favicon: $error');
-    }
-    return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    Map<String, Uint8List?> faviconCache = {};
-
-    Widget _buildDivider() => const SizedBox(height: 5);
-    Widget _buildFaviconImage(String uploaderUrl) {
-      if (faviconCache.containsKey(uploaderUrl)) {
-        return Image.memory(faviconCache[uploaderUrl]!, width: 32, height: 32, fit: BoxFit.fill);
-      } else {
-        return FutureBuilder<Uint8List?>(
-          future: _getFavicon(uploaderUrl),
-          builder: (context, snapshot) {
-            if (snapshot.hasError || snapshot.data == null) {
-              return const Icon(Icons.public);
-            } else {
-              faviconCache[uploaderUrl] = snapshot.data;
-              return Image.memory(snapshot.data!, width: 32, height: 32, fit: BoxFit.fill);
-            }
-          },
-        );
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.list), // Logs button
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => UploadLogsScreen()),
+              );
+            },
+            tooltip: "View Logs",
+          ),
           PopupMenuButton<int>(
             onSelected: (value) async {
               if (value == 0) {
@@ -127,7 +93,6 @@ class _MyUploaderState extends State<Uploader> {
             );
           }
           return ListView.builder(
-            padding: const EdgeInsets.only(bottom: 80),
             itemCount: box.length,
             itemBuilder: (context, index) {
               final Share? c = box.getAt(index);
@@ -136,7 +101,7 @@ class _MyUploaderState extends State<Uploader> {
               return Dismissible(
                 key: Key(c.uploaderUrl),
                 background: Container(
-                  color: Colors.blueAccent,
+                  color: Colors.amber,
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: const Icon(Icons.edit, color: Colors.white),
@@ -192,7 +157,7 @@ class _MyUploaderState extends State<Uploader> {
                 child: Column(
                   children: [
                     ListTile(
-                      leading: _buildFaviconImage(c.uploaderUrl),
+                      leading: buildFaviconImage(c.uploaderUrl),
                       title: Text(
                         c.uploaderUrl,
                         overflow: TextOverflow.ellipsis,

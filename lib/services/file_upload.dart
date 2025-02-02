@@ -1,7 +1,8 @@
 import 'dart:io';
-import 'package:http_parser/http_parser.dart';
 import 'package:custom_uploader/utils/response_parser.dart';
 import 'package:custom_uploader/utils/show_message.dart';
+import 'package:custom_uploader/services/response_logger.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
@@ -104,7 +105,7 @@ class FileService {
           options: Options(headers: headers, followRedirects: false),
           data: formData,
         );
-        _handleSuccess(context, uploader.uploaderResponseParser, response.data);
+        _handleSuccess(context, uploader, response);
         break;
       case "PUT":
         response = await dio.put(
@@ -114,7 +115,7 @@ class FileService {
           data: formData,
           onSendProgress: onUploadProgress,
         );
-        _handleSuccess(context, uploader.uploaderResponseParser, response.data);
+        _handleSuccess(context, uploader, response);
         break;
       case "PATCH":
         response = await dio.patch(
@@ -124,7 +125,7 @@ class FileService {
         data: formData,
         onSendProgress: onUploadProgress,
         );
-        _handleSuccess(context, uploader.uploaderResponseParser, response.data);
+        _handleSuccess(context, uploader, response);
         break;
       default: // POST
         response = await dio.post(
@@ -134,13 +135,19 @@ class FileService {
           data: formData,
           onSendProgress: onUploadProgress,
         );
-        _handleSuccess(context, uploader.uploaderResponseParser, response.data);
+        _handleSuccess(context, uploader, response);
         break;
     }
   }
 
-  static void _handleSuccess(BuildContext context, String responseParser, dynamic responseData) {
-    String? parsedResponse = parseResponse(responseData, responseParser);
+  static void _handleSuccess(BuildContext context, Share responseParser, dynamic responseData) {
+    Logger.logResponse(
+        endpoint: responseParser.uploaderUrl,
+        statusCode: responseData?.statusCode,
+        responseBody: responseData!.data.toString(),
+    );
+
+    String? parsedResponse = parseResponse(responseData.data, responseParser.uploaderResponseParser);
     if (parsedResponse!.isEmpty) {
       showSnackBar(context, "Upload successful");
     } else {
@@ -153,6 +160,12 @@ class FileService {
     String? errorMessage;
 
     if (error is DioException && error.response?.data != null) {
+      Logger.logResponse(
+          endpoint: uploader.uploaderUrl,
+          statusCode: error.response?.statusCode,
+          responseBody: error.response!.data.toString(),
+      );
+
       errorMessage = parseResponse(error.response?.data, uploader.uploaderErrorParser);
       if (errorMessage!.isEmpty) {
         errorMessage = "Error transferring to ${uploader.uploaderUrl}: (${error.response?.statusCode}) ${error.response?.statusMessage}";
