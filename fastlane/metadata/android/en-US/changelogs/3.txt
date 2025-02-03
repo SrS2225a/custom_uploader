@@ -1,0 +1,8 @@
+1. Enhanced the look of the uploaders list for a better user experience.
+2.  Updated dependencies to the latest versions for improved security and performance.
+3.  Support for patch requests added, expanding compatibility with various file hosts.
+4. Added an automatic timeout which ensures stalled connections are closed if the server takes too long to respond
+5. Added a log for all responses, improving debugging and visibility of upload requests.
+6.  Introduced support for file MIME types in form data for better content handling.
+7. Implemented a wrapper that converts uploaded text into a text file for easier sharing.
+8. Added a donation button to help support project development
