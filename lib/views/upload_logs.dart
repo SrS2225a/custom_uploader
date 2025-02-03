@@ -110,7 +110,7 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Custom Uploader"),
+        title: const Text("Custom Uploader Logs"),
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
