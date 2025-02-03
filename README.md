@@ -8,6 +8,7 @@
 [<img src="https://img.shields.io/github/forks/SrS2225a/custom_uploader?style=flat-square" />](https://github.com/SrS2225a/custom_uploader/fork)
 [<img src="https://img.shields.io/github/issues/SrS2225a/custom_uploader?style=flat-square" />](https://github.com/SrS2225a/custom_uploader/issues)
 [<img src="https://img.shields.io/liberapay/patrons/Eris?style=flat-square&logo=liberapay">](https://liberapay.com/Eris/donate)
+[<img src="https://img.shields.io/github/actions/workflow/status/SrS2225a/custom_uploader/flutter_build_test.yml?style=flat-square">](https://github.com/SrS2225a/custom_uploader/actions/workflows/flutter_build_test.yml)
 
 </div>
 
