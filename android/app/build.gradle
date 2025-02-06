@@ -16,7 +16,7 @@ android {
         namespace = "com.nyx.custom_uploader"
     }
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    // ndkVersion = flutter.ndkVersion
 
     dependenciesInfo {
         // Disables dependency metadata when building APKs.
