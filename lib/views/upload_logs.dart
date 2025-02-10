@@ -231,6 +231,8 @@ Color _getStatusColor(String status) {
   int statusCode = int.tryParse(status) ?? 0;
   if (statusCode >= 200 && statusCode < 300) {
     return Colors.green;
+  } else if (statusCode >= 300 && statusCode < 400) { // Handle 3xx (redirection)
+    return Colors.blue;
   } else if (statusCode >= 400 && statusCode < 500) {
     return Colors.orange;
   } else if (statusCode >= 500) {
