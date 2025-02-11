@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:dio/dio.dart';
 import 'package:mime/mime.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import 'database.dart';
 
@@ -30,20 +31,16 @@ class FileService {
     if (uploader == null) {
       showSnackBar(context, "Please select an uploader first.");
       return;
+    } else {
+      onSetState(file.path.split("/").last);
     }
-
-    // Prepare file metadata and headers
-    onSetState(file.path.split("/").last);
-    String mimeType = lookupMimeType(file.path) ?? 'application/octet-stream';
-    Map<String, String> headers = {
-      ...?uploader.uploadHeaders,
-      "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
-    };
-
-    FormData formData = _buildFormData(uploader, file, mimeType);
 
     // Perform file upload
     try {
+      String mimeType = lookupMimeType(file.path) ?? 'application/octet-stream';
+      FormData formData = _buildFormData(uploader, file, mimeType);
+      Map<String, String> headers = await _getHeaders(uploader);
+
       await _uploadFile(
         method: uploader.method ?? "POST",
         url: uploader.uploaderUrl,
@@ -61,17 +58,22 @@ class FileService {
     }
   }
 
+  static Future<Map<String, String>> _getHeaders(Share uploader) async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    String appVersion = packageInfo.version;
+
+    return {
+      ...uploader.uploadHeaders,
+      "User-Agent": "CustomUploader/$appVersion (https://github.com/SrS2225a/custom_uploader)",
+    };
+  }
+
+
   static FormData _buildFormData(Share uploader, File file, String mimeType) {
-    MultipartFile filePart = uploader.uploadFormData
-        ? MultipartFile.fromBytes(
-      file.readAsBytesSync(),
-      contentType: MediaType.parse(mimeType),
-    )
-        : MultipartFile.fromFileSync(
-      file.path,
-      filename: file.path.split("/").last,
-      contentType: MediaType.parse(mimeType),
-    );
+    MultipartFile filePart = uploader.uploadFormData ?
+    MultipartFile.fromBytes(file.readAsBytesSync(), contentType: MediaType.parse(mimeType),
+    ) :
+    MultipartFile.fromFileSync(file.path, filename: file.path.split("/").last, contentType: MediaType.parse(mimeType));
 
     FormData formData = FormData.fromMap({uploader.formDataName: filePart});
     uploader.uploadArguments.forEach((key, value) {
