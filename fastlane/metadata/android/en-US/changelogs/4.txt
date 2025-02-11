@@ -1,0 +1,3 @@
+1. Changed the generic User-Agent string to a uniquely identifiable one; improving transparency
+2. Improved the way that the automatic url parser parses out links
+3. Added a log color for 3XX status code responses
