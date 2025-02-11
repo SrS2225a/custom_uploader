@@ -27,7 +27,7 @@ Custom Uploader is a user-friendly file uploading tool that makes it easy for yo
 ## Getting Started
 [<img src="https://media.fenriris.net/talI2/store-badge-googleplay.png/raw" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=com.nyx.custom_uploader)
 [<img src="https://media.fenriris.net/talI2/store-badge-fdroid.png/raw" alt="Get it on F-Droid" height="80">](https://f-droid.org/en/packages/com.nyx.custom_uploader/)
-[<img src="https://media.fenriris.net/talI2/store-badge-obtainium.png/raw" alt="Get it on F-Droid" height="80">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/{%22id%22:%22com.nyx.custom_uploader%22,%22url%22:%22https://github.com/SrS2225a/custom_uploader%22,%22author%22:%22SrS2225a%22,%22name%22:%22Custom%20Uploader%22,%22additionalSettings%22:%22{\%22includePrereleases\%22:false}%22})
+[<img src="https://media.fenriris.net/talI2/store-badge-obtainium.png/raw" alt="Get it on F-Droid" height="80">](https://apps.obtainium.imranr.dev/redirect?r=obtainium://app/%7B%22id%22%3A%22com.nyx.custom_uploader%22%2C%22url%22%3A%22https%3A%2F%2Fgithub.com%2FSrS2225a%2Fcustom_uploader%22%2C%22author%22%3A%22SrS2225a%22%2C%22name%22%3A%22Custom%20Uploader%22%2C%22additionalSettings%22%3A%22%7B%5C%22includePrereleases%5C%22%3Afalse%7D%22%7D)
 
 You can also get the latest version of the app from the [releases](https://github.com/SrS2225a/custom_uploader/releases) page.
 
