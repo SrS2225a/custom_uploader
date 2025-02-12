@@ -1,8 +1,7 @@
 # Building the flutter project
 
 ## Prerequisites
-1. **Clone The Repository**
-     Begin by cloning the repository:
+1. Begin by cloning the repository:
 
    ```bash
    git clone https://github.com/SrS2225a/custom_uploader.git
