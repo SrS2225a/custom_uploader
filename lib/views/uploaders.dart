@@ -25,14 +25,7 @@ class _MyUploaderState extends State<Uploader> {
     // for keeping track of the selected index
     Box<Share> shareBox = Hive.box<Share>("custom_upload");
     var cursor = shareBox.toMap();
-    int i = 0;
-    for (var entries in cursor.entries) {
-      if (entries.value.selectedUploader) {
-        previousSelectedIndex = i;
-        break;
-      }
-      i++;
-    }
+    previousSelectedIndex = shareBox.values.toList().indexWhere((share) => share.selectedUploader);
 
     super.initState();
   }
