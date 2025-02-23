@@ -91,98 +91,154 @@ class _MyUploaderState extends State<Uploader> {
               final Share? c = box.getAt(index);
               if (c == null) return const SizedBox();
 
-              return Dismissible(
-                key: Key(c.uploaderUrl),
-                background: Container(
-                  color: Colors.amber,
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: const Icon(Icons.edit, color: Colors.white),
-                ),
-                secondaryBackground: Container(
-                  color: Colors.red,
-                  alignment: Alignment.centerRight,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: const Icon(Icons.delete, color: Colors.white),
-                ),
-                confirmDismiss: (direction) async {
-                  if (direction == DismissDirection.startToEnd) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => Creator(editor: c, index: index),
-                      ),
-                    );
-                    return false;
-                  } else if (direction == DismissDirection.endToStart) {
-                    return await showDialog(
-                      context: context,
-                      barrierDismissible: true,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text("Delete ${c.uploaderUrl}"),
-                          content: const Text("Are you sure you want to delete this uploader?"),
-                          actions: <Widget>[
-                            TextButton(
-                              onPressed: () async {
-                                Navigator.of(context).pop(true);
-                              },
-                              child: const Text("Yes"),
-                            ),
-                            TextButton(
-                              onPressed: () => Navigator.of(context).pop(false),
-                              child: const Text("No"),
-                            ),
-                          ],
-                        );
-                      },
-                    );
-                  }
-                  return false;
+              return GestureDetector(
+                onLongPress: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return Wrap(
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.edit, color: Colors.amber),
+                            title: const Text("Edit"),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => Creator(editor: c, index: index),
+                                ),
+                              );
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.delete, color: Colors.red),
+                            title: const Text("Delete"),
+                            onTap: () async {
+                              Navigator.of(context).pop();
+                              bool? confirmDelete = await showDialog(
+                                context: context,
+                                barrierDismissible: true,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text("Delete ${c.uploaderUrl}"),
+                                    content: const Text("Are you sure you want to delete this uploader?"),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () => Navigator.of(context).pop(true),
+                                        child: const Text("Yes"),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => Navigator.of(context).pop(false),
+                                        child: const Text("No"),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              if (confirmDelete == true) {
+                                await box.deleteAt(index);
+                                if (index == previousSelectedIndex) {
+                                  previousSelectedIndex = 0;
+                                }
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
-                onDismissed: (direction) async {
-                  if (direction == DismissDirection.endToStart) {
-                    await box.deleteAt(index);
-                    if (index == previousSelectedIndex) {
-                      previousSelectedIndex = 0;
-                    }
-                  }
-                },
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: buildFaviconImage(c.uploaderUrl),
-                      title: Text(
-                        c.uploaderUrl,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: c.selectedUploader ? Colors.blueAccent : null,
+                child: Dismissible(
+                  key: Key(c.uploaderUrl),
+                  background: Container(
+                    color: Colors.amber,
+                    alignment: Alignment.centerLeft,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(Icons.edit, color: Colors.white),
+                  ),
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                    alignment: Alignment.centerRight,
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: const Icon(Icons.delete, color: Colors.white),
+                  ),
+                  confirmDismiss: (direction) async {
+                    if (direction == DismissDirection.startToEnd) {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => Creator(editor: c, index: index),
                         ),
-                      ),
-                      subtitle: Text('Upload Method: ${c.method ?? "POST"}'),
-                      onTap: () {
-                        Box<Share> shareBox = Hive.box<Share>("custom_upload");
-                        var pre = shareBox.getAt(previousSelectedIndex);
-                        if (pre != null) {
-                          shareBox.putAt(previousSelectedIndex, Share(
-                            pre.uploaderUrl, pre.formDataName, pre.uploadFormData,
-                            pre.uploadHeaders, pre.uploadParameters, pre.uploadArguments,
-                            pre.uploaderResponseParser, pre.uploaderErrorParser,
-                            false, pre.method,
+                      );
+                      return false;
+                    } else if (direction == DismissDirection.endToStart) {
+                      return await showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Delete ${c.uploaderUrl}"),
+                            content: const Text("Are you sure you want to delete this uploader?"),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: const Text("Yes"),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: const Text("No"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                    return false;
+                  },
+                  onDismissed: (direction) async {
+                    if (direction == DismissDirection.endToStart) {
+                      await box.deleteAt(index);
+                      if (index == previousSelectedIndex) {
+                        previousSelectedIndex = 0;
+                      }
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      ListTile(
+                        leading: buildFaviconImage(c.uploaderUrl),
+                        title: Text(
+                          c.uploaderUrl,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: c.selectedUploader ? Colors.blueAccent : null,
+                          ),
+                        ),
+                        subtitle: Text('Upload Method: ${c.method ?? "POST"}'),
+                        onTap: () {
+                          Box<Share> shareBox = Hive.box<Share>("custom_upload");
+                          var pre = shareBox.getAt(previousSelectedIndex);
+                          if (pre != null) {
+                            shareBox.putAt(previousSelectedIndex, Share(
+                              pre.uploaderUrl, pre.formDataName, pre.uploadFormData,
+                              pre.uploadHeaders, pre.uploadParameters, pre.uploadArguments,
+                              pre.uploaderResponseParser, pre.uploaderErrorParser,
+                              false, pre.method,
+                            ));
+                          }
+                          previousSelectedIndex = index;
+                          shareBox.putAt(index, Share(
+                            c.uploaderUrl, c.formDataName, c.uploadFormData,
+                            c.uploadHeaders, c.uploadParameters, c.uploadArguments,
+                            c.uploaderResponseParser, c.uploaderErrorParser,
+                            true, pre!.method,
                           ));
-                        }
-                        previousSelectedIndex = index;
-                        shareBox.putAt(index, Share(
-                          c.uploaderUrl, c.formDataName, c.uploadFormData,
-                          c.uploadHeaders, c.uploadParameters, c.uploadArguments,
-                          c.uploaderResponseParser, c.uploaderErrorParser,
-                          true, pre!.method,
-                        ));
-                      },
-                    ),
-                    Divider(height: 1, thickness: 1, color: Colors.grey[700]),
-                  ],
+                        },
+                      ),
+                      Divider(height: 1, thickness: 1, color: Colors.grey[700]),
+                    ],
+                  ),
                 ),
               );
             },
