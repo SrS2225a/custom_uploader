@@ -24,7 +24,6 @@ class _MyUploaderState extends State<Uploader> {
   void initState() {
     // for keeping track of the selected index
     Box<Share> shareBox = Hive.box<Share>("custom_upload");
-    var cursor = shareBox.toMap();
     previousSelectedIndex = shareBox.values.toList().indexWhere((share) => share.selectedUploader);
 
     super.initState();
@@ -218,21 +217,24 @@ class _MyUploaderState extends State<Uploader> {
                         subtitle: Text('Upload Method: ${c.method ?? "POST"}'),
                         onTap: () {
                           Box<Share> shareBox = Hive.box<Share>("custom_upload");
-                          var pre = shareBox.getAt(previousSelectedIndex);
-                          if (pre != null) {
-                            shareBox.putAt(previousSelectedIndex, Share(
-                              pre.uploaderUrl, pre.formDataName, pre.uploadFormData,
-                              pre.uploadHeaders, pre.uploadParameters, pre.uploadArguments,
-                              pre.uploaderResponseParser, pre.uploaderErrorParser,
-                              false, pre.method,
-                            ));
+                          if (previousSelectedIndex >= 0 && previousSelectedIndex < shareBox.length) {
+                            var pre = shareBox.getAt(previousSelectedIndex);
+                            if (pre != null) {
+                              shareBox.putAt(previousSelectedIndex, Share(
+                                pre.uploaderUrl, pre.formDataName, pre.uploadFormData,
+                                pre.uploadHeaders, pre.uploadParameters, pre.uploadArguments,
+                                pre.uploaderResponseParser, pre.uploaderErrorParser,
+                                false, pre.method,
+                              ));
+                            }
                           }
+
                           previousSelectedIndex = index;
                           shareBox.putAt(index, Share(
                             c.uploaderUrl, c.formDataName, c.uploadFormData,
                             c.uploadHeaders, c.uploadParameters, c.uploadArguments,
                             c.uploaderResponseParser, c.uploaderErrorParser,
-                            true, pre!.method,
+                            true, c.method,
                           ));
                         },
                       ),
