@@ -60,7 +60,7 @@ String? parseResponse(response, String parse) {
       }
       return values.join("");
     } else {
-      final regexesRegex = RegExp(r"((https?|ftp)\:\/\/|)([A-Za-z0-9.-]+\.[A-Za-z]{2,}|(\d{1,3}\.){3}\d{1,3})(:\d+)?(\/[A-Za-z0-9\-\._~%?!$&'()*+,;=:@]+)+");
+      final regexesRegex = RegExp(r"((https?|ftp)\:\/\/|)([A-Za-z0-9.-]+\.[A-Za-z]{2,}|(\d{1,3}\.){3}\d{1,3})(:\d+)?(\/[A-Za-z0-9\-\._~%?!$&'()*+=:@]+)+");
       final matches = regexesRegex.allMatches(response!.toString()).map((m) => m.group(0));
       if (matches.isNotEmpty) {
         values.add(matches.elementAt(0));
