@@ -195,6 +195,8 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
               }, style: ElevatedButton.styleFrom(
                 backgroundColor: _hasBeenPressed ? Colors.blue.withOpacity(0.38) : Colors.blue,
+                minimumSize: const Size(150, 50), // 1.4x the default button size
+                textStyle: const TextStyle(fontSize: 20), // Larger text
               ), child: _hasBeenPressed ? const Text("Uploading...") : const Text("Choose File")),
               progressColor: Colors.green[400],
             ),
