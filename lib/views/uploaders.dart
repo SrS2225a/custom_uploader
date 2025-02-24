@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:dio/dio.dart';
+import 'package:collection/collection.dart';
 
 class Uploader extends StatefulWidget {
   const Uploader({super.key, required this.title});
@@ -18,14 +19,11 @@ class Uploader extends StatefulWidget {
 
 class _MyUploaderState extends State<Uploader> {
   late Dio dio;
-  int previousSelectedIndex = 0;
 
   @override
   void initState() {
     // for keeping track of the selected index
     Box<Share> shareBox = Hive.box<Share>("custom_upload");
-    previousSelectedIndex = shareBox.values.toList().indexWhere((share) => share.selectedUploader);
-
     super.initState();
   }
 
@@ -57,13 +55,11 @@ class _MyUploaderState extends State<Uploader> {
                 }
               } else if (value == 1) {
                 final shareBox = Hive.box<Share>("custom_upload");
-                final cursor = shareBox.toMap();
-                int i = 0;
-                for (var entry in cursor.entries) {
-                  if (entry.value.selectedUploader) break;
-                  i++;
+                int selectedIndex = shareBox.values.toList().indexWhere((share) => share.selectedUploader);
+
+                if (selectedIndex != -1) {
+                  ImportExportService.export(context: context, index: selectedIndex);
                 }
-                ImportExportService.export(context: context, index: i);
               }
             },
             itemBuilder: (context) => [
@@ -73,6 +69,7 @@ class _MyUploaderState extends State<Uploader> {
           ),
         ],
       ),
+
       body: ValueListenableBuilder<Box<Share>>(
         valueListenable: Hive.box<Share>("custom_upload").listenable(),
         builder: (context, box, _) {
@@ -84,11 +81,24 @@ class _MyUploaderState extends State<Uploader> {
               ),
             );
           }
+
+          // remove the protocol from the url, then sorts by it
+          String removeProtocol(String url) {
+            return url.replaceFirst(RegExp(r'^[a-zA-Z]+:\/\/'), '');
+          }
+          final indexedShares = box.values
+              .mapIndexed((index, share) => {'index': index, 'share': share})
+              .toList()
+              ..sort((a, b) => removeProtocol((a['share'] as Share).uploaderUrl)
+                  .compareTo(removeProtocol((b['share'] as Share).uploaderUrl))); // DESC
+
           return ListView.builder(
-            itemCount: box.length,
+            itemCount: indexedShares.length,
             itemBuilder: (context, index) {
-              final Share? c = box.getAt(index);
-              if (c == null) return const SizedBox();
+              final item = indexedShares[index]['share'] as Share?;
+              if (item == null) return const SizedBox();
+              final originalIndex = indexedShares[index]['index'] as int; // get the original index of the item so we can update/delete it
+              final String parsedUrl = removeProtocol(item.uploaderUrl); // Parsed URL without protocol
 
               return GestureDetector(
                 onLongPress: () {
@@ -101,10 +111,9 @@ class _MyUploaderState extends State<Uploader> {
                             leading: const Icon(Icons.edit, color: Colors.amber),
                             title: const Text("Edit"),
                             onTap: () {
-                              Navigator.of(context).pop();
                               Navigator.of(context).push(
                                 MaterialPageRoute(
-                                  builder: (context) => Creator(editor: c, index: index),
+                                  builder: (context) => Creator(editor: item, index: originalIndex),
                                 ),
                               );
                             },
@@ -119,7 +128,7 @@ class _MyUploaderState extends State<Uploader> {
                                 barrierDismissible: true,
                                 builder: (BuildContext context) {
                                   return AlertDialog(
-                                    title: Text("Delete ${c.uploaderUrl}"),
+                                    title: Text("Delete $parsedUrl"),
                                     content: const Text("Are you sure you want to delete this uploader?"),
                                     actions: <Widget>[
                                       TextButton(
@@ -135,10 +144,7 @@ class _MyUploaderState extends State<Uploader> {
                                 },
                               );
                               if (confirmDelete == true) {
-                                await box.deleteAt(index);
-                                if (index == previousSelectedIndex) {
-                                  previousSelectedIndex = 0;
-                                }
+                                await box.deleteAt(originalIndex);
                               }
                             },
                           ),
@@ -148,7 +154,7 @@ class _MyUploaderState extends State<Uploader> {
                   );
                 },
                 child: Dismissible(
-                  key: Key(c.uploaderUrl),
+                  key: Key(parsedUrl),
                   background: Container(
                     color: Colors.amber,
                     alignment: Alignment.centerLeft,
@@ -165,7 +171,7 @@ class _MyUploaderState extends State<Uploader> {
                     if (direction == DismissDirection.startToEnd) {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => Creator(editor: c, index: index),
+                          builder: (context) => Creator(editor: item, index: originalIndex),
                         ),
                       );
                       return false;
@@ -175,7 +181,7 @@ class _MyUploaderState extends State<Uploader> {
                         barrierDismissible: true,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: Text("Delete ${c.uploaderUrl}"),
+                            title: Text("Delete $parsedUrl"),
                             content: const Text("Are you sure you want to delete this uploader?"),
                             actions: <Widget>[
                               TextButton(
@@ -195,46 +201,46 @@ class _MyUploaderState extends State<Uploader> {
                   },
                   onDismissed: (direction) async {
                     if (direction == DismissDirection.endToStart) {
-                      await box.deleteAt(index);
-                      if (index == previousSelectedIndex) {
-                        previousSelectedIndex = 0;
-                      }
+                      await box.deleteAt(originalIndex);
                     }
                   },
                   child: Column(
                     children: [
                       ListTile(
-                        leading: buildFaviconImage(c.uploaderUrl),
+                        leading: buildFaviconImage(item.uploaderUrl),
                         title: Text(
-                          c.uploaderUrl,
+                          parsedUrl,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: TextStyle(
                             fontSize: 16,
-                            color: c.selectedUploader ? Colors.blueAccent : null,
+                            color: item.selectedUploader ? Colors.blueAccent : null,
                           ),
                         ),
-                        subtitle: Text('Upload Method: ${c.method ?? "POST"}'),
+                        subtitle: Text('Upload Method: ${item.method ?? "POST"}'),
                         onTap: () {
                           Box<Share> shareBox = Hive.box<Share>("custom_upload");
-                          if (previousSelectedIndex >= 0 && previousSelectedIndex < shareBox.length) {
-                            var pre = shareBox.getAt(previousSelectedIndex);
-                            if (pre != null) {
-                              shareBox.putAt(previousSelectedIndex, Share(
+
+                          // Find the previously selected item and update it to "false"
+                          for (int i = 0; i < shareBox.length; i++) {
+                            var pre = shareBox.getAt(i);
+                            if (pre != null && pre.selectedUploader) { // Assuming there's a field indicating selection
+                              shareBox.putAt(i, Share(
                                 pre.uploaderUrl, pre.formDataName, pre.uploadFormData,
                                 pre.uploadHeaders, pre.uploadParameters, pre.uploadArguments,
                                 pre.uploaderResponseParser, pre.uploaderErrorParser,
                                 false, pre.method,
                               ));
+                              break; // Stop after updating the first found selection
                             }
                           }
 
-                          previousSelectedIndex = index;
-                          shareBox.putAt(index, Share(
-                            c.uploaderUrl, c.formDataName, c.uploadFormData,
-                            c.uploadHeaders, c.uploadParameters, c.uploadArguments,
-                            c.uploaderResponseParser, c.uploaderErrorParser,
-                            true, c.method,
+                          // Update the new selected item to "true"
+                          shareBox.putAt(originalIndex, Share(
+                            item.uploaderUrl, item.formDataName, item.uploadFormData,
+                            item.uploadHeaders, item.uploadParameters, item.uploadArguments,
+                            item.uploaderResponseParser, item.uploaderErrorParser,
+                            true, item.method,
                           ));
                         },
                       ),

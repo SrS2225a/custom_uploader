@@ -106,6 +106,10 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
     }
   }
 
+  String removeProtocol(String url) {
+    return url.replaceFirst(RegExp(r'^[a-zA-Z]+:\/\/'), '');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -124,6 +128,7 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
           ),
         ],
       ),
+
       body: FutureBuilder<List<String>>(
         future: logData,
         builder: (context, snapshot) {
@@ -168,10 +173,10 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
                                   children: [
                                     Expanded(
                                       child: Tooltip(
-                                        message: endpoint,
+                                        message: removeProtocol(endpoint),
                                         waitDuration: const Duration(milliseconds: 500),
                                         child: Text(
-                                          endpoint,
+                                          removeProtocol(endpoint),
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
