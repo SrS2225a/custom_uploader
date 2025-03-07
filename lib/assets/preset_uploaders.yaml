@@ -11,16 +11,17 @@
 #   - Headers: Additional headers to include in the request
 #   - Parameters: Additional parameters to include in the request
 #   - Arguments: Additional arguments for the request (form data)
-#   - URLResponse: How the app should parse the returned url from the server. Custom Uploader will attempt
-#     to get the returned url automatically, but some services may break up the returned url, in
-#     which case this field should be used
+#   - URLResponse: How the app should parse the returned url from the server. Custom Uploader will 
+#     attempt to get the returned url automatically, but some services may break up the returned url, 
+#     in which case this field should be used
 #   - ErrorResponse: How the app should parse the error returned from the server in case the upload
 #     failed
 #   - RequestMethod*: The HTTP request method to use (POST, PUT, GET, PATCH)
 #
 # Each preset may have a different set of fields depending on the service.
 # Additionally, fields marked with an "*" are required.
-# Feel free to add more presets following the same structure.
+#
+# Feel free to contribute more presets by following the same structure :)
 
 ###################################################################################################
 
@@ -67,4 +68,4 @@
     api_option: "paste"
     api_paste_name: "Custom Uploader Paste"
   RequestMethod: "POST"
-  ErrorResponse: "$response$"
+  ErrorResponse: "$regex:.*$"
