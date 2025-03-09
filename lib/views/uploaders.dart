@@ -111,6 +111,7 @@ class _MyUploaderState extends State<Uploader> {
                             leading: const Icon(Icons.edit, color: Colors.amber),
                             title: const Text("Edit"),
                             onTap: () {
+                              Navigator.of(context).pop();
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => Creator(editor: item, index: originalIndex),
