@@ -16,17 +16,26 @@ The **Form Data Name** specifies the key used to reference the form data in the 
 - The first parameter in a URL always follows a question mark (`?`).
 
 **Example:**
-``https://example.com?param1=value1&param2=value2``
+```https://example.com?param1=value1&param2=value2```
 
 Here, `param1` and `param2` are the keys, and `value1` and `value2` are their respective values.
 
 ---
 
 ## **Upload Headers**
-**HTTP Headers** provide additional meta-information during client-server communication.  
+**HTTP Headers** are used to pass additional information between the client and server during an upload.
 Headers can:
-- Be included in the HTTP request to specify upload details.
-- Be part of the server's response for additional context.
+- Define the type of content being sent (e.g., Content-Type: application/json).
+- Specify authentication details (e.g., Authorization: Bearer <token>).
+- Control caching, security, and other communication settings.
+
+**Example:**
+```
+Content-Type: application/json  
+Authorization: Bearer abc123xyz
+```
+
+Headers are commonly used for specifying how data should be processed or for security-related information.
 
 ---
 
