@@ -83,7 +83,7 @@ class ImportExportService {
       if (json["RequestURL"] != null && json["FileFormName"] != null && json["RequestMethod"] != null) {
         // Check if the RequestMethod is one of the supported methods
         String requestMethod = json["RequestMethod"].toUpperCase();
-        if (requestMethod == "GET" || requestMethod == "POST" || requestMethod == "PUT") {
+        if (requestMethod == "GET" || requestMethod == "POST" || requestMethod == "PUT" || requestMethod == "PATCH") {
           Box<Share> shareBox = Hive.box<Share>("custom_upload");
           if (shareBox.values.where((element) => element.uploaderUrl == json["RequestURL"]).isNotEmpty) {
             // tell the user that the uploader already exists
