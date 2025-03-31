@@ -35,7 +35,7 @@ dev_dependencies:
 
   flutter_lints: ^3.0.0
   hive_generator: ^2.0.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.15
 
 flutter:
   assets:
