@@ -1,7 +1,9 @@
 # Custom Uploader
 
-<div align="center">
-    
+<center>
+    <img width="128" src="./fastlane/metadata/android/en-US/images/icon.png" alt="Custom Uploader Logo"> 
+</center>
+
 [<img src="https://img.shields.io/github/license/SrS2225a/custom_uploader?style=flat-square">](https://github.com/SrS2225a/custom_uploader/blob/master/LICENSE)
 [<img src="https://img.shields.io/github/v/release/SrS2225a/custom_uploader?style=flat-square" />](https://github.com/SrS2225a/custom_uploader/releases)
 [<img src="https://img.shields.io/github/stars/SrS2225a/custom_uploader?style=flat-square" />](https://github.com/SrS2225a/custom_uploader)
@@ -9,8 +11,6 @@
 [<img src="https://img.shields.io/github/issues/SrS2225a/custom_uploader?style=flat-square" />](https://github.com/SrS2225a/custom_uploader/issues)
 [<img src="https://img.shields.io/liberapay/patrons/Eris?style=flat-square&logo=liberapay">](https://liberapay.com/Eris/donate)
 [<img src="https://img.shields.io/github/actions/workflow/status/SrS2225a/custom_uploader/flutter_build_test.yml?style=flat-square">](https://github.com/SrS2225a/custom_uploader/actions/workflows/flutter_build_test.yml)
-
-</div>
 
 Custom Uploader is a user-friendly file uploading tool that makes it easy for you to transfer files to your preferred hosting service. It is designed to be lightweight and efficient, with a straightforward interface that allows you to upload files quickly and easily. With Custom Uploader, you can upload a variety of different file types, including documents, images, videos, and more. The versatile tool is perfect for anyone who needs a reliable and convenient way to upload files for storage or sharing. Whenever you are a business owner, a student, or a professional, Custom Uploader can help you manage and share your files with ease.
 
