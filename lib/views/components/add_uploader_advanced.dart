@@ -31,6 +31,7 @@ class AdvancedViewState extends State<AdvancedView> {
     final List<PlutoColumnGroup> columnGroups = [];
     final List<PlutoRow> rows = [];
 
+    // to do: add height spacing between tables
     columns.addAll([
       PlutoColumn(
           title: 'Key',
@@ -360,18 +361,22 @@ class AdvancedViewState extends State<AdvancedView> {
               ],
             ),
             // SizedBox prevents the table from overflowing
+            SizedBox(height: 15), // SizedBox height: 15 acts as vertical spacing
             SizedBox(
               height: 300,
               child: _getHeadersTable(),
             ),
+            SizedBox(height: 15),
             SizedBox(
               height: 300,
               child: _getParametersTable(),
             ),
+            SizedBox(height: 15),
             SizedBox(
               height: 300,
               child: _getArgumentsTable(),
             ),
+            SizedBox(height: 15),
             TextFormField(
               decoration: const InputDecoration(
                 hintText: "The response of the url to parse",
