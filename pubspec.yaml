@@ -18,7 +18,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0 # contains Isar Core
   pluto_grid: ^8.0.0
-  flutter_markdown: ^0.7.6
+  flutter_markdown: ^0.7.7
   receive_sharing_intent: ^1.4.5
   url_launcher: ^6.1.6
   permission_handler: ^11.4.0
