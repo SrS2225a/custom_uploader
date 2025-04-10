@@ -61,6 +61,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       setState(() {
         _fileName = name;
         _hasBeenPressed = true;
+        _setUploadProgress(0, 0);
       });
     }
   }
@@ -73,31 +74,30 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
     shareFile(List<SharedMediaFile> value) async {
       if (shareBox.isNotEmpty) {
         if (value.isNotEmpty) {
-          // Check if the shared file is a text file, and if it iis convert it to a file and upload
-          if(value.first.type == SharedMediaType.text) {
-            final tempDir = await getTemporaryDirectory();
-            final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-            final textFile = File('${tempDir.path}/shared_text_$timestamp.txt');
-            await textFile.writeAsString(value.first.path);
-
-            FileService.fileUploadMultiPart(
-                file: textFile,
-                onUploadProgress: _setUploadProgress,
-                context: context,
-                onSetState: _setState).then((_) async {
-                  if(await textFile.exists()) {
-                    await textFile.delete();
-                  }
-            });
-          } else {
-            File file = File(value.first.path);
-
-            FileService.fileUploadMultiPart(
-                file: file,
-                onUploadProgress: _setUploadProgress,
-                context: context,
-                onSetState: _setState);
+          for(int i = 0; i < value.length; i++) {
+            final file = File(value[i].path);
+            _setState("Uploading file ${i + 1} of ${value.length}: ${file.path.split("/").last}");
+            if(value[i].type == SharedMediaType.text) {
+              final tempDir = await getTemporaryDirectory();
+              final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
+              final textFile = File('${tempDir.path}/shared_text_$timestamp.txt');
+              await textFile.writeAsString(value[i].path);
+              await FileService.fileUploadMultiPart(
+                  file: textFile,
+                  onUploadProgress: _setUploadProgress,
+                  context: context);
+              if(await textFile.exists()) {
+                await textFile.delete();
+              }
+            } else {
+              await FileService.fileUploadMultiPart(
+                  file: file,
+                  onUploadProgress: _setUploadProgress,
+                  context: context
+              );
+            }
           }
+          _setState("");
         }
       } else {
         SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders", "Before you can begin uploading files, you will need an uploader of your choice created and selected, then try again."));
@@ -106,23 +106,25 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       ReceiveSharingIntent.instance.reset();
     }
 
-    if (!_hasBeenPressed) {
-      // For sharing files coming from outside the app while the app is open
-      ReceiveSharingIntent.instance.getMediaStream().listen((List<SharedMediaFile> value) {
-        setState(() async {
+    // For sharing files coming from outside the app while the app is open
+    ReceiveSharingIntent.instance.getMediaStream().listen((List<SharedMediaFile> value) {
+      setState(() async {
+        if (!_hasBeenPressed) {
           shareFile(value);
-        });
-      }, onError: (err) {
-        print("getIntentDataStream error: $err");
+        }
       });
+    }, onError: (err) {
+      print("getIntentDataStream error: $err");
+    });
 
-      //For sharing images coming from outside the app while the app is closed
-      ReceiveSharingIntent.instance.getInitialMedia().then((List<SharedMediaFile> value) {
-        setState(() {
+    //For sharing images coming from outside the app while the app is closed
+    ReceiveSharingIntent.instance.getInitialMedia().then((List<SharedMediaFile> value) {
+      setState(() {
+        if (!_hasBeenPressed) {
           shareFile(value);
-        });
+        }
       });
-    }
+    });
   }
 
   @override
@@ -164,14 +166,23 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 if (shareBox.isNotEmpty) {
                   // if we are already uploading a file, don't allow the user to upload another one until the first one is done
                   if (!_hasBeenPressed) {
-                    final filePicker = await FilePicker.platform.pickFiles(allowMultiple: false);
-                    if (filePicker == null) {
+                    final filePicker = await FilePicker.platform.pickFiles(allowMultiple: true);
+                    if (filePicker == null || filePicker.files.isEmpty) {
                       const SnackBar(content: Text("No file has been selected. Select one then try again!"));
                       return;
                     }
-                    File file = File(filePicker.files.first.path!);
-                    await FileService.fileUploadMultiPart(
-                        file: file, onUploadProgress: _setUploadProgress, context: context, onSetState: _setState);
+
+                    final files = filePicker.files.map((file) => File(file.path!)).toList();
+                    for(int i = 0; i < files.length; i++) {
+                      final file = files[i];
+                      _setState( "Uploading file ${i + 1} of ${files.length}: ${file.path.split("/").last}");
+                      await FileService.fileUploadMultiPart(
+                          file: files[i],
+                          onUploadProgress: _setUploadProgress,
+                          context: context
+                      );
+                    }
+                    _setState("");
                   }
                 } else {
                   showDialog(
@@ -197,7 +208,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 backgroundColor: _hasBeenPressed ? Colors.blue.withOpacity(0.38) : Colors.blue,
                 minimumSize: const Size(150, 50), // 1.4x the default button size
                 textStyle: const TextStyle(fontSize: 20), // Larger text
-              ), child: _hasBeenPressed ? const Text("Uploading...") : const Text("Choose File")),
+              ), child: _hasBeenPressed ? const Text("Uploading...") : const Text("Choose File(s)")),
               progressColor: Colors.green[400],
             ),
             Text(_fileName)

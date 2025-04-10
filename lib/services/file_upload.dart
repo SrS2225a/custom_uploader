@@ -13,7 +13,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'database.dart';
 
 typedef OnUploadProgressCallback = void Function(int sentBytes, int totalBytes);
-typedef OnSetStateCallback = void Function(String name);
 
 class FileService {
   static bool shouldAddFile = true;
@@ -21,19 +20,11 @@ class FileService {
   static Future<void> fileUploadMultiPart({
     required File file,
     required OnUploadProgressCallback onUploadProgress,
-    required OnSetStateCallback onSetState,
     required BuildContext context,
   }) async {
     // Fetch selected uploader
     Box<Share> shareBox = Hive.box<Share>("custom_upload");
     Share? uploader = shareBox.values.firstWhere((share) => share.selectedUploader);
-
-    if (uploader == null) {
-      showSnackBar(context, "Please select an uploader first.");
-      return;
-    } else {
-      onSetState(file.path.split("/").last);
-    }
 
     // Perform file upload
     try {
@@ -51,9 +42,7 @@ class FileService {
         context: context,
         uploader: uploader,
       );
-      onSetState("");
     } catch (e) {
-      onSetState("");
       _handleError(context, e, uploader);
     }
   }
