@@ -13,7 +13,7 @@ dependencies:
   dio: ^5.4.0
   dio_cache_interceptor: ^4.0.3
   file_picker: ^10.0.0
-  percent_indicator: ^4.2.2
+  percent_indicator: ^4.2.5
   xml: ^6.3.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0 # contains Isar Core
