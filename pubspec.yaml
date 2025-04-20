@@ -12,15 +12,15 @@ dependencies:
     sdk: flutter
   dio: ^5.4.0
   dio_cache_interceptor: ^4.0.3
-  file_picker: ^10.0.0
-  percent_indicator: ^4.2.2
+  file_picker: ^10.1.2
+  percent_indicator: ^4.2.5
   xml: ^6.3.0
   hive: ^2.2.3
   hive_flutter: ^1.1.0 # contains Isar Core
   pluto_grid: ^8.0.0
   receive_sharing_intent: ^1.4.5
   url_launcher: ^6.1.6
-  permission_handler: ^11.4.0
+  permission_handler: ^12.0.0+1
   device_info_plus: ^11.2.1
   package_info_plus: ^8.3.0
   yaml: ^3.1.2
