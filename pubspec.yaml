@@ -2,11 +2,11 @@ name: custom_uploader
 description: Allows you to upload files to a custom server
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.4.2+12
+version: 2.0.0+13
 
 environment:
   sdk: '>=3.5.0 <4.0.1'
-  flutter: '3.29.2'
+  flutter: '3.29.3'
 dependencies:
   flutter:
     sdk: flutter
@@ -18,7 +18,6 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0 # contains Isar Core
   pluto_grid: ^8.0.0
-  flutter_markdown: ^0.7.7
   receive_sharing_intent: ^1.4.5
   url_launcher: ^6.1.6
   permission_handler: ^11.4.0
@@ -28,6 +27,9 @@ dependencies:
   mime: ^2.0.0
   http_parser: ^4.1.2
   path_provider: ^2.0.1
+  smb_connect: ^0.0.9
+  ftpconnect: ^2.0.7
+  crowdin_sdk: 0.7.0
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +41,5 @@ dev_dependencies:
 
 flutter:
   assets:
-    - lib/assets/contents.md
     - lib/assets/preset_uploaders.yaml
   uses-material-design: true

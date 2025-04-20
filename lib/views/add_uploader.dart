@@ -1,5 +1,4 @@
 import 'package:custom_uploader/services/database.dart';
-import 'package:custom_uploader/views/uploader_help.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
@@ -39,24 +38,15 @@ class _MyCreatorState extends State<Creator> {
           actions: <Widget>[
             PopupMenuButton<int>(itemBuilder: (BuildContext context) {
               return [
-                const PopupMenuItem<int>(
-                  value: 0,
-                  child: Text("Help"),
-                ),
-                const PopupMenuDivider(),
                 CheckedPopupMenuItem<int>(
                   checked: _isAdvancedView,
-                  value: 1,
+                  value: 0,
                   child: const Text("Advanced"),
                 ),
               ];
             },
               onSelected: (value) {
                 if (value == 0) {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Help())
-                  );
-                } else if (value == 1) {
                   setState(() {
                     _isAdvancedView = !_isAdvancedView;
                     updateSelectedView(_isAdvancedView);

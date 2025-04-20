@@ -137,11 +137,33 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             return [
               const PopupMenuItem<int>(
                 value: 0,
-                child: Text("View On Github"),
+                child:  Row(
+                  children: [
+                    Icon(Icons.code),
+                    SizedBox(width: 8),
+                    Text("Github"),
+                  ],
+                )
               ),
               const PopupMenuItem<int>(
                 value: 1,
-                child: Text("❤️ Donate"),
+                child: Row(
+                  children: [
+                    Icon(Icons.favorite),
+                    SizedBox(width: 8),
+                    Text("Donate"),
+                  ],
+                )
+              ),
+              const PopupMenuItem<int>(
+                value: 2,
+                child: Row(
+                  children: [
+                    Icon(Icons.help),
+                    SizedBox(width: 8),
+                    Text("Help"),
+                  ],
+                )
               )
             ];
           },
@@ -151,6 +173,9 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               }
               if(value == 1) {
                 launchUrl(Uri.parse("https://liberapay.com/Eris"));
+              }
+              if(value == 2) {
+                launchUrl(Uri.parse("https://github.com/SrS2225a/custom_uploader/wiki"));
               }
             },)
         ],
