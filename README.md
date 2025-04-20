@@ -33,6 +33,9 @@ You can also get the latest version of the app from the [releases](https://githu
 
 Minimum supported Android version for this app is 5.0 (Lolipop).
 
+## Building
+See [BUILDING.MD](./BUILDING.MD) for details
+
 ## Donate
 Like the app? Consider [donating](https://liberapay.com/Eris/donate) to support the development of the app.
 
