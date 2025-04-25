@@ -34,7 +34,7 @@ class _MyCreatorState extends State<Creator> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-        title: const Text("Custom Uploader"),
+          title: const Text("HTTP Uploader"),
           actions: <Widget>[
             PopupMenuButton<int>(itemBuilder: (BuildContext context) {
               return [

@@ -443,7 +443,7 @@ class AdvancedViewState extends State<AdvancedView> {
                 Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Center(
-                      child: ElevatedButton(
+                      child: OutlinedButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },

@@ -99,7 +99,7 @@ class SimpleViewState extends State<SimpleView> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Center(
-                    child: ElevatedButton(
+                    child: FilledButton(
                       onPressed: () {
                         // Validate returns true if the form is valid, or false otherwise.
                         if (_formKey.currentState!.validate()) {
@@ -128,7 +128,7 @@ class SimpleViewState extends State<SimpleView> {
                 Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Center(
-                      child: ElevatedButton(
+                      child: OutlinedButton(
                         onPressed: () {
                           Navigator.pop(context);
                         },
