@@ -27,9 +27,9 @@ dependencies:
   mime: ^2.0.0
   http_parser: ^4.1.2
   path_provider: ^2.0.1
-  smb_connect: ^0.0.9
-  ftpconnect: ^2.0.7
+  pure_ftp: ^0.7.5
   crowdin_sdk: 0.7.0
+  flutter_speed_dial: ^7.0.0
 
 dev_dependencies:
   flutter_test:

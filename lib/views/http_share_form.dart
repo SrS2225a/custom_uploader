@@ -5,16 +5,15 @@ import 'package:hive/hive.dart';
 import 'components/add_uploader_advanced.dart';
 import 'components/add_uploader_simple.dart';
 
-class Creator extends StatefulWidget {
-  var index = 0;
+class HTTPShareForm extends StatefulWidget {
   final Share? editor;
-  Creator({super.key, required this.editor, required this.index});
+  HTTPShareForm({super.key, required this.editor});
 
   @override
-  State<Creator> createState() => _MyCreatorState();
+  State<HTTPShareForm> createState() => _MyCreatorState();
 }
 
-class _MyCreatorState extends State<Creator> {
+class _MyCreatorState extends State<HTTPShareForm> {
   var viewBox =  Hive.openBox("custom_view");
   bool _isAdvancedView = false;
 
@@ -56,7 +55,7 @@ class _MyCreatorState extends State<Creator> {
           ],
     ),
     body: SingleChildScrollView(
-      child: _isAdvancedView ? AdvancedView(widget.editor, widget.index) : SimpleView(widget.editor, widget.index)
+      child: _isAdvancedView ? AdvancedView(widget.editor) : SimpleView(widget.editor)
     ),
   );
 }

@@ -84,7 +84,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               await textFile.writeAsString(value[i].path);
               await FileService.fileUploadMultiPart(
                   file: textFile,
-                  onUploadProgress: _setUploadProgress,
+                  setOnUploadProgress: _setUploadProgress,
                   context: context);
               if(await textFile.exists()) {
                 await textFile.delete();
@@ -92,7 +92,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
             } else {
               await FileService.fileUploadMultiPart(
                   file: file,
-                  onUploadProgress: _setUploadProgress,
+                  setOnUploadProgress: _setUploadProgress,
                   context: context
               );
             }
@@ -203,7 +203,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                       _setState( "Uploading file ${i + 1} of ${files.length}: ${file.path.split("/").last}");
                       await FileService.fileUploadMultiPart(
                           file: files[i],
-                          onUploadProgress: _setUploadProgress,
+                          setOnUploadProgress: _setUploadProgress,
                           context: context
                       );
                     }
@@ -244,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const Uploader(title: "Custom Uploader"))
+              MaterialPageRoute(builder: (context) => const Uploaders(title: "Custom Uploader"))
           );
         },
         tooltip: 'Custom Uploaders',

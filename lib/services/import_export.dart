@@ -74,7 +74,18 @@ class ImportExportService {
 
 
       // type of json["Headers"] should be Map<String, dynamic> instead of _InternalLinkedHashMap<String, dynamic>
-      return Share(json["RequestURL"], json["FileFormName"], useBytes, getCorrectTypes(json["Headers"]), getCorrectTypes(json["Parameters"]), arguments, convertParser(json["URL"] ?? ""), convertParser(json["ErrorMessage"] ?? ""), false, json["RequestMethod"]);
+      return Share(
+        uploaderUrl: json["RequestURL"] ?? "",
+        formDataName: json["FileFormName"] ?? "upload",
+        uploadFormData: useBytes,
+        uploadHeaders: getCorrectTypes(json["Headers"]) ?? {},
+        uploadParameters: getCorrectTypes(json["Parameters"]) ?? {},
+        uploadArguments: arguments,
+        uploaderResponseParser: convertParser(json["URL"] ?? ""),
+        uploaderErrorParser: convertParser(json["ErrorMessage"] ?? ""),
+        selectedUploader: false,
+        method: json["RequestMethod"],
+      );
     }
 
     var json = readData(file);

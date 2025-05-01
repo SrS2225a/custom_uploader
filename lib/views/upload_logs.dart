@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -137,7 +136,7 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
           } else if (snapshot.hasError) {
             return const Center(child: Text("Error loading logs"));
           } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-            return const Center(child: Text("No logs available"));
+            return Center(child: Text("No logs available", style: Theme.of(context).textTheme.titleLarge));
           } else {
             return ListView.builder(
               padding: const EdgeInsets.all(12),
@@ -191,7 +190,7 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
                                 const SizedBox(height: 4),
                                 Text(
                                   response,
-                                  style: const TextStyle(fontSize: 14, color: Colors.black87),
+                                  style: const TextStyle(fontSize: 14),
                                 ),
                                 const SizedBox(height: 6),
                                 Text(
@@ -234,14 +233,17 @@ Widget _buildStatusBadge(String status) {
 
 Color _getStatusColor(String status) {
   int statusCode = int.tryParse(status) ?? 0;
-  if (statusCode >= 200 && statusCode < 300) {
-    return Colors.green;
-  } else if (statusCode >= 300 && statusCode < 400) { // Handle 3xx (redirection)
-    return Colors.blue;
+  if (statusCode >= 100 && statusCode < 200) {
+    return Colors.teal; // Preliminary, e.g., 150
+  } else if (statusCode >= 200 && statusCode < 300) {
+    return Colors.green; // Success
+  } else if (statusCode >= 300 && statusCode < 400) {
+    return Colors.blue; // Intermediate / further info needed
   } else if (statusCode >= 400 && statusCode < 500) {
-    return Colors.orange;
+    return Colors.orange; // Transient error (e.g., retry might help)
   } else if (statusCode >= 500) {
-    return Colors.red;
+    return Colors.red; // Permanent failure
   }
-  return Colors.black;
+
+  return Colors.grey; // Unknown / fallback
 }

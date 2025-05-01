@@ -7,9 +7,8 @@ import '../../utils/show_message.dart';
 
 class AdvancedView extends StatefulWidget {
 
-  const AdvancedView(this.editor, this.index, {super.key});
+  const AdvancedView(this.editor, {super.key});
   final Share? editor;
-  final int? index;
 
   @override
   State<StatefulWidget> createState() {
@@ -286,8 +285,41 @@ class AdvancedViewState extends State<AdvancedView> {
       cursor = widget.editor!;
       _switchValue = cursor.uploadFormData;
     } else {
-      cursor = Share("", "upload", false, {}, {}, {}, "", "", false, "POST");
+      cursor = Share(
+        uploaderUrl: "",
+        formDataName: "upload",
+        uploadFormData: false,
+        uploadHeaders: {},
+        uploadParameters: {},
+        uploadArguments: {},
+        uploaderResponseParser: "",
+        uploaderErrorParser: "",
+        selectedUploader: false,
+        method: "POST",
+      );
     }
+  }
+
+  void _saveShare() async {
+    final box = await Hive.openBox<Share>("custom_upload");
+
+    if (widget.editor != null) {
+      final index = box.values.toList().indexOf(widget.editor!);
+      if(index != -1) {
+        cursor.uploadFormData = _switchValue;
+        box.putAt(index, cursor);
+      }
+    } else {
+      // check if uploader already exists
+      if (box.values.where((element) => element.uploaderUrl == cursor.uploaderUrl).isEmpty) {
+        cursor.uploadFormData = _switchValue;
+        box.add(cursor);
+      } else {
+        showSnackBar(context, "A share with that url already exists.");
+      }
+    }
+
+    if(mounted) Navigator.pop(context);
   }
 
   @override
@@ -399,11 +431,10 @@ class AdvancedViewState extends State<AdvancedView> {
                 Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: Center(
-                      child: ElevatedButton(
+                      child: FilledButton(
                         onPressed: () {
                           // Validate returns true if the form is valid, or false otherwise.
                           if (_formKey.currentState!.validate()) {
-                            Box<Share> shareBox = Hive.box<Share>("custom_upload");
                             _formKey.currentState?.save();
 
                             cursor.uploadHeaders = stateManager.rows.fold<Map<String, String>>({}, (previousValue, element) {
@@ -421,19 +452,8 @@ class AdvancedViewState extends State<AdvancedView> {
                               return previousValue;
                             });
 
-                            if (widget.editor != null) {
-                              cursor.uploadFormData = _switchValue;
-                              shareBox.putAt(widget.index!, cursor);
-                            } else {
-                              // check if uploader already exists
-                              if (shareBox.values.where((element) => element.uploaderUrl == cursor.uploaderUrl).isEmpty) {
-                                cursor.uploadFormData = _switchValue;
-                                shareBox.add(cursor);
-                              } else {
-                                showSnackBar(context, "The uploader you are trying to add already exists.");
-                              }
-                            }
-                            Navigator.of(context).pop();
+                            // save the share
+                            _saveShare();
                           }
                         },
                         child: const Text('Save'),

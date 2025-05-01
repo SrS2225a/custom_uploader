@@ -12,6 +12,8 @@ Future<void> main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(ShareAdapter());
   await Hive.openBox<Share>("custom_upload");
+  Hive.registerAdapter(NetworkShareAdapter());
+  await Hive.openBox<NetworkShare>("share_upload");
 
   var viewBox = await Hive.openBox('custom_view');
   bool? loadPresets = viewBox.get('shouldLoadPresets', defaultValue: false);
@@ -39,20 +41,22 @@ Future<void> main() async {
     }
 
     for (var item in yamlList) {
-      // advoid adding duplicates
-      if (!shareBox.values.where((element) => element.uploaderUrl == item["RequestURL"]).isNotEmpty) {
-        shareBox.add(Share(
-            item["RequestURL"],
-            item["FileFormName"],
-            item["UseBytes"],
-            yamlMapToMap(item["Headers"] ?? {}),
-            yamlMapToMap(item["Parameters"] ?? {}),
-            yamlMapToMap(item["Arguments"] ?? {}),
-            item["URLResponse"] ?? "",
-            item["ErrorResponse"] ?? "",
-            false,
-            item["RequestMethod"]
-        ));
+      // avoid adding duplicates
+      if (!shareBox.values.any((element) => element.uploaderUrl == item["RequestURL"])) {
+        shareBox.add(
+          Share(
+            uploaderUrl: item["RequestURL"] ?? "",
+            formDataName: item["FileFormName"] ?? "upload",
+            uploadFormData: item["UseBytes"] ?? false,
+            uploadHeaders: yamlMapToMap(item["Headers"] ?? {}),
+            uploadParameters: yamlMapToMap(item["Parameters"] ?? {}),
+            uploadArguments: yamlMapToMap(item["Arguments"] ?? {}),
+            uploaderResponseParser: item["URLResponse"] ?? "",
+            uploaderErrorParser: item["ErrorResponse"] ?? "",
+            selectedUploader: false,
+            method: item["RequestMethod"],
+          ),
+        );
       }
     }
 
