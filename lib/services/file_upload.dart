@@ -151,11 +151,6 @@ class FileService {
         final ftpFile = FtpFile(path: remotePath.endsWith("/") ? remotePath + file.path.split("/").last : "$remotePath/${file.path.split("/").last}", client: client);
         final ftpTransfer = FtpTransfer(socket: client.socket);
 
-        // final uploadSuccessful = await ftpTransfer.uploadFileStream(ftpFile, file.openRead(), await file.length(),
-        //   onUploadProgress: (sent, total, _) {
-        //     setOnUploadProgress(sent, total);
-        //   }
-        // );
         final result = await uploadFtpFile(
           ftpClient: client,
           targetFile: ftpFile,
@@ -194,23 +189,6 @@ class FileService {
             responseBody: result.errorMessage ?? "Unknown FTP error",
           );
         }
-        // if(uploadSuccessful) {
-        //   final ftpUrl = networkUploader.urlPath! + file.path.split("/").last;
-        //   Logger.logResponse(
-        //     endpoint: networkUploader.domain,
-        //     statusCode: 200,
-        //     responseBody: ftpUrl.toString()
-        //   );
-        //
-        //   if (ftpUrl.isEmpty) {
-        //     showSnackBar(context, "Upload successful");
-        //   } else {
-        //     Clipboard.setData(ClipboardData(text: ftpUrl));
-        //     showSnackBar(context, "File uploaded successfully as: $ftpUrl. It has been copied to your clipboard.");
-        //   }
-        // } else {
-        //   showSnackBar(context, "Failed to connect to server. Please check your internet connection.");
-        // }
       } catch(error) {
         showSnackBar(context, "Error transferring to ${networkUploader.domain}: (${error.toString()})");
         Logger.logResponse(
