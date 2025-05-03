@@ -15,22 +15,20 @@ import 'package:path_provider/path_provider.dart';
 
 import '../services/database.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Box<Share> shareBox = Hive.box<Share>("custom_upload");
 
   String _fileName = "";
-
   double _progressPercentValue = 0;
-
   bool _hasBeenPressed = false;
 
   void _setUploadProgress(int sentBytes, int totalBytes) {
