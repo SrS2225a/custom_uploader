@@ -12,13 +12,12 @@ import 'package:percent_indicator/percent_indicator.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../services/database.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -74,7 +73,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         if (value.isNotEmpty) {
           for(int i = 0; i < value.length; i++) {
             final file = File(value[i].path);
-            _setState("Uploading file ${i + 1} of ${value.length}: ${file.path.split("/").last}");
+            _setState(AppLocalizations.of(context)!.uploadingFile(
+              i + 1, value.length, file.path.split("/").last,
+            ));
             if(value[i].type == SharedMediaType.text) {
               final tempDir = await getTemporaryDirectory();
               final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
@@ -98,7 +99,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           _setState("");
         }
       } else {
-        SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, "No Custom Uploaders", "Before you can begin uploading files, you will need an uploader of your choice created and selected, then try again."));
+        SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, AppLocalizations.of(context)!.no_custom_uploaders,  AppLocalizations.of(context)!.before_you_can_upload_files));
       }
       // clear the data from the sharing intent
       ReceiveSharingIntent.instance.reset();
@@ -129,37 +130,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(AppLocalizations.of(context)!.custom_uploader),
         actions: [
           PopupMenuButton(itemBuilder: (context) {
             return [
-              const PopupMenuItem<int>(
+              PopupMenuItem<int>(
                 value: 0,
                 child:  Row(
                   children: [
-                    Icon(Icons.code),
-                    SizedBox(width: 8),
-                    Text("Github"),
+                    const Icon(Icons.code),
+                    const SizedBox(width: 8),
+                    Text(AppLocalizations.of(context)!.github),
                   ],
                 )
               ),
-              const PopupMenuItem<int>(
+              PopupMenuItem<int>(
                 value: 1,
                 child: Row(
                   children: [
                     Icon(Icons.favorite),
                     SizedBox(width: 8),
-                    Text("Donate"),
+                    Text(AppLocalizations.of(context)!.donate),
                   ],
                 )
               ),
-              const PopupMenuItem<int>(
+              PopupMenuItem<int>(
                 value: 2,
                 child: Row(
                   children: [
                     Icon(Icons.help),
                     SizedBox(width: 8),
-                    Text("Help"),
+                    Text(AppLocalizations.of(context)!.help),
                   ],
                 )
               )
@@ -191,7 +192,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   if (!_hasBeenPressed) {
                     final filePicker = await FilePicker.platform.pickFiles(allowMultiple: true);
                     if (filePicker == null || filePicker.files.isEmpty) {
-                      const SnackBar(content: Text("No file has been selected. Select one then try again!"));
+                      SnackBar(content: Text(AppLocalizations.of(context)!.no_file_selected));
                       return;
                     }
 
@@ -212,11 +213,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
-                        title: Text("No Custom Uploaders"),
-                        content: Text("Before you can begin uploading files, you will need an uploader of your choice created an selected, then try again."),
+                        title: Text(AppLocalizations.of(context)!.no_custom_uploaders),
+                        content: Text(AppLocalizations.of(context)!.before_you_can_upload_files),
                         actions: <Widget>[
                           TextButton(
-                            child: const Text("OK"),
+                            child: Text(AppLocalizations.of(context)!.ok),
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
@@ -231,7 +232,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 backgroundColor: _hasBeenPressed ? Colors.blue.withOpacity(0.38) : Colors.blue,
                 minimumSize: const Size(150, 50), // 1.4x the default button size
                 textStyle: const TextStyle(fontSize: 20), // Larger text
-              ), child: _hasBeenPressed ? const Text("Uploading...") : const Text("Choose File(s)")),
+              ), child: _hasBeenPressed ? Text(AppLocalizations.of(context)!.uploading) :  Text(AppLocalizations.of(context)!.choose_files)),
               progressColor: Colors.green[400],
             ),
             Text(_fileName)
@@ -242,10 +243,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const Uploaders(title: "Custom Uploader"))
+              MaterialPageRoute(builder: (context) => Uploaders(title: AppLocalizations.of(context)!.custom_uploader))
           );
         },
-        tooltip: 'Custom Uploaders',
         child: const Icon(Icons.settings),
       ),
     );

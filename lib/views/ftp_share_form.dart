@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:custom_uploader/services/database.dart';
 import 'package:hive/hive.dart';
 import 'package:pure_ftp/pure_ftp.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../utils/show_message.dart';
 
@@ -141,18 +142,18 @@ class _FTPShareFormState extends State<FTPShareForm> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('$shareLabel Uploader'),
+        title: Text(AppLocalizations.of(context)!.type_uploader("FTP")),
       ),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            _buildField(_domainController, '$shareLabel Domain (e.g., ftp.example.com)'),
-            _buildField(_usernameController, 'Username', required: false),
-            _buildField(_passwordController, 'Password', obscureText: true, required: false),
-            _buildField(_portController, 'Port', keyboardType: TextInputType.number),
-            _buildField(_folderPathController, 'Remote Folder Path'),
+            _buildField(_domainController, AppLocalizations.of(context)!.domain),
+            _buildField(_usernameController, AppLocalizations.of(context)!.username, required: false),
+            _buildField(_passwordController, AppLocalizations.of(context)!.password, obscureText: true, required: false),
+            _buildField(_portController, AppLocalizations.of(context)!.port, keyboardType: TextInputType.number),
+            _buildField(_folderPathController, AppLocalizations.of(context)!.remote_folder_path),
 
             Row(
               children: [
@@ -160,11 +161,11 @@ class _FTPShareFormState extends State<FTPShareForm> {
                   flex: 2,
                   child: DropdownButtonFormField<String>(
                     value: _selectedProtocol,
-                    decoration: const InputDecoration(
-                      labelText: 'Protocol',
-                      border: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.protocol,
+                      border: const OutlineInputBorder(),
                       isDense: true,
-                      contentPadding: EdgeInsets.symmetric(vertical: 12,horizontal: 8),
+                      contentPadding: const EdgeInsets.symmetric(vertical: 12,horizontal: 8),
                     ),
                     items: ['http://', 'https://', 'ftp://', 'ftps://']
                       .map((protocol) => DropdownMenuItem(
@@ -186,7 +187,7 @@ class _FTPShareFormState extends State<FTPShareForm> {
                   child: TextFormField(
                     controller: _urlPathController,
                     decoration: InputDecoration(
-                      labelText: 'URL Path',
+                      labelText: AppLocalizations.of(context)!.url_path,
                       border: const OutlineInputBorder(),
                       isDense: true,
                       contentPadding: EdgeInsets.symmetric(vertical: 12,horizontal: 8),
@@ -212,7 +213,7 @@ class _FTPShareFormState extends State<FTPShareForm> {
                             _saveShare();
                           }
                         },
-                        child: const Text('Save'),
+                        child: Text(AppLocalizations.of(context)!.save),
                       ),
                     )
                 ),
@@ -223,7 +224,7 @@ class _FTPShareFormState extends State<FTPShareForm> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: const Text('Cancel'),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                       ),
                     )
                 ),
@@ -242,9 +243,9 @@ class _FTPShareFormState extends State<FTPShareForm> {
                               port: int.tryParse(_portController.text.trim()) ?? 0,
                               urlPath: _urlPathController.text.trim(),
                           ));
-                          showSnackBar(context, testResult ? "Connection successful" : "Connection failed");
+                          showSnackBar(context, testResult ? AppLocalizations.of(context)!.connection_successful : AppLocalizations.of(context)!.connection_failed);
                         },
-                        child: const Text('Test'),
+                        child: Text(AppLocalizations.of(context)!.test),
                       )
                     )
                 )

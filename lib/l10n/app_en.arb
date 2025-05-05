@@ -1,47 +1,87 @@
 {
   "@@locale": "en",
-  "example": "Example",
-  "hello": "_Hello {userName}",
-  "@hello": {
-    "description": "A message with a single parameter",
-    "placeholders": {
-      "userName": {
-        "type": "String",
-        "example": "Bob"
-      }
-    }
-  },
-  "nThings": "{count,plural, =0{no {thing}s} other{{count} {thing}s}}",
-  "@nThings": {
-    "description": "A plural message with an additional parameter",
-    "placeholders": {
-      "count": {
-        "type": "int"
-      },
-      "thing": {
-        "example": "wombat"
-      }
-    }
-  },
-  "settings": "Settings",
-  "language": "Language",
-  "main": "Main",
-  "counter": "Counter: {value}",
-  "@counter": {
-    "description": "A message with a formatted int parameter",
-    "placeholders": {
-      "value": {
-        "type": "int",
-        "format": "compactLong"
-      }
-    }
-  },
-  "roamingChoice": "{choice, select, month{_For 1 month} unlimited{_Unlimited} deactivate{_Deactivate} other {}}",
-  "@roamingChoice": {
-    "placeholders": {
-      "choice": {
-        "type": "String"
-      }
-    }
-  }
+  "custom_uploader": "Custom Uploader",
+  "github": "Github",
+  "donate": "Donate",
+  "help": "Help",
+  "no_file_selected": "No file has been selected. Select one then try again!",
+  "no_custom_uploaders": "No Custom Uploaders",
+  "before_you_can_upload_files": "Before you can begin uploading files, you will need an uploader of your choice created and selected, then try again.",
+  "uploading": "Uploading...",
+  "choose_files": "Choose File(s)",
+  "ok": "OK",
+  "uploadingFile": "Uploading file {current} of {total}: {fileName}",
+  "delete_this_share": "Are you sure you want to delete this share?",
+  "yes": "Yes",
+  "no": "No",
+  "view_logs": "View Logs",
+  "ftp_not_supported": "Currently, ftp shares cannot be imported or exported",
+  "no_uploader_selected": "No uploader selected",
+  "import_from_file": "Import from file",
+  "export_to_file": "Export to file",
+  "edit": "Edit",
+  "delete": "Delete {delete}",
+  "upload_method_and_type": "Upload Method: {method} • Type: {type}",
+  "upload_type_only": "Type: {type}",
+  "logs_downloaded_successfully": "The logs were downloaded successfully",
+  "failed_to_export": "Failed to export",
+  "failed_to_import": "Failed to import",
+  "permission_denied": "The permission to write to {permission} was denied.",
+  "failed_to_download_logs": "Failed to download logs. \n\n Error: {error}",
+  "no_logs_available": "No logs available",
+  "custom_uploader_logs": "Custom Uploader Logs",
+  "download_logs": "Download Logs",
+  "clear_logs": "Clear Logs",
+  "error_loading_logs": "Error loading logs",
+  "type_uploader": "{type} Uploader",
+  "advanced": "Advanced",
+  "save": "Save",
+  "cancel": "Cancel",
+  "test": "Test",
+  "connection_successful": "Connection Successful",
+  "connection_failed": "Connection Failed",
+  "domain": "Domain",
+  "username": "Username",
+  "password": "Password",
+  "port": "Port",
+  "remote_folder_path": "Remote Folder Path",
+  "protocol": "Protocol",
+  "url_path": "URL Path",
+  "advanced_view_tip": "Tip: If you need to supply arguments to an uploader, try the advanced view",
+  "use_file_encoding": "Use File Encoding",
+  "share_already_exists": "A share with that URL already exists.",
+  "upload_url_hint": "The URL to upload to.",
+  "upload_url_label": "Upload URL *",
+  "upload_url_error": "Please enter a valid URL",
+  "form_data_name_hint": "The name of the form data field.",
+  "form_data_name_label": "Form Data Name *",
+  "form_data_name_error": "Please enter a form name",
+  "url_response_hint": "The response of the url to parse",
+  "url_response_label": "URL Response",
+  "url_error_response_hint": "The error response of the url to parse",
+  "url_error_response_label": "URL Error Response",
+  "method_label": "Method *",
+  "upload_headers_label": "Upload Headers",
+  "upload_parameters_label": "Upload Parameters",
+  "upload_arguments_label": "Upload Arguments",
+  "failed_to_connect": "Failed to connect to server. Please check your internet connection.",
+  "upload_error_message": "Error transferring to {url}: ({status_code}) {status_message}",
+  "upload_error_message_with_details": "Error transferring to {url}: ({status_code}) {status_message}; {details}",
+  "upload_success_message": "Upload successful",
+  "upload_success_message_with_details": "File uploaded successfully as: {parsedResponse}. It has been copied to your clipboard.",
+  "upload_success": "Upload successful",
+  "upload_success_with_url": "File uploaded successfully as: {url}. It has been copied to your clipboard.",
+  "upload_failed_unexpectedly": "Upload failed unexpectedly.",
+  "upload_error_unknown": "Unknown FTP error",
+  "upload_error_with_message": "Error transferring to {domain}: ({error})",
+  "invalid_json": "The file you selected appears to not be a valid JSON file. \n\n Error: {error}",
+  "import_uploader_already_exists": "The uploader you are trying to import already exists.",
+  "import_uploader_invalid": "The uploader you are trying to import is invalid.",
+  "import_request_method_not_supported": "The request method ({requestMethod}) is not supported.",
+  "import_not_valid_uploader": "The file you selected appears to not be a valid uploader.",
+  "import_successful": "The uploader was imported successfully.",
+  "export_successful": "The uploader was exported successfully.",
+  "export_failed": "Failed to export the uploader. \\n\\nError: {error}.",
+  "key": "Key",
+  "value": "Value"
 }

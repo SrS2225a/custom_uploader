@@ -11,6 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:pure_ftp/pure_ftp.dart';
 import 'package:mime/mime.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'dart:async';
 
@@ -149,7 +150,6 @@ class FileService {
 
         final remotePath = networkUploader.folderPath.isEmpty ? "/" : networkUploader.folderPath;
         final ftpFile = FtpFile(path: remotePath.endsWith("/") ? remotePath + file.path.split("/").last : "$remotePath/${file.path.split("/").last}", client: client);
-        final ftpTransfer = FtpTransfer(socket: client.socket);
 
         final result = await uploadFtpFile(
           ftpClient: client,
@@ -175,22 +175,30 @@ class FileService {
           );
 
           if (ftpUrl.isEmpty) {
-            showSnackBar(context, "Upload successful");
+            showSnackBar(context, AppLocalizations.of(context)!.upload_success);
           } else {
             Clipboard.setData(ClipboardData(text: ftpUrl));
-            showSnackBar(context,
-                "File uploaded successfully as: $ftpUrl. It has been copied to your clipboard.");
+            showSnackBar(
+              context,
+              AppLocalizations.of(context)!.upload_success_with_url(ftpUrl),
+            );
           }
         } else {
-          showSnackBar(context, result.errorMessage ?? "Upload failed unexpectedly.");
+          showSnackBar(
+            context,
+            result.errorMessage ?? AppLocalizations.of(context)!.upload_failed_unexpectedly,
+          );
+
           Logger.logResponse(
             endpoint: networkUploader.domain,
             statusCode: result.initialResponse?.code ?? 500,
-            responseBody: result.errorMessage ?? "Unknown FTP error",
+            responseBody: result.errorMessage ?? AppLocalizations.of(context)!.upload_error_unknown,
           );
         }
       } catch(error) {
-        showSnackBar(context, "Error transferring to ${networkUploader.domain}: (${error.toString()})");
+        showSnackBar(
+          context,
+          AppLocalizations.of(context)!.upload_error_with_message(networkUploader.domain, error.toString()));
         Logger.logResponse(
           endpoint: networkUploader.domain,
           statusCode: 500,
@@ -199,7 +207,7 @@ class FileService {
         print(error);
       }
     } else {
-      showSnackBar(context, "No uploader selected.");
+      showSnackBar(context, AppLocalizations.of(context)!.no_uploader_selected);
     }
   }
 
@@ -296,10 +304,10 @@ class FileService {
 
     String? parsedResponse = parseResponse(responseData.data, responseParser.uploaderResponseParser);
     if (parsedResponse!.isEmpty) {
-      showSnackBar(context, "Upload successful");
+      showSnackBar(context, AppLocalizations.of(context)!.upload_success_message);
     } else {
       Clipboard.setData(ClipboardData(text: parsedResponse));
-      showSnackBar(context, "File uploaded successfully as: $parsedResponse. It has been copied to your clipboard.");
+      showSnackBar(context, AppLocalizations.of(context)!.upload_success_message_with_details(parsedResponse));
     }
   }
 
@@ -315,12 +323,12 @@ class FileService {
 
       errorMessage = parseResponse(error.response?.data, uploader.uploaderErrorParser);
       if (errorMessage!.isEmpty) {
-        errorMessage = "Error transferring to ${uploader.uploaderUrl}: (${error.response?.statusCode}) ${error.response?.statusMessage}";
+        errorMessage = AppLocalizations.of(context)!.upload_error_message(error.response?.statusCode as Object, error.response?.statusMessage as Object, uploader.uploaderUrl);
       } else {
-        errorMessage = "Error transferring to ${uploader.uploaderUrl}: (${error.response?.statusCode}) ${error.response?.statusMessage}; $errorMessage";
+        errorMessage = AppLocalizations.of(context)!.upload_error_message_with_details(errorMessage, error.response?.statusCode as Object, error.response?.statusMessage as Object, uploader.uploaderUrl);
       }
     } else {
-      errorMessage = "Failed to connect to server. Please check your internet connection.";
+      errorMessage = AppLocalizations.of(context)!.failed_to_connect;
     }
 
     showSnackBar(context, errorMessage);

@@ -1,6 +1,7 @@
 import 'package:custom_uploader/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'components/add_uploader_advanced.dart';
 import 'components/add_uploader_simple.dart';
@@ -33,14 +34,14 @@ class _MyCreatorState extends State<HTTPShareForm> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("HTTP Uploader"),
+          title: Text(AppLocalizations.of(context)!.type_uploader("HTTP")),
           actions: <Widget>[
             PopupMenuButton<int>(itemBuilder: (BuildContext context) {
               return [
                 CheckedPopupMenuItem<int>(
                   checked: _isAdvancedView,
                   value: 0,
-                  child: const Text("Advanced"),
+                  child: Text(AppLocalizations.of(context)!.advanced),
                 ),
               ];
             },

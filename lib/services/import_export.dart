@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'database.dart';
 
@@ -20,7 +21,7 @@ class ImportExportService {
         return jsonDecode(file.readAsStringSync());
       } catch (e) {
         // tell the user why it failed
-        showAlert(context, "Failed to import", "The file you selected appears to not be a valid JSON file. \n\nError: ${e.toString()}");
+        showAlert(context, AppLocalizations.of(context)!.failed_to_import, AppLocalizations.of(context)!.invalid_json(e.toString()));
         return null;
       }
     }
@@ -98,24 +99,25 @@ class ImportExportService {
           Box<Share> shareBox = Hive.box<Share>("custom_upload");
           if (shareBox.values.where((element) => element.uploaderUrl == json["RequestURL"]).isNotEmpty) {
             // tell the user that the uploader already exists
-            showAlert(context, "Failed to import", "The uploader you are trying to import already exists.");
+            showAlert(context, AppLocalizations.of(context)!.failed_to_import, AppLocalizations.of(context)!.import_uploader_already_exists);
           } else {
             // add the uploader to the database
             Share? share = readJson(json);
             if (share != null) {
               shareBox.add(share);
+              showSnackBar(context, AppLocalizations.of(context)!.import_successful);
             } else {
               // tell the user that the uploader is invalid
-              showAlert(context, "Failed to import", "The uploader you are trying to import is invalid.");
+              showAlert(context, AppLocalizations.of(context)!.failed_to_import, AppLocalizations.of(context)!.import_uploader_invalid);
             }
           }
         } else {
           // tell the user that the request method is not supported
-          showAlert(context, "Failed to import", "The request method (${json["RequestMethod"]}) is not supported.");
+          showAlert(context, AppLocalizations.of(context)!.failed_to_import, AppLocalizations.of(context)!.import_request_method_not_supported(json["RequestMethod"]));
         }
       } else {
         // tell the user that the file is not a valid uploader
-        showAlert(context, "Failed to import",  "The file you selected appears to not be a valid uploader.");
+        showAlert(context, AppLocalizations.of(context)!.failed_to_import,  AppLocalizations.of(context)!.import_not_valid_uploader);
       }
     }
   }
@@ -170,7 +172,7 @@ class ImportExportService {
         File file = File(filePath);
         // write file as type json
         await file.writeAsString(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
-        showSnackBar(context, "The uploader was exported to your downloads");
+        showSnackBar(context, AppLocalizations.of(context)!.export_successful);
       } else {
         final deviceInfo = DeviceInfoPlugin();
         final androidInfo = await deviceInfo.androidInfo;
@@ -181,16 +183,16 @@ class ImportExportService {
           // write file as type json
           final exportFile = await tempFile.writeAsString(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
           await _saveFileToMediaStore(exportFile, '${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json');
-          showSnackBar(context, "The uploader was exported to your downloads");
+          showSnackBar(context, AppLocalizations.of(context)!.export_successful);
         } else {
           // tell the user that the permission was denied
-          showAlert(context, "Failed to export", "The permission to write to storage was denied.");
+          showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.permission_denied("storage"));
         }
       }
     } catch (e) {
       // tell the user why it failed
       print(e);
-      showAlert(context, "Failed to export", "Failed to export the uploader. \n\nError: ${e.toString()}");
+      showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.export_failed(e.toString()));
     }
   }
 }

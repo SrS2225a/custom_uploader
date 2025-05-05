@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../services/database.dart';
 import '../../utils/show_message.dart';
@@ -61,7 +62,7 @@ class SimpleViewState extends State<SimpleView> {
         cursor.uploadFormData = _switchValue;
         box.add(cursor);
       } else {
-        showSnackBar(context, "A share with that URL already exists.");
+        showSnackBar(context, AppLocalizations.of(context)!.share_already_exists);
       }
     }
 
@@ -82,14 +83,14 @@ class SimpleViewState extends State<SimpleView> {
               children: [
                 Expanded(
                   child: TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: "The URL to upload to.",
-                      labelText: "Upload URL *",
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!.upload_url_hint,
+                      labelText: AppLocalizations.of(context)!.upload_url_label,
                     ),
                     validator: (value) {
                       var regex = RegExp(r"^(?:https?|s?ftp):\/\/[-A-Za-z0-9+&@#\/\[\]%?=~_!:.]*[-A-Za-z0-9+@#\/\]%=~_|]$").hasMatch(value!);
                       if (value.isEmpty || !regex) {
-                        return 'Please enter a valid URL';
+                        return AppLocalizations.of(context)!.upload_url_error;
                       }
                       return null;
                     },
@@ -105,13 +106,13 @@ class SimpleViewState extends State<SimpleView> {
               children: [
                 Expanded(
                   child: TextFormField(
-                    decoration: const InputDecoration(
-                      hintText: "The name of the form data field.",
-                      labelText: "Form Data Name *",
+                    decoration: InputDecoration(
+                      hintText: AppLocalizations.of(context)!.form_data_name_hint,
+                      labelText: AppLocalizations.of(context)!.form_data_name_label,
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter a form name';
+                        return AppLocalizations.of(context)!.form_data_name_error;
                       }
                       return null;
                     },
@@ -133,12 +134,12 @@ class SimpleViewState extends State<SimpleView> {
                     });
                   },
                 ),
-                const Text("Use file encoding"),
+                Text(AppLocalizations.of(context)!.use_file_encoding),
               ],
             ),
             const Spacer(),
-            const Text(
-              "Tip: If you need to supply arguments to an uploader, try the advanced view",
+            Text(
+              AppLocalizations.of(context)!.advanced_view_tip,
               textAlign: TextAlign.center,
             ),
             Row(
@@ -158,7 +159,7 @@ class SimpleViewState extends State<SimpleView> {
                           _saveShare();
                         }
                       },
-                      child: const Text('Save'),
+                      child: Text(AppLocalizations.of(context)!.save),
                     ),
                   ),
                 ),
@@ -169,7 +170,7 @@ class SimpleViewState extends State<SimpleView> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: const Text('Cancel'),
+                      child: Text(AppLocalizations.of(context)!.cancel),
                     ),
                   ),
                 ),

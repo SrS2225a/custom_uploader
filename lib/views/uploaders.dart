@@ -10,6 +10,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:dio/dio.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Uploaders extends StatefulWidget {
   const Uploaders({super.key, required this.title});
@@ -56,17 +57,16 @@ class _MyUploaderState extends State<Uploaders> {
         barrierDismissible: true,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text("Delete $parsedUrl"),
-            content: const Text(
-                "Are you sure you want to delete this uploader?"),
+            title: Text(AppLocalizations.of(context)!.delete(parsedUrl)),
+            content: Text(AppLocalizations.of(context)!.delete_this_share),
             actions: <Widget>[
               TextButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text("Yes"),
+                child: Text(AppLocalizations.of(context)!.yes),
               ),
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text("No"),
+                child: Text(AppLocalizations.of(context)!.no),
               ),
             ],
           );
@@ -137,7 +137,7 @@ class _MyUploaderState extends State<Uploaders> {
                 MaterialPageRoute(builder: (context) => UploadLogsScreen()),
               );
             },
-            tooltip: "View Logs",
+            tooltip: AppLocalizations.of(context)!.view_logs,
           ),
           PopupMenuButton<int>(
             onSelected: (value) async {
@@ -154,8 +154,8 @@ class _MyUploaderState extends State<Uploaders> {
                 int networkSelectedIndex = networkShare.values.toList().indexWhere((share) => share.selected ?? false);
 
                 if(networkSelectedIndex != -1){
-                  const SnackBar(
-                    content: Text("Currently, ftp shares cannot be imported or exported"),
+                  SnackBar(
+                    content: Text(AppLocalizations.of(context)!.ftp_not_supported),
                   );
                 } else {
                   final shareBox = Hive.box<Share>("custom_upload");
@@ -165,8 +165,8 @@ class _MyUploaderState extends State<Uploaders> {
                       context: context, index: selectedIndex);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("No uploader selected"),
+                      SnackBar(
+                        content: Text(AppLocalizations.of(context)!.no_uploader_selected),
                       ),
                     );
                   }
@@ -174,8 +174,8 @@ class _MyUploaderState extends State<Uploaders> {
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem<int>(value: 0, child: Text("Import from file")),
-              const PopupMenuItem<int>(value: 1, child: Text("Export selected to file")),
+              PopupMenuItem<int>(value: 0, child: Text(AppLocalizations.of(context)!.import_from_file)),
+              PopupMenuItem<int>(value: 1, child: Text(AppLocalizations.of(context)!.export_to_file)),
             ],
           ),
         ],
@@ -192,7 +192,7 @@ class _MyUploaderState extends State<Uploaders> {
 
                 if(httpShares.isEmpty && ftpShares.isEmpty){
                   return Center(
-                    child: Text("No Shares",
+                    child: Text(AppLocalizations.of(context)!.no_custom_uploaders,
                       style: Theme.of(context).textTheme.titleLarge,
                     )
                   );
@@ -243,7 +243,7 @@ class _MyUploaderState extends State<Uploaders> {
                             children: [
                               ListTile(
                                 leading: const Icon(Icons.edit, color: Colors.amber),
-                                title: const Text("Edit"),
+                                title: Text(AppLocalizations.of(context)!.edit),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   editItem(share!, shareType.toString());
@@ -251,7 +251,7 @@ class _MyUploaderState extends State<Uploaders> {
                               ),
                               ListTile(
                                 leading: const Icon(Icons.delete, color: Colors.red),
-                                title: const Text("Delete"),
+                                title: Text(AppLocalizations.of(context)!.delete("")),
                                   onTap: () async {
                                     Navigator.of(context).pop();
                                     deleteItem(shareData['index'] as int, shareType.toString(), parsedUrl);
@@ -301,10 +301,13 @@ class _MyUploaderState extends State<Uploaders> {
                             ),
                             subtitle: share is Share
                                 ? Text(
-                                    'Upload Method: ${share.method ?? "POST"} • Type: ${shareType.toString().toUpperCase()}',
+                                AppLocalizations.of(context)!.upload_method_and_type(
+                                   share.method!, shareType.toString().toUpperCase()),
                                   )
                                 : Text(
-                                    'Type: ${shareType.toString().toUpperCase()}',
+                              AppLocalizations.of(context)!.upload_type_only(
+                                shareType.toString().toUpperCase(),
+                              ),
                                   ),
                             onTap: () {
                               final shareBox = shareType == 'http' ? httpBox : ftpBox;

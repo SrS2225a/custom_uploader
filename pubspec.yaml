@@ -10,6 +10,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: any
   dio: ^5.4.0
   dio_cache_interceptor: ^4.0.3
   file_picker: ^10.1.2
@@ -28,7 +31,6 @@ dependencies:
   http_parser: ^4.1.2
   path_provider: ^2.0.1
   pure_ftp: ^0.7.5
-  crowdin_sdk: 0.7.0
   flutter_speed_dial: ^7.0.0
 
 dev_dependencies:
@@ -40,6 +42,7 @@ dev_dependencies:
   build_runner: ^2.4.15
 
 flutter:
+  generate: true
   assets:
     - lib/assets/preset_uploaders.yaml
   uses-material-design: true

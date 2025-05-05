@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:custom_uploader/utils/build_favicon.dart';
 import 'package:custom_uploader/services/response_logger.dart';
 import 'package:flutter/services.dart';
@@ -53,7 +53,7 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
         File exportFile = file..renameSync(filePath); // Renaming the provided file to the target file path
         // No need for JSON conversion, just copy the file
         await exportFile.copy(filePath);
-        showSnackBar(context, "The logs were downloaded successfully");
+        showSnackBar(context, AppLocalizations.of(context)!.logs_downloaded_successfully);
 
       } else {
         final deviceInfo = DeviceInfoPlugin();
@@ -66,16 +66,16 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
           // No need for JSON conversion, just copy the file
           await file.copy(filePath);
           await saveFileToMediaStore(file, name);
-          showSnackBar(context, "The logs were downloaded successfully");
+          showSnackBar(context, AppLocalizations.of(context)!.logs_downloaded_successfully);
         } else {
           // Tell the user that the permission was denied
-          showAlert(context, "Failed to export", "The permission to write to storage was denied.");
+          showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.permission_denied("storage"));
         }
       }
     } catch (e) {
       // Tell the user why it failed
       print(e);
-      showAlert(context, "Failed to export", "Failed to download logs. \n\nError: ${e.toString()}");
+      showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.failed_to_download_logs(e.toString()));
     }
   }
 
@@ -100,7 +100,7 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
       exportLogs(file:file, name: "CustomUploaderLogs_${DateTime.now().toIso8601String()}.log", context: context);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("No logs available to download.")),
+        SnackBar(content: Text(AppLocalizations.of(context)!.no_logs_available)),
       );
     }
   }
@@ -113,17 +113,17 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Custom Uploader Logs"),
+        title: Text(AppLocalizations.of(context)!.custom_uploader_logs),
         actions: [
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: _downloadLogs,
-            tooltip: "Download Logs",
+            tooltip: AppLocalizations.of(context)!.download_logs,
           ),
           IconButton(
             icon: const Icon(Icons.delete, color: Colors.red),
             onPressed: _clearLogs,
-            tooltip: "Clear Logs",
+            tooltip: AppLocalizations.of(context)!.clear_logs,
           ),
         ],
       ),
@@ -134,9 +134,9 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return const Center(child: Text("Error loading logs"));
+            return Center(child: Text(AppLocalizations.of(context)!.error_loading_logs));
           } else if (snapshot.data == null || snapshot.data!.isEmpty) {
-            return Center(child: Text("No logs available", style: Theme.of(context).textTheme.titleLarge));
+            return Center(child: Text(AppLocalizations.of(context)!.no_logs_available, style: Theme.of(context).textTheme.titleLarge));
           } else {
             return ListView.builder(
               padding: const EdgeInsets.all(12),

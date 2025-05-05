@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:pluto_grid/pluto_grid.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../services/database.dart';
 import '../../utils/show_message.dart';
@@ -33,7 +34,7 @@ class AdvancedViewState extends State<AdvancedView> {
     // to do: add height spacing between tables
     columns.addAll([
       PlutoColumn(
-          title: 'Key',
+          title: AppLocalizations.of(context)!.key,
           field: 'key',
           type: PlutoColumnType.text(),
           footerRenderer: (rendererContext) {
@@ -53,7 +54,7 @@ class AdvancedViewState extends State<AdvancedView> {
       ),
 
       PlutoColumn(
-          title: 'Value',
+          title: AppLocalizations.of(context)!.value,
           field: 'value',
           type: PlutoColumnType.text(),
           footerRenderer: (rendererContext) {
@@ -82,7 +83,7 @@ class AdvancedViewState extends State<AdvancedView> {
     }
 
     columnGroups.addAll([
-      PlutoColumnGroup(title: "Upload Headers", fields: ['key', 'value']),
+      PlutoColumnGroup(title: AppLocalizations.of(context)!.upload_headers_label, fields: ['key', 'value']),
     ]);
 
     return PlutoGrid(
@@ -117,7 +118,7 @@ class AdvancedViewState extends State<AdvancedView> {
 
     columns.addAll([
       PlutoColumn(
-          title: 'Key',
+          title: AppLocalizations.of(context)!.key,
           field: 'key',
           type: PlutoColumnType.text(),
           footerRenderer: (rendererContext) {
@@ -136,7 +137,7 @@ class AdvancedViewState extends State<AdvancedView> {
           }
       ),
       PlutoColumn(
-          title: 'Value',
+          title: AppLocalizations.of(context)!.value,
           field: 'value',
           type: PlutoColumnType.text(),
           footerRenderer: (rendererContext) {
@@ -165,7 +166,7 @@ class AdvancedViewState extends State<AdvancedView> {
     }
 
     columnGroups.addAll([
-      PlutoColumnGroup(title: "Upload Parameters", fields: ['key', 'value']),
+      PlutoColumnGroup(title: AppLocalizations.of(context)!.upload_parameters_label, fields: ['key', 'value']),
     ]);
 
 
@@ -201,7 +202,7 @@ class AdvancedViewState extends State<AdvancedView> {
 
     columns.addAll([
       PlutoColumn(
-          title: 'Key',
+          title: AppLocalizations.of(context)!.key,
           field: 'key',
           type: PlutoColumnType.text(),
           footerRenderer: (rendererContext) {
@@ -220,7 +221,7 @@ class AdvancedViewState extends State<AdvancedView> {
           }
       ),
       PlutoColumn(
-          title: 'Value',
+          title: AppLocalizations.of(context)!.value,
           field: 'value',
           type: PlutoColumnType.text(),
           footerRenderer: (rendererContext) {
@@ -249,7 +250,7 @@ class AdvancedViewState extends State<AdvancedView> {
     }
 
     columnGroups.addAll([
-      PlutoColumnGroup(title: "Upload Arguments", fields: ['key', 'value']),
+      PlutoColumnGroup(title: AppLocalizations.of(context)!.upload_arguments_label, fields: ['key', 'value']),
     ]);
 
 
@@ -315,7 +316,7 @@ class AdvancedViewState extends State<AdvancedView> {
         cursor.uploadFormData = _switchValue;
         box.add(cursor);
       } else {
-        showSnackBar(context, "A share with that url already exists.");
+        showSnackBar(context, AppLocalizations.of(context)!.share_already_exists);
       }
     }
 
@@ -344,21 +345,21 @@ class AdvancedViewState extends State<AdvancedView> {
                     onChanged: (String? value) { value!; },
                     onSaved: (value) {cursor.method = value!;},
                     value: cursor.method,
-                    decoration: const InputDecoration(
-                        labelText: "Method *"
+                    decoration: InputDecoration(
+                        labelText: AppLocalizations.of(context)!.method_label,
                     ),
                   ),
                 ),
 
                 Expanded(child: TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: "The URL to upload to.",
-                    labelText: "Upload URL *",
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.upload_url_hint,
+                    labelText: AppLocalizations.of(context)!.upload_url_label,
                   ),
                   validator: (value) {
                     var regex = RegExp(r"^(?:https?|s?ftp):\/\/[-A-Za-z0-9+&@#\/\[\]%?=~_!:.]*[-A-Za-z0-9+@#\/\]%=~_|]$").hasMatch(value!);
                     if (value.isEmpty || !regex) {
-                      return 'Please enter a valid url';
+                      return AppLocalizations.of(context)!.upload_url_error;
                     }
                     return null;
                   },
@@ -372,13 +373,13 @@ class AdvancedViewState extends State<AdvancedView> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(child: TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: "The name of the form data field.",
-                    labelText: "Form Data Name *",
+                  decoration: InputDecoration(
+                    hintText: AppLocalizations.of(context)!.form_data_name_hint,
+                    labelText: AppLocalizations.of(context)!.form_data_name_label,
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Please enter a form nme';
+                      return AppLocalizations.of(context)!.form_data_name_error;
                     }
                     return null;
                   },
@@ -389,7 +390,7 @@ class AdvancedViewState extends State<AdvancedView> {
                 Switch(value: _switchValue, onChanged: (value) {setState(() {
                   _switchValue = value;
                 });}),
-                const Text("Use file encoding"),
+                Text(AppLocalizations.of(context)!.use_file_encoding),
               ],
             ),
             // SizedBox prevents the table from overflowing
@@ -410,20 +411,24 @@ class AdvancedViewState extends State<AdvancedView> {
             ),
             SizedBox(height: 15),
             TextFormField(
-              decoration: const InputDecoration(
-                hintText: "The response of the url to parse",
-                labelText: "URL Response",
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.url_response_hint,
+                labelText: AppLocalizations.of(context)!.url_response_label,
               ),
               initialValue: cursor.uploaderResponseParser,
-              onSaved: (value) {cursor.uploaderResponseParser = value!;},
+              onSaved: (value) {
+                cursor.uploaderResponseParser = value!;
+              },
             ),
             TextFormField(
-              decoration: const InputDecoration(
-                hintText: "The error response of the url to parse",
-                labelText: "URL Error Response",
+              decoration: InputDecoration(
+                hintText: AppLocalizations.of(context)!.url_error_response_hint,
+                labelText: AppLocalizations.of(context)!.url_error_response_label,
               ),
               initialValue: cursor.uploaderErrorParser,
-              onSaved: (value) {cursor.uploaderErrorParser = value!;},
+              onSaved: (value) {
+                cursor.uploaderErrorParser = value!;
+              },
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -456,7 +461,7 @@ class AdvancedViewState extends State<AdvancedView> {
                             _saveShare();
                           }
                         },
-                        child: const Text('Save'),
+                        child: Text(AppLocalizations.of(context)!.save),
                       ),
                     )
                 ),
@@ -467,7 +472,7 @@ class AdvancedViewState extends State<AdvancedView> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: const Text('Cancel'),
+                        child: Text(AppLocalizations.of(context)!.cancel),
                       ),
                     )
                 ),

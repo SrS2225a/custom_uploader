@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:yaml/yaml.dart';
 import 'package:custom_uploader/services/database.dart';
 
-
 Future<void> initializeDatabase() async {
   await Hive.initFlutter();
 
@@ -49,6 +48,8 @@ Future<void> initializeDatabase() async {
   await viewBox.close();
 }
 
+// Since the dart yaml package does not use an ordinary map type, we need to convert it.
+// Why the hell would you use an custom type in this way instead of an regular type? It drives me insane
 dynamic yamlMapToMap(dynamic value) {
   if (value is Map) {
     return Map.fromEntries(
