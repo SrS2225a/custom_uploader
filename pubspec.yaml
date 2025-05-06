@@ -36,10 +36,10 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^5.0.0
   hive_generator: ^2.0.0
   build_runner: ^2.4.15
+  intl_utils: ^2.8.2
 
 flutter:
   generate: true
