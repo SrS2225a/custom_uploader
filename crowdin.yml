@@ -1,5 +1,5 @@
 files:
   - source: /lib/l10n/app_en.arb
-    translation: /lib/l10n/app_%locale%.arb
+    translation: /lib/l10n/app_%language%.arb
 bundles:
   - 2
