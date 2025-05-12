@@ -65,16 +65,3 @@ android {
 flutter {
     source = "../.."
 }
-
-// this package still expects to use java 1.8, but we want to use java 17 :/
-project(':receive_sharing_intent').afterEvaluate {
-    project(':receive_sharing_intent').android {
-        compileOptions {
-            sourceCompatibility JavaVersion.VERSION_17
-            targetCompatibility JavaVersion.VERSION_17
-        }
-        kotlinOptions {
-            jvmTarget = '17'
-        }
-    }
-}

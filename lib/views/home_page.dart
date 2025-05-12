@@ -7,9 +7,10 @@ import 'package:custom_uploader/views/uploaders.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_sharing_intent/model/sharing_file.dart';
 import 'package:hive/hive.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -68,19 +69,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
     _setUploadProgress(0, 0);
 
-    shareFile(List<SharedMediaFile> value) async {
+    shareFile(List<SharedFile> value) async {
       if (shareBox.isNotEmpty) {
         if (value.isNotEmpty) {
           for(int i = 0; i < value.length; i++) {
-            final file = File(value[i].path);
+            final file = File(value[i].value ?? "");
             _setState(AppLocalizations.of(context)!.uploadingFile(
               i + 1, value.length, file.path.split("/").last,
             ));
-            if(value[i].type == SharedMediaType.text) {
+            if(value[i].type == SharedMediaType.TEXT ) {
               final tempDir = await getTemporaryDirectory();
               final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
               final textFile = File('${tempDir.path}/shared_text_$timestamp.txt');
-              await textFile.writeAsString(value[i].path);
+              await textFile.writeAsString(value[i].value ?? "");
               await FileService.fileUploadMultiPart(
                   file: textFile,
                   setOnUploadProgress: _setUploadProgress,
@@ -102,11 +103,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, AppLocalizations.of(context)!.no_custom_uploaders,  AppLocalizations.of(context)!.before_you_can_upload_files));
       }
       // clear the data from the sharing intent
-      ReceiveSharingIntent.instance.reset();
+      FlutterSharingIntent.instance.reset();
     }
 
     // For sharing files coming from outside the app while the app is open
-    ReceiveSharingIntent.instance.getMediaStream().listen((List<SharedMediaFile> value) {
+    FlutterSharingIntent.instance.getMediaStream().listen((List<SharedFile> value) {
       setState(() async {
         if (!_hasBeenPressed) {
           shareFile(value);
@@ -117,7 +118,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
 
     //For sharing images coming from outside the app while the app is closed
-    ReceiveSharingIntent.instance.getInitialMedia().then((List<SharedMediaFile> value) {
+    FlutterSharingIntent.instance.getInitialSharing().then((List<SharedFile> value) {
       setState(() {
         if (!_hasBeenPressed) {
           shareFile(value);
