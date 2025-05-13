@@ -6,6 +6,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -138,56 +139,56 @@ class ImportExportService {
       addItem(file: file, name: name);
     }
 
-    Future<String> getFilePath() async {
-      // Use the legacy external storage directory for older Android versions
-      final appDocumentsDirectory = Directory("/storage/emulated/0/Download");
-      return '${appDocumentsDirectory.path}/${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json';
-    }
-
-    Future<String> getMediaStorePath() async {
-      // Use the legacy external storage directory for older Android versions
-      return '/data/user/0/com.nyx.custom_uploader/cache/${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json';
-    }
-
-
-    // convert the uploader to json
-    Map<String, dynamic> json = {
-      "RequestURL": share.uploaderUrl,
-      "FileFormName": share.formDataName,
-      "RequestMethod": share.method,
-      if (share.uploadFormData) "Body": "MultipartFormData",
-      if (share.uploadHeaders.isNotEmpty) "Headers": share.uploadHeaders,
-      if (share.uploadParameters.isNotEmpty) "Parameters": share.uploadParameters,
-      if (share.uploadArguments.isNotEmpty) "Arguments": share.uploadArguments,
-      if (share.uploaderResponseParser.isNotEmpty) "URL": share.uploaderResponseParser,
-      if (share.uploaderErrorParser.isNotEmpty) "ErrorMessage": share.uploaderErrorParser
-    };
-
     try {
-      // request permission to write to storage using the permission handler plugin
-     PermissionStatus legacyPermission = await Permission.storage.request();
-      if (legacyPermission == PermissionStatus.granted) {
-        // write the file to storage
-        String filePath = await getFilePath();
-        File file = File(filePath);
-        // write file as type json
-        await file.writeAsString(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
-        showSnackBar(context, AppLocalizations.of(context)!.export_successful);
-      } else {
-        final deviceInfo = DeviceInfoPlugin();
-        final androidInfo = await deviceInfo.androidInfo;
-        final sdkVersion = androidInfo.version.sdkInt;
-        if(sdkVersion  >= 10) {
-          final filePath = await getMediaStorePath();
-          File tempFile = File(filePath);
+      final fileName = '${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json';
+      // convert the uploader to json
+      Map<String, dynamic> json = {
+        "RequestURL": share.uploaderUrl,
+        "FileFormName": share.formDataName,
+        "RequestMethod": share.method,
+        if (share.uploadFormData) "Body": "MultipartFormData",
+        if (share.uploadHeaders.isNotEmpty) "Headers": share.uploadHeaders,
+        if (share.uploadParameters.isNotEmpty) "Parameters": share.uploadParameters,
+        if (share.uploadArguments.isNotEmpty) "Arguments": share.uploadArguments,
+        if (share.uploaderResponseParser.isNotEmpty) "URL": share.uploaderResponseParser,
+        if (share.uploaderErrorParser.isNotEmpty) "ErrorMessage": share.uploaderErrorParser
+      };
+
+      if(Platform.isAndroid) {
+        // request permission to write to storage using the permission handler plugin
+        PermissionStatus legacyPermission = await Permission.storage.request();
+        if (legacyPermission == PermissionStatus.granted) {
+          // write the file to storage
+          final filePath = '/storage/emulated/0/Download/$fileName';
+          File file = File(filePath);
           // write file as type json
-          final exportFile = await tempFile.writeAsString(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
-          await _saveFileToMediaStore(exportFile, '${share.uploaderUrl.replaceAll(RegExp(r'[^\w\s]+'), "_")}.sxcu.json');
+          await file.writeAsString(jsonEncode(json), flush: true, mode: FileMode.write, encoding: Encoding.getByName("utf-8")!);
           showSnackBar(context, AppLocalizations.of(context)!.export_successful);
         } else {
-          // tell the user that the permission was denied
-          showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.permission_denied("storage"));
-        }
+          final deviceInfo = DeviceInfoPlugin();
+          final androidInfo = await deviceInfo.androidInfo;
+          final sdkVersion = androidInfo.version.sdkInt;
+          if(sdkVersion  >= 10) {
+            final tempDir = await getTemporaryDirectory();
+            final path = '${tempDir.path}/$fileName';
+            final file = File(path);
+            await file.writeAsString(jsonEncode(json), flush: true, encoding: Encoding.getByName("utf-8")!);
+            await _saveFileToMediaStore(file, fileName);
+            showSnackBar(context, AppLocalizations.of(context)!.export_successful);
+          } else {
+            // tell the user that the permission was denied
+            showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.permission_denied("storage"));
+          }
+      }
+      } else if(Platform.isIOS) {
+        final directory = await getApplicationDocumentsDirectory();
+        final path = '${directory.path}/$fileName';
+        final file = File(path);
+        await file.writeAsString(jsonEncode(json), flush: true, encoding: Encoding.getByName("utf-8")!);
+        showSnackBar(context, AppLocalizations.of(context)!.export_successful);
+      } else {
+        // tell the user that the platform is not supported
+        showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.platform_not_supported(Platform.operatingSystem));
       }
     } catch (e) {
       // tell the user why it failed

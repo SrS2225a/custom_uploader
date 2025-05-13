@@ -84,5 +84,5 @@
   "export_failed": "Failed to export the uploader. \\n\\nError: {error}.",
   "key": "Key",
   "value": "Value",
-  "google_drive": "Google Drive"
+  "platform_not_supported": "The platform ({platform}) is not supported."
 }

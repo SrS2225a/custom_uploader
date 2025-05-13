@@ -83,5 +83,6 @@
   "export_successful": "The uploader was exported successfully.",
   "export_failed": "Failed to export the uploader. \\n\\nError: {error}.",
   "key": "Key",
-  "value": "Value"
+  "value": "Value",
+  "platform_not_supported": ""
 }

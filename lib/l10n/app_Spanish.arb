@@ -83,5 +83,6 @@
   "export_successful": "El cargador se exportó correctamente.",
   "export_failed": "Error al exportar el cargador.\n\nError: {error}.",
   "key": "Clave",
-  "value": "Valor"
+  "value": "Valor",
+  "platform_not_supported": ""
 }

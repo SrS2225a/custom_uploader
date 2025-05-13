@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:custom_uploader/utils/build_favicon.dart';
 import 'package:custom_uploader/services/response_logger.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../utils/show_message.dart';
@@ -33,50 +34,94 @@ class _UploadLogsScreenState extends State<UploadLogsScreen> {
       await channel.invokeMethod('addItem', {'path': file.path, 'name': name});
     }
 
-    Future<String> getFilePath() async {
-      // Use the external storage directory for newer Android versions
-      final appDocumentsDirectory = Directory("/storage/emulated/0/Download");
-      return '${appDocumentsDirectory.path}/$name';
+    Future<String> getFilePathAndroid() async {
+      return '/storage/emulated/0/Download/$name';
     }
 
-    Future<String> getMediaStorePath() async {
-      // Use the cache directory for apps targeting Android 10 and above
+    Future<String> getMediaStorePathAndroid() async {
       return '/data/user/0/com.nyx.custom_uploader/cache/$name';
     }
 
+    Future<String> getFilePathIOS() async {
+      final dir = await getApplicationDocumentsDirectory();
+      return '${dir.path}/$name';
+    }
+
     try {
-      // Request permission to write to storage using the permission handler plugin
-      PermissionStatus permissionStatus = await Permission.storage.request();
-      if (permissionStatus == PermissionStatus.granted || permissionStatus == PermissionStatus.limited) {
-        // Write the provided file to storage
-        String filePath = await getFilePath();
-        File exportFile = file..renameSync(filePath); // Renaming the provided file to the target file path
-        // No need for JSON conversion, just copy the file
-        await exportFile.copy(filePath);
-        showSnackBar(context, AppLocalizations.of(context)!.logs_downloaded_successfully);
-
-      } else {
-        final deviceInfo = DeviceInfoPlugin();
-        final androidInfo = await deviceInfo.androidInfo;
-        final sdkVersion = androidInfo.version.sdkInt;
-
-        if (sdkVersion >= 10) {
-          // Handle permissions for Android 10 and above
-          final filePath = await getMediaStorePath();
-          // No need for JSON conversion, just copy the file
-          await file.copy(filePath);
-          await saveFileToMediaStore(file, name);
+      if (Platform.isAndroid) {
+        PermissionStatus permissionStatus = await Permission.storage.request();
+        if (permissionStatus == PermissionStatus.granted || permissionStatus == PermissionStatus.limited) {
+          String filePath = await getFilePathAndroid();
+          File exportFile = file..renameSync(filePath);
+          await exportFile.copy(filePath);
           showSnackBar(context, AppLocalizations.of(context)!.logs_downloaded_successfully);
         } else {
-          // Tell the user that the permission was denied
-          showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.permission_denied("storage"));
+          final deviceInfo = DeviceInfoPlugin();
+          final androidInfo = await deviceInfo.androidInfo;
+          final sdkVersion = androidInfo.version.sdkInt;
+
+          if (sdkVersion >= 29) {
+            final path = await getMediaStorePathAndroid();
+            final tempFile = await file.copy(path);
+            await saveFileToMediaStore(tempFile, name);
+            showSnackBar(context, AppLocalizations.of(context)!.logs_downloaded_successfully);
+          } else {
+            showAlert(
+              context,
+              AppLocalizations.of(context)!.failed_to_export,
+              AppLocalizations.of(context)!.permission_denied("storage"),
+            );
+          }
         }
+      } else if (Platform.isIOS) {
+        final path = await getFilePathIOS();
+        await file.copy(path);
+        showSnackBar(context, AppLocalizations.of(context)!.logs_downloaded_successfully);
+      } else {
+        showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.platform_not_supported(Platform.operatingSystem));
       }
     } catch (e) {
-      // Tell the user why it failed
       print(e);
-      showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.failed_to_download_logs(e.toString()));
+      showAlert(
+        context,
+        AppLocalizations.of(context)!.failed_to_export,
+        AppLocalizations.of(context)!.failed_to_download_logs(e.toString()),
+      );
     }
+
+    // try {
+    //   // Request permission to write to storage using the permission handler plugin
+    //   PermissionStatus permissionStatus = await Permission.storage.request();
+    //   if (permissionStatus == PermissionStatus.granted || permissionStatus == PermissionStatus.limited) {
+    //     // Write the provided file to storage
+    //     String filePath = await getFilePath();
+    //     File exportFile = file..renameSync(filePath); // Renaming the provided file to the target file path
+    //     // No need for JSON conversion, just copy the file
+    //     await exportFile.copy(filePath);
+    //     showSnackBar(context, AppLocalizations.of(context)!.logs_downloaded_successfully);
+    //
+    //   } else {
+    //     final deviceInfo = DeviceInfoPlugin();
+    //     final androidInfo = await deviceInfo.androidInfo;
+    //     final sdkVersion = androidInfo.version.sdkInt;
+    //
+    //     if (sdkVersion >= 10) {
+    //       // Handle permissions for Android 10 and above
+    //       final filePath = await getMediaStorePath();
+    //       // No need for JSON conversion, just copy the file
+    //       await file.copy(filePath);
+    //       await saveFileToMediaStore(file, name);
+    //       showSnackBar(context, AppLocalizations.of(context)!.logs_downloaded_successfully);
+    //     } else {
+    //       // Tell the user that the permission was denied
+    //       showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.permission_denied("storage"));
+    //     }
+    //   }
+    // } catch (e) {
+    //   // Tell the user why it failed
+    //   print(e);
+    //   showAlert(context, AppLocalizations.of(context)!.failed_to_export, AppLocalizations.of(context)!.failed_to_download_logs(e.toString()));
+    // }
   }
 
   Future<List<String>> _loadLogs() async {
