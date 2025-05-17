@@ -21,6 +21,7 @@ class MainApp extends StatelessWidget {
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
     ]);
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     return MaterialApp(
       localizationsDelegates: const [
         AppLocalizations.delegate,  // Generated delegate

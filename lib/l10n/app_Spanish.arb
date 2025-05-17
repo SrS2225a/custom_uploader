@@ -68,9 +68,8 @@
   "upload_error_message": "Error al transferir a {url}: ({status_code}) {status_message}",
   "upload_error_message_with_details": "Error al transferir a {url}: ({status_code}) {status_message}; {details}",
   "upload_success_message": "Subida exitosa",
-  "upload_success_message_with_details": "Archivo subido correctamente como: {parsedResponse}. Se ha copiado al portapapeles.",
+  "upload_success_message_with_details": "Archivo subido correctamente como: {parsedResponse}.",
   "upload_success": "Subida exitosa",
-  "upload_success_with_url": "Archivo subido correctamente como: {url}. Se ha copiado al portapapeles.",
   "upload_failed_unexpectedly": "La subida falló inesperadamente.",
   "upload_error_unknown": "Error FTP desconocido",
   "upload_error_with_message": "Error al transferir a {domain}: ({error})",
@@ -84,5 +83,6 @@
   "export_failed": "Error al exportar el cargador.\n\nError: {error}.",
   "key": "Clave",
   "value": "Valor",
-  "platform_not_supported": ""
+  "upload_succeeded_no_url": "La carga se realizó correctamente, pero no se devolvió ninguna URL",
+  "clipboard_copied": "Copiada al portapapeles"
 }

@@ -68,9 +68,8 @@
   "upload_error_message": "Error transferring to {url}: ({status_code}) {status_message}",
   "upload_error_message_with_details": "Error transferring to {url}: ({status_code}) {status_message}; {details}",
   "upload_success_message": "Upload successful",
-  "upload_success_message_with_details": "File uploaded successfully as: {parsedResponse}. It has been copied to your clipboard.",
+  "upload_success_message_with_details": "File uploaded successfully as: {parsedResponse}",
   "upload_success": "Upload successful",
-  "upload_success_with_url": "File uploaded successfully as: {url}. It has been copied to your clipboard.",
   "upload_failed_unexpectedly": "Upload failed unexpectedly.",
   "upload_error_unknown": "Unknown FTP error",
   "upload_error_with_message": "Error transferring to {domain}: ({error})",
@@ -84,5 +83,7 @@
   "export_failed": "Failed to export the uploader. \\n\\nError: {error}.",
   "key": "Key",
   "value": "Value",
-  "platform_not_supported": "The platform ({platform}) is not supported."
+  "platform_not_supported": "The platform ({platform}) is not supported.",
+  "upload_succeeded_no_url": "Upload succeeded, but no URL was returned",
+  "clipboard_copied": "Copied to clipboard"
 }

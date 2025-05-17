@@ -103,7 +103,7 @@ Future<CustomFtpUploadResult> uploadFtpFile({
 class FileService {
   static bool shouldAddFile = true;
 
-  static Future<void> fileUploadMultiPart({
+  static Future<String?> fileUploadMultiPart({
     required File file,
     required OnUploadProgressCallback setOnUploadProgress,
     required BuildContext context,
@@ -127,7 +127,7 @@ class FileService {
         FormData formData = _buildFormData(uploader, file, mimeType);
         Map<String, String> headers = await _getHeaders(uploader);
 
-        await _uploadFile(
+        return await _uploadFile(
           method: uploader.method ?? "POST",
           url: uploader.uploaderUrl,
           headers: headers,
@@ -139,6 +139,7 @@ class FileService {
         );
       } catch (e) {
         _handleError(context, e, uploader);
+        return null;
       }
     } else if (networkUploader != null) {
       final socketInitOptions = FtpSocketInitOptions(host: networkUploader.domain, port: networkUploader.port);
@@ -176,12 +177,13 @@ class FileService {
 
           if (ftpUrl.isEmpty) {
             showSnackBar(context, AppLocalizations.of(context)!.upload_success);
+            return "";
           } else {
-            Clipboard.setData(ClipboardData(text: ftpUrl));
             showSnackBar(
               context,
-              AppLocalizations.of(context)!.upload_success_with_url(ftpUrl),
+              AppLocalizations.of(context)!.upload_success_message_with_details(ftpUrl),
             );
+            return ftpUrl;
           }
         } else {
           showSnackBar(
@@ -194,6 +196,7 @@ class FileService {
             statusCode: result.initialResponse?.code ?? 500,
             responseBody: result.errorMessage ?? AppLocalizations.of(context)!.upload_error_unknown,
           );
+          return null;
         }
       } catch(error) {
         showSnackBar(
@@ -205,9 +208,11 @@ class FileService {
           responseBody: error.toString(),
       );
         print(error);
+        return null;
       }
     } else {
       showSnackBar(context, AppLocalizations.of(context)!.no_uploader_selected);
+      return null;
     }
   }
 
@@ -236,7 +241,7 @@ class FileService {
     return formData;
   }
 
-  static Future<void> _uploadFile({
+  static Future<String?>  _uploadFile({
     required String method,
     required String url,
     required Map<String, String> headers,
@@ -260,8 +265,7 @@ class FileService {
           options: Options(headers: headers, followRedirects: false),
           data: formData,
         );
-        _handleSuccess(context, uploader, response);
-        break;
+        return _handleSuccess(context, uploader, response);
       case "PUT":
         response = await dio.put(
           url,
@@ -270,8 +274,7 @@ class FileService {
           data: formData,
           onSendProgress: onUploadProgress,
         );
-        _handleSuccess(context, uploader, response);
-        break;
+        return  _handleSuccess(context, uploader, response);
       case "PATCH":
         response = await dio.patch(
         url,
@@ -280,8 +283,7 @@ class FileService {
         data: formData,
         onSendProgress: onUploadProgress,
         );
-        _handleSuccess(context, uploader, response);
-        break;
+        return _handleSuccess(context, uploader, response);
       default: // POST
         response = await dio.post(
           url,
@@ -290,12 +292,11 @@ class FileService {
           data: formData,
           onSendProgress: onUploadProgress,
         );
-        _handleSuccess(context, uploader, response);
-        break;
+        return _handleSuccess(context, uploader, response);
     }
   }
 
-  static void _handleSuccess(BuildContext context, Share responseParser, dynamic responseData) {
+  static String? _handleSuccess(BuildContext context, Share responseParser, dynamic responseData) {
     Logger.logResponse(
         endpoint: responseParser.uploaderUrl,
         statusCode: responseData?.statusCode,
@@ -304,10 +305,9 @@ class FileService {
 
     String? parsedResponse = parseResponse(responseData.data, responseParser.uploaderResponseParser);
     if (parsedResponse!.isEmpty) {
-      showSnackBar(context, AppLocalizations.of(context)!.upload_success_message);
+      return "";
     } else {
-      Clipboard.setData(ClipboardData(text: parsedResponse));
-      showSnackBar(context, AppLocalizations.of(context)!.upload_success_message_with_details(parsedResponse));
+      return parsedResponse;
     }
   }
 
