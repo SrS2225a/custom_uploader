@@ -327,21 +327,18 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               );
                             },
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.share, size: 20),
-                            padding: EdgeInsets.zero,
-                            constraints: const BoxConstraints(),
-                            style: ButtonStyle(
-                              visualDensity: VisualDensity.compact,
-                            ),
-                            tooltip: isEmptyUrl ? 'No URL to share' : 'Share URL',
-                            onPressed: isEmptyUrl
-                                ? null
-                                : () {
-                              final params = share_plus.ShareParams(uri: Uri.tryParse(url));
-                              share_plus.SharePlus.instance.share(params);
+                          Builder( // need builder context to get the render box of the button
+                            builder: (context) {
+                              return IconButton(
+                                icon: const Icon(Icons.share, size: 20),
+                                onPressed: () async {
+                                  final box = context.findRenderObject() as RenderBox?;
+                                  final params = share_plus.ShareParams(uri: Uri.tryParse(url), sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+                                  share_plus.SharePlus.instance.share(params);
+                                },
+                              );
                             },
-                          ),
+                          )
                         ],
                       ),
                     ),
