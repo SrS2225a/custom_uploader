@@ -1,0 +1,8 @@
+1.  Ios support is now included
+2. Upgraded UI to material v3 while improving how UI events are handled
+3. Added support for ftp protocol
+4. Updated to a new logo that fits the app better (logo by https://www.deviantart.com/doppelvishop)
+5. You can now upload multiple files at a time
+6. Translation support is now included
+7. Moved the old "help" over to https://github.com/SrS2225a/custom_uploader/wiki with more detail about how to use the app
+8. In addition to copying, you can now share your uploaded links to other apps using the system share
