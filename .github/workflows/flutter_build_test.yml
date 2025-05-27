@@ -9,8 +9,8 @@ on:
       - master
 
 jobs:
-  build:
-    name: Build Flutter App
+  build_android:
+    name: Build Flutter App (Android)
     runs-on: ubuntu-latest
 
     steps:
@@ -21,7 +21,34 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: stable
-          flutter-version-file: pubspec.yaml # path to pubspec.yaml
-      - run: flutter pub get
-      - run: flutter build apk --release
-      - run: flutter build appbundle --release
+          flutter-version-file: pubspec.yaml
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build App Bundle
+        run: flutter build appbundle --release
+
+  build_ios:
+    name: Build Flutter App (iOS)
+    runs-on: macos-latest
+    needs: build_android  # Remove this line if you want parallel execution
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version-file: pubspec.yaml
+
+      - name: Get dependencies
+        run: flutter pub get
+
+      - name: Build iOS (no code signing)
+        run: flutter build ios --release --no-codesign
