@@ -195,9 +195,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				244CF7482DC46EC6003AE031 /* Share Extension */,
-			);
 			name = "Share Extension";
 			productName = "Share Extension";
 			productReference = 244CF7472DC46EC6003AE031 /* Share Extension.appex */;
