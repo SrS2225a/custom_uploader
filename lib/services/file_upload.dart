@@ -176,13 +176,8 @@ class FileService {
           );
 
           if (ftpUrl.isEmpty) {
-            showSnackBar(context, AppLocalizations.of(context)!.upload_success);
             return "";
           } else {
-            showSnackBar(
-              context,
-              AppLocalizations.of(context)!.upload_success_message_with_details(ftpUrl),
-            );
             return ftpUrl;
           }
         } else {
@@ -211,7 +206,6 @@ class FileService {
         return null;
       }
     } else {
-      showSnackBar(context, AppLocalizations.of(context)!.no_uploader_selected);
       return null;
     }
   }
