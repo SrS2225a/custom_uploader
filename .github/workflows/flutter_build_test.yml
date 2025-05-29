@@ -35,7 +35,6 @@ jobs:
   build_ios:
     name: Build Flutter App (iOS)
     runs-on: macos-latest
-    needs: build_android  # Remove this line if you want parallel execution
 
     steps:
       - name: Checkout repository
@@ -53,4 +52,4 @@ jobs:
       - name: Build iOS (no code signing)
         run: |
           sudo xcode-select -s /Applications/Xcode_15.3.app
-          flutter build ios --release --no-codesign
+          flutter build ipa --release --no-codesign
