@@ -52,5 +52,5 @@ jobs:
 
       - name: Build iOS (no code signing)
         run: |
-          defaults write com.apple.dt.Xcode IDEFileSystemSynchronizedGroupsEnabled -bool YES 
+          sudo xcode-select -s /Applications/Xcode_15.3.app
           flutter build ios --release --no-codesign
