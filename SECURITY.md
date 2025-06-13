@@ -2,7 +2,7 @@
 
 ## Supported Versions
 
-Only the latest version of this project is supported. Older versions may not receive security updates or patches. Please ensure you are using the most recent release.
+Only the latest version of this project is supported. Older versions will not receive security updates or patches. Please ensure you are using the most recent release.
 
 ## Reporting a Vulnerability
 
