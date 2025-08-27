@@ -346,8 +346,48 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 },
               ),
             ),
-        ],
-      )
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.copy),
+                      label: const Text("Copy All"),
+                      onPressed: _uploadedUrls.isEmpty
+                          ? null
+                          : () {
+                        final urls = _uploadedUrls.where((u) => u.trim().isNotEmpty).join("\n");
+                        Clipboard.setData(ClipboardData(text: urls));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('All URLs copied to clipboard')),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.share),
+                      label: const Text("Share All"),
+                      onPressed: _uploadedUrls.isEmpty
+                          ? null
+                          : () async {
+                        final urls = _uploadedUrls.where((u) => u.trim().isNotEmpty).join("\n");
+                        final box = context.findRenderObject() as RenderBox?;
+                        final params = share_plus.ShareParams(
+                          text: urls,
+                          sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size,
+                        );
+                        share_plus.SharePlus.instance.share(params);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            )
+          ],
+        )
     );
   }
 }
