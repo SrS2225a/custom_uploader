@@ -10,7 +10,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:dio/dio.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:custom_uploader/l10n/app_localizations.dart';
 
 class Uploaders extends StatefulWidget {
   const Uploaders({super.key, required this.title});

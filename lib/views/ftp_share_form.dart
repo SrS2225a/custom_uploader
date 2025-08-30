@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:custom_uploader/services/database.dart';
 import 'package:hive/hive.dart';
 import 'package:pure_ftp/pure_ftp.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:custom_uploader/l10n/app_localizations.dart';
 
 import '../utils/show_message.dart';
 

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:custom_uploader/views/home_page.dart';
 import 'package:flutter/services.dart';
 import 'package:custom_uploader/utils/init_database.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:custom_uploader/l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 Future<void> main() async {

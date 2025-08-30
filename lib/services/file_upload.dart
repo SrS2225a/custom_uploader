@@ -11,7 +11,7 @@ import 'package:dio/dio.dart';
 import 'package:pure_ftp/pure_ftp.dart';
 import 'package:mime/mime.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:custom_uploader/l10n/app_localizations.dart';
 
 import 'dart:async';
 
