@@ -1,3 +1,4 @@
+import 'package:custom_uploader/utils/ScaffoldFix.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_uploader/services/database.dart';
 import 'package:hive/hive.dart';
@@ -140,7 +141,7 @@ class _FTPShareFormState extends State<FTPShareForm> {
   Widget build(BuildContext context) {
     final shareLabel = "FTP";
 
-    return Scaffold(
+    return ScaffoldFix(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.type_uploader("FTP")),
       ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:custom_uploader/l10n/app_localizations.dart';
 
+import '../utils/ScaffoldFix.dart';
 import 'components/add_uploader_advanced.dart';
 import 'components/add_uploader_simple.dart';
 
@@ -32,7 +33,7 @@ class _MyCreatorState extends State<HTTPShareForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldFix(
         appBar: AppBar(
           title: Text(AppLocalizations.of(context)!.type_uploader("HTTP")),
           actions: <Widget>[

@@ -12,6 +12,8 @@ import 'package:dio/dio.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_uploader/l10n/app_localizations.dart';
 
+import '../utils/ScaffoldFix.dart';
+
 class Uploaders extends StatefulWidget {
   const Uploaders({super.key, required this.title});
   final String title;
@@ -125,7 +127,7 @@ class _MyUploaderState extends State<Uploaders> {
       }
     }
 
-    return Scaffold(
+    return ScaffoldFix(
       appBar: AppBar(
         title: Text(widget.title),
         actions: [

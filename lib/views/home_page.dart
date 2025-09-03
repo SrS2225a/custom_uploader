@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:custom_uploader/services/file_upload.dart';
+import 'package:custom_uploader/utils/ScaffoldFix.dart';
 import 'package:custom_uploader/utils/show_message.dart';
 import 'package:custom_uploader/views/uploaders.dart';
 import 'package:flutter/material.dart';
@@ -143,7 +144,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldFix(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.custom_uploader),
         actions: [
