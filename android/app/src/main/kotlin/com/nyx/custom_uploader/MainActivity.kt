@@ -29,6 +29,8 @@ class MainActivity : FlutterActivity() {
         }
     }
 
+    
+
     @SuppressLint("NewApi") // suppress warning for MediaStore.Downloads since it's only used on API 29+ (current min is 19)
     private fun addItem(path: String, name: String) {
         val extension = MimeTypeMap.getFileExtensionFromUrl(path)
@@ -39,6 +41,8 @@ class MainActivity : FlutterActivity() {
         } else {
             MediaStore.Downloads.EXTERNAL_CONTENT_URI
         }
+
+        val values1 = "";
 
         val values = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, name)
