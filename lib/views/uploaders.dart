@@ -239,30 +239,39 @@ class _MyUploaderState extends State<Uploaders> {
                         : removeProtocol((shareData['share'] as NetworkShare).domain);
 
                     return GestureDetector(
-                      onLongPress: () {
-                        showModalBottomSheet(context: context, builder: (context) {
-                          return Wrap(
-                            children: [
-                              ListTile(
-                                leading: const Icon(Icons.edit, color: Colors.amber),
-                                title: Text(AppLocalizations.of(context)!.edit),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                  editItem(share!, shareType.toString());
-                                },
-                              ),
-                              ListTile(
-                                leading: const Icon(Icons.delete, color: Colors.red),
-                                title: Text(AppLocalizations.of(context)!.delete("")),
-                                  onTap: () async {
-                                    Navigator.of(context).pop();
-                                    deleteItem(shareData['index'] as int, shareType.toString(), parsedUrl);
-                                  }
-                              ),
-                            ],
+                        onLongPress: () {
+                          showModalBottomSheet(
+                            context: context,
+                            builder: (context) {
+                              return SafeArea(
+                                child: Wrap(
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(Icons.edit, color: Colors.amber),
+                                      title: Text(AppLocalizations.of(context)!.edit),
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                        editItem(share!, shareType.toString());
+                                      },
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.delete, color: Colors.red),
+                                      title: Text(AppLocalizations.of(context)!.delete("")),
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                        deleteItem(
+                                          shareData['index'] as int,
+                                          shareType.toString(),
+                                          parsedUrl,
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           );
-                        });
-                      },
+                        },
                       child: Dismissible(
                         key: Key(parsedUrl),
                         background: Container(
