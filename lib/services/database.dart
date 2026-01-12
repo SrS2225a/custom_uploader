@@ -33,6 +33,9 @@ class Share extends HiveObject {
   @HiveField(9)
   String? method;
 
+  @HiveField(10)
+  String? pgpPublicKey;
+
   Share({
     required this.uploaderUrl,
     required this.formDataName,
@@ -44,6 +47,7 @@ class Share extends HiveObject {
     required this.uploaderErrorParser,
     this.selectedUploader = false, // Default to false
     this.method,
+    this.pgpPublicKey,
   });
 
   // Setter method to safely update selectedUploader
@@ -89,6 +93,9 @@ class NetworkShare extends HiveObject {
   @HiveField(7)
   String? urlPath;
 
+  @HiveField(8)
+  String? pgpPublicKey;
+
   NetworkShare({
     required this.protocol,
     required this.domain,
@@ -98,6 +105,7 @@ class NetworkShare extends HiveObject {
     this.port = 21, // can set default
     this.selected = false,
     this.urlPath = "",
+    this.pgpPublicKey,
   });
 
   void setSelectedShare(bool value) {

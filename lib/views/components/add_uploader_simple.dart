@@ -1,34 +1,58 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:custom_uploader/l10n/app_localizations.dart';
 
 import '../../services/database.dart';
 import '../../utils/show_message.dart';
+import 'package:custom_uploader/services/pgp_service.dart';
 
 // create the state
 class SimpleView extends StatefulWidget {
-  const SimpleView(this.editor, {super.key});
+  const SimpleView(
+      this.editor, {
+        super.key,
+        required this.pgpEnabled,
+        required this.onPgpChanged,
+      });
+
   final Share? editor;
+  final bool pgpEnabled;
+  final ValueChanged<bool> onPgpChanged;
 
   @override
-  State<StatefulWidget> createState() {
-    return SimpleViewState();
-  }
+  State<StatefulWidget> createState() => SimpleViewState();
 }
 
 // create the view
 class SimpleViewState extends State<SimpleView> {
   late Share cursor;
   final _formKey = GlobalKey<FormState>();
-  late bool _switchValue; // Value for the switch
+  final TextEditingController _pgpKeyController = TextEditingController();
+  late bool _pgpEnabled = false;
+  late bool _switchValue = false;
+
+  @override
+  void dispose() {
+    _pgpKeyController.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
-    // Initialize cursor and _switchValue based on whether an editor is provided
+
     if (widget.editor != null) {
       cursor = widget.editor!;
       _switchValue = cursor.uploadFormData;
+
+      if (widget.editor?.pgpPublicKey != null) {
+        _pgpKeyController.text = widget.editor!.pgpPublicKey!;
+        _pgpEnabled = true;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          widget.onPgpChanged(true);
+        });
+      }
     } else {
       cursor = Share(
         uploaderUrl: "",
@@ -42,7 +66,17 @@ class SimpleViewState extends State<SimpleView> {
         selectedUploader: false,
         method: "POST",
       );
-      _switchValue = cursor.uploadFormData; // Set _switchValue correctly
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant SimpleView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.pgpEnabled != widget.pgpEnabled) {
+      setState(() {
+        _pgpEnabled = widget.pgpEnabled;
+      });
     }
   }
 
@@ -74,6 +108,7 @@ class SimpleViewState extends State<SimpleView> {
 
   @override
   Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
     return SafeArea(
       child: Form(
         key: _formKey,
@@ -85,8 +120,7 @@ class SimpleViewState extends State<SimpleView> {
               Scaffold
                   .of(context)
                   .appBarMaxHeight!
-                  .toInt() -
-              1,
+                  .toInt() - 50,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.max,
@@ -157,6 +191,57 @@ class SimpleViewState extends State<SimpleView> {
                   Text(AppLocalizations.of(context)!.use_file_encoding),
                 ],
               ),
+              if(_pgpEnabled) ...[
+                Column(
+                    children: [
+                      Text(
+                        'PGP Encryption',
+                      ),
+
+                      TextFormField(
+                        controller: _pgpKeyController,
+                        minLines: 4,
+                        maxLines: 8,
+                        decoration: const InputDecoration(
+                          labelText: 'PGP Public Key',
+                          alignLabelWithHint: true,
+                        ),
+                        validator: (v) =>
+                        (_pgpEnabled && (v == null || v.isEmpty))
+                            ? 'Public key required'
+                            : null,
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      Row(
+                        children: [
+                          OutlinedButton.icon(
+                              icon: const Icon(Icons.upload_file),
+                              label: const Text('Import key'),
+                              onPressed: () async {
+                                final result =  await FilePicker.platform.pickFiles(
+                                    type: FileType.custom,
+                                    allowedExtensions: ['asc', 'pgp', 'txt']
+                                );
+                                final key = await importPgpKeyFromFile(result, context);
+                                _pgpKeyController.text = key!.trim();
+                              }
+                          ),
+                          const SizedBox(width: 12),
+                          FilledButton.icon(
+                              icon: const Icon(Icons.key),
+                              label: const Text('Generate key'),
+                              onPressed: () async {
+                                final result = await generateNewPgpKey(context, cursor.uploaderUrl);
+                                _pgpKeyController.text = result!;
+                              }
+                          ),
+                        ],
+                      ),
+                    ]
+                ),
+              ],
               const Spacer(),
               Text(
                 AppLocalizations.of(context)!.advanced_view_tip,
@@ -172,8 +257,35 @@ class SimpleViewState extends State<SimpleView> {
                       child: FilledButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            _formKey.currentState?.save();
-                            _saveShare();
+                            if(cursor.pgpPublicKey != null && !_pgpEnabled) {
+                              // show alert dialog choice to remove key
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('Remove PGP Public Key'),
+                                      content: Text('Are you sure you want to disable PGP encryption? This will clear your PGP public key'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () => Navigator.pop(context), child: Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            cursor.pgpPublicKey = null;
+                                            Navigator.pop(context);
+                                            _saveShare();
+                                          },
+                                          child: Text('Remove'),
+                                        ),
+                                      ],
+                                    );
+                                  }
+                              );
+                            } else {
+                              cursor.pgpPublicKey = _pgpKeyController.text;
+                              _formKey.currentState?.save();
+                              _saveShare();
+                            }
                           }
                         },
                         child:

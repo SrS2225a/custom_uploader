@@ -27,13 +27,14 @@ class ShareAdapter extends TypeAdapter<Share> {
       uploaderErrorParser: fields[7] as String,
       selectedUploader: fields[8] as bool,
       method: fields[9] as String?,
+      pgpPublicKey: fields[10] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Share obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.uploaderUrl)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class ShareAdapter extends TypeAdapter<Share> {
       ..writeByte(8)
       ..write(obj.selectedUploader)
       ..writeByte(9)
-      ..write(obj.method);
+      ..write(obj.method)
+      ..writeByte(10)
+      ..write(obj.pgpPublicKey);
   }
 
   @override
@@ -123,13 +126,14 @@ class NetworkShareAdapter extends TypeAdapter<NetworkShare> {
       port: fields[5] as int,
       selected: fields[6] as bool,
       urlPath: fields[7] as String?,
+      pgpPublicKey: fields[8] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, NetworkShare obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.protocol)
       ..writeByte(1)
@@ -145,7 +149,9 @@ class NetworkShareAdapter extends TypeAdapter<NetworkShare> {
       ..writeByte(6)
       ..write(obj.selected)
       ..writeByte(7)
-      ..write(obj.urlPath);
+      ..write(obj.urlPath)
+      ..writeByte(8)
+      ..write(obj.pgpPublicKey);
   }
 
   @override

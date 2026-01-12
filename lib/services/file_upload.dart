@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:custom_uploader/services/pgp_service.dart';
 import 'package:custom_uploader/utils/response_parser.dart';
 import 'package:custom_uploader/utils/show_message.dart';
 import 'package:custom_uploader/services/response_logger.dart';
@@ -124,7 +125,7 @@ class FileService {
     if(uploader != null) {
       try {
         String mimeType = lookupMimeType(file.path) ?? 'application/octet-stream';
-        FormData formData = _buildFormData(uploader, file, mimeType);
+        FormData formData = await _buildFormData(uploader, file, mimeType);
         Map<String, String> headers = await _getHeaders(uploader);
 
         return await _uploadFile(
@@ -150,13 +151,25 @@ class FileService {
         await client.connect();
 
         final remotePath = networkUploader.folderPath.isEmpty ? "/" : networkUploader.folderPath;
-        final ftpFile = FtpFile(path: remotePath.endsWith("/") ? remotePath + file.path.split("/").last : "$remotePath/${file.path.split("/").last}", client: client);
+        final remoteFilename = networkUploader.pgpPublicKey != null
+            ? "${file.path.split("/").last}.pgp"
+            : file.path.split("/").last;
+        final ftpFile = FtpFile(path: remotePath.endsWith("/") ? remotePath + remoteFilename : "$remotePath/$remoteFilename}", client: client);
+
+        final encryptedStream = encryptPgpStream(
+          file.openRead(),
+          networkUploader.pgpPublicKey,
+        );
+
+        final encryptedSize = networkUploader.pgpPublicKey != null
+            ? null // unknown after encryption
+            : await file.length();
 
         final result = await uploadFtpFile(
           ftpClient: client,
           targetFile: ftpFile,
-          fileData: file.openRead(),
-          fileSize: await file.length(),
+          fileData: encryptedStream,
+          fileSize: encryptedSize ?? 0,
           onUploadProgress: (sent, total, percent) {
             setOnUploadProgress(sent, total);
           },
@@ -220,14 +233,28 @@ class FileService {
     };
   }
 
+  static Future<FormData> _buildFormData(Share uploader, File file, String mimeType) async {
+    Uint8List bytes = await file.readAsBytes();
+    bytes = await encryptPgpBytes(bytes, uploader.pgpPublicKey);
 
-  static FormData _buildFormData(Share uploader, File file, String mimeType) {
-    MultipartFile filePart = uploader.uploadFormData ?
-    MultipartFile.fromBytes(file.readAsBytesSync(), contentType: MediaType.parse(mimeType),
-    ) :
-    MultipartFile.fromFileSync(file.path, filename: file.path.split("/").last, contentType: MediaType.parse(mimeType));
+    final filename =  uploader.pgpPublicKey != null
+        ? "${file.path.split("/").last}.asc"
+        : file.path.split("/").last;
 
-    FormData formData = FormData.fromMap({uploader.formDataName: filePart});
+    MultipartFile filePart = MultipartFile.fromBytes(
+      bytes,
+      filename: filename,
+      contentType: MediaType.parse(
+        uploader.pgpPublicKey  != null
+            ? 'application/pgp-encrypted'
+            : mimeType,
+      ),
+    );
+
+    FormData formData = FormData.fromMap({
+      uploader.formDataName: filePart,
+    });
+
     uploader.uploadArguments.forEach((key, value) {
       formData.fields.add(MapEntry(key, value));
     });

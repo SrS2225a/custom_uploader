@@ -18,6 +18,7 @@ class HTTPShareForm extends StatefulWidget {
 class _MyCreatorState extends State<HTTPShareForm> {
   var viewBox =  Hive.openBox("custom_view");
   bool _isAdvancedView = false;
+  bool __isPgpEnabled = false;
 
   @override
   void initState() {
@@ -44,6 +45,11 @@ class _MyCreatorState extends State<HTTPShareForm> {
                   value: 0,
                   child: Text(AppLocalizations.of(context)!.advanced),
                 ),
+                CheckedPopupMenuItem<int>(
+                  checked: __isPgpEnabled,
+                  value: 1,
+                  child: Text('PGP Encryption'),
+                )
               ];
             },
               onSelected: (value) {
@@ -53,12 +59,34 @@ class _MyCreatorState extends State<HTTPShareForm> {
                     updateSelectedView(_isAdvancedView);
                   });
                 }
+                if(value == 1) {
+                  setState(() {
+                    __isPgpEnabled = !__isPgpEnabled;
+                  });
+                }
               },)
           ],
     ),
-    body: SingleChildScrollView(
-      child: _isAdvancedView ? AdvancedView(widget.editor) : SimpleView(widget.editor)
-    ),
+      body: SingleChildScrollView(
+        key: ValueKey(_isAdvancedView),   // force full teardown
+        child: _isAdvancedView
+            ? AdvancedView(
+          key: const ValueKey('advanced'),
+          widget.editor,
+          pgpEnabled: __isPgpEnabled,
+          onPgpChanged: (v) {
+            setState(() => __isPgpEnabled = v);
+          },
+        )
+            : SimpleView(
+          key: const ValueKey('simple'),
+          widget.editor,
+          pgpEnabled: __isPgpEnabled,
+          onPgpChanged: (v) {
+            setState(() => __isPgpEnabled = v);
+          },
+        ),
+      ),
   );
 }
 
