@@ -237,6 +237,7 @@ class _MyUploaderState extends State<Uploaders> {
                     final parsedUrl = shareType == 'http'
                         ? removeProtocol((shareData['share'] as Share).uploaderUrl)
                         : removeProtocol((shareData['share'] as NetworkShare).domain);
+                    final bool isPgp = share is Share && (share.pgpPublicKey != null && share.pgpPublicKey!.isNotEmpty);
 
                     return GestureDetector(
                         onLongPress: () {
@@ -300,16 +301,32 @@ class _MyUploaderState extends State<Uploaders> {
                             leading: shareType == 'http'
                                 ? buildFaviconImage((share as Share).uploaderUrl)
                                 : buildFaviconImage((share as NetworkShare).domain ?? ""),
-                            title: Text(
-                              parsedUrl,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: (share is Share && share.selectedUploader) || (share is NetworkShare && (share.selected ?? false))
-                                    ? Colors.blueAccent
-                                    : null,
+                              title: Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      parsedUrl,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: (share is Share && share.selectedUploader) ||
+                                            (share is NetworkShare && (share.selected))
+                                            ? Colors.blueAccent
+                                            : null,
+                                      ),
+                                    ),
+                                  ),
+
+                                  if (isPgp) ...[
+                                    const SizedBox(width: 6),
+                                    const Icon(
+                                      Icons.lock,
+                                      size: 18,
+                                      color: Colors.amber,
+                                    ),
+                                  ],
+                                ],
                               ),
-                            ),
                             subtitle: share is Share
                                 ? Text(
                                 AppLocalizations.of(context)!.upload_method_and_type(
