@@ -12,7 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_uploader/l10n/app_localizations.dart';
 
-import '../utils/ScaffoldFix.dart';
+import '../utils/scaffold_fix.dart';
 
 class Uploaders extends StatefulWidget {
   const Uploaders({super.key, required this.title});

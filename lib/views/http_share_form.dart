@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:custom_uploader/l10n/app_localizations.dart';
 
-import '../utils/ScaffoldFix.dart';
+import '../utils/scaffold_fix.dart';
 import 'components/add_uploader_advanced.dart';
 import 'components/add_uploader_simple.dart';
 

@@ -1,4 +1,4 @@
-import 'package:custom_uploader/utils/ScaffoldFix.dart';
+import 'package:custom_uploader/utils/scaffold_fix.dart';
 import 'package:flutter/material.dart';
 import 'package:custom_uploader/services/database.dart';
 import 'package:hive/hive.dart';

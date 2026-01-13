@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:custom_uploader/services/file_upload.dart';
-import 'package:custom_uploader/utils/ScaffoldFix.dart';
+import 'package:custom_uploader/utils/scaffold_fix.dart';
 import 'package:custom_uploader/utils/show_message.dart';
 import 'package:custom_uploader/views/uploaders.dart';
 import 'package:flutter/material.dart';
