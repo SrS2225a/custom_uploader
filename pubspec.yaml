@@ -21,24 +21,24 @@ dependencies:
   hive: ^2.2.3
   hive_flutter: ^1.1.0 # contains Isar Core
   trina_grid: ^2.0.0
-  flutter_sharing_intent: ^1.1.1
+  flutter_sharing_intent: ^2.0.4
   url_launcher: ^6.3.2
   permission_handler: ^12.0.1
-  device_info_plus: ^11.5.0
-  package_info_plus: ^8.3.1
+  device_info_plus: ^12.3.0
+  package_info_plus: ^9.0.0
   yaml: ^3.1.2
   mime: ^2.0.0
   http_parser: ^4.1.2
   path_provider: ^2.0.1
   pure_ftp: ^0.7.5
   flutter_speed_dial: ^7.0.0
-  share_plus: ^11.1.0
+  share_plus: ^12.0.1
   dart_pg: ^2.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
   hive_generator: ^2.0.0
   build_runner: ^2.4.13
   intl_utils: ^2.8.2
