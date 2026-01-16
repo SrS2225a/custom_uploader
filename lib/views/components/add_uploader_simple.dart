@@ -222,7 +222,7 @@ class SimpleViewState extends State<SimpleView> {
                               onPressed: () async {
                                 final result =  await FilePicker.platform.pickFiles(
                                     type: FileType.custom,
-                                    allowedExtensions: ['asc', 'pgp', 'txt']
+                                    allowedExtensions: ['asc', 'pgp', 'txt', 'key']
                                 );
                                 final key = await importPgpKeyFromFile(result, context);
                                 _pgpKeyController.text = key!.trim();

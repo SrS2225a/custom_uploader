@@ -33,6 +33,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   String _fileName = "";
   double _progressPercentValue = 0;
   bool _hasBeenPressed = false;
+  bool _isEncrypting = false;
   final List<String> _uploadedUrls = [];
 
   void _setUploadProgress(int sentBytes, int totalBytes) {
@@ -98,6 +99,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               file: uploadFile,
               setOnUploadProgress: _setUploadProgress,
               context: context,
+              setOnEncrypting: (isEncrypting) {
+                setState(() {
+                  _isEncrypting = isEncrypting;
+                });
+              },
             );
 
             if (value[i].type == SharedMediaType.TEXT && await uploadFile.exists()) {
@@ -236,6 +242,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             file: file,
                             setOnUploadProgress: _setUploadProgress,
                             context: context,
+                            setOnEncrypting: (isEncrypting) {
+                              setState(() {
+                                _isEncrypting = isEncrypting;
+                              });
+                            }
                           );
 
                           if (url != null) {
@@ -271,7 +282,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       textStyle: const TextStyle(fontSize: 20),
                     ),
                     child: _hasBeenPressed
-                        ? Text(AppLocalizations.of(context)!.uploading)
+                        ? Text(_isEncrypting ? "Encrypting...": AppLocalizations.of(context)!.uploading)
                         : Text(AppLocalizations.of(context)!.choose_files),
                   ),
                   progressColor: Colors.green[400],

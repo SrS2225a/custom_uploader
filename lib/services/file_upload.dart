@@ -19,6 +19,7 @@ import 'dart:async';
 import 'database.dart';
 
 typedef OnUploadProgressCallback = void Function(int sentBytes, int totalBytes);
+typedef IsEncryptingCallback = void Function(bool isEncrypting);
 
 class CustomFtpUploadResult {
   final bool success;
@@ -107,6 +108,7 @@ class FileService {
   static Future<String?> fileUploadMultiPart({
     required File file,
     required OnUploadProgressCallback setOnUploadProgress,
+    required IsEncryptingCallback setOnEncrypting,
     required BuildContext context,
   }) async {
     // Fetch selected uploader
@@ -125,7 +127,7 @@ class FileService {
     if(uploader != null) {
       try {
         String mimeType = lookupMimeType(file.path) ?? 'application/octet-stream';
-        FormData formData = await _buildFormData(uploader, file, mimeType);
+        FormData formData = await _buildFormData(uploader, file, mimeType, setOnEncrypting);
         Map<String, String> headers = await _getHeaders(uploader);
 
         return await _uploadFile(
@@ -159,6 +161,7 @@ class FileService {
         final encryptedStream = encryptPgpStream(
           file.openRead(),
           networkUploader.pgpPublicKey,
+            setOnEncrypting
         );
 
         final encryptedSize = networkUploader.pgpPublicKey != null
@@ -233,9 +236,9 @@ class FileService {
     };
   }
 
-  static Future<FormData> _buildFormData(Share uploader, File file, String mimeType) async {
+  static Future<FormData> _buildFormData(Share uploader, File file, String mimeType, IsEncryptingCallback setOnEncrypting) async {
     Uint8List bytes = await file.readAsBytes();
-    bytes = await encryptPgpBytes(bytes, uploader.pgpPublicKey);
+    bytes = await encryptPgpBytes(bytes, uploader.pgpPublicKey,  setOnEncrypting);
 
     final filename =  uploader.pgpPublicKey != null
         ? "${file.path.split("/").last}.asc"

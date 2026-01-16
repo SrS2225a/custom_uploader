@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dart_pg/dart_pg.dart';
 
@@ -116,34 +117,58 @@ Future<void> _offerPrivateKeyExport(BuildContext context, String privateKey, Str
 Future<Uint8List> encryptPgpBytes(
     Uint8List data,
     String? armoredPublicKey,
+    void Function(bool isEncrypting) isEncrypting
     ) async {
   if (armoredPublicKey == null || armoredPublicKey.isEmpty) {
     return data;
   }
 
-  final publicKey = OpenPGP.readPublicKey(armoredPublicKey);
-  final encrypted = OpenPGP.encryptBinaryData(data, encryptionKeys: [publicKey]);
-  final armored = encrypted.armor();
-  return Uint8List.fromList(utf8.encode(armored));
+  // Offload to background isolate
+  isEncrypting.call(true);
+  final result = await compute(_encryptPgpBytesIsolate, {
+    'data': data,
+    'publicKey': armoredPublicKey,
+  });
+  isEncrypting.call(false);
+  return result;
 }
 
 Stream<List<int>> encryptPgpStream(
     Stream<List<int>> data,
     String? armoredPublicKey,
+    void Function(bool isEncrypting) isEncrypting
     ) async* {
   if (armoredPublicKey == null || armoredPublicKey.isEmpty) {
     yield* data;
     return;
   }
 
+  // Collect all chunks into a single Uint8List
   final buffer = BytesBuilder();
   await for (final chunk in data) {
     buffer.add(chunk);
   }
+  final bytes = buffer.toBytes();
+
+  // Offload encryption to a background isolate
+  isEncrypting.call(true);
+  final Uint8List encryptedBytes = await compute(_encryptPgpBytesIsolate, {
+    'data': bytes,
+    'publicKey': armoredPublicKey,
+  });
+  isEncrypting.call(false);
+
+  // Yield the encrypted data as a single chunk
+  yield encryptedBytes;
+}
+
+Future<Uint8List> _encryptPgpBytesIsolate(Map<String, dynamic> args) async {
+  final Uint8List data = args['data'];
+  final String armoredPublicKey = args['publicKey'];
 
   final publicKey = OpenPGP.readPublicKey(armoredPublicKey);
-  final encrypted = OpenPGP.encryptBinaryData(buffer.toBytes(), encryptionKeys: [publicKey]);
+  final encrypted = OpenPGP.encryptBinaryData(data, encryptionKeys: [publicKey]);
   final armored = encrypted.armor();
-  yield* Stream.fromIterable([utf8.encode(armored)]);
-  return;
+
+  return Uint8List.fromList(utf8.encode(armored));
 }
