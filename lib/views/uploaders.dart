@@ -27,8 +27,6 @@ class _MyUploaderState extends State<Uploaders> {
 
   @override
   void initState() {
-    // for keeping track of the selected index
-    // Box<Share> shareBox = Hive.box<Share>("custom_upload");
     super.initState();
   }
 
@@ -227,128 +225,157 @@ class _MyUploaderState extends State<Uploaders> {
                   return aUrl.compareTo(bUrl);
                 });
 
-                return ListView.builder(
-                  itemCount: combinedShares.length,
-                  itemBuilder: (context, index) {
-                    final shareData = combinedShares[index];
-                    final share = shareData['share'];
-                    final shareType = shareData['type'];
-                    final shareIndex = shareData['index'] as int;
-                    final parsedUrl = shareType == 'http'
-                        ? removeProtocol((shareData['share'] as Share).uploaderUrl)
-                        : removeProtocol((shareData['share'] as NetworkShare).domain);
-                    final bool isPgp = share is Share && (share.pgpPublicKey != null && share.pgpPublicKey!.isNotEmpty);
+                return Column(
+                  children: [
+                    ValueListenableBuilder(
+                      valueListenable: Hive.box(SharePrefs.boxName).listenable(),
+                      builder: (context, _, __) {
+                        final prefs = Hive.box(SharePrefs.boxName);
+                        final askEveryTime = prefs.get(
+                          SharePrefs.keyAskEveryTime,
+                          defaultValue: false,
+                        );
 
-                    return GestureDetector(
-                        onLongPress: () {
-                          showModalBottomSheet(
-                            context: context,
-                            builder: (context) {
-                              return SafeArea(
-                                child: Wrap(
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(Icons.edit, color: Colors.amber),
-                                      title: Text(AppLocalizations.of(context)!.edit),
-                                      onTap: () {
-                                        Navigator.of(context).pop();
-                                        editItem(share!, shareType.toString());
-                                      },
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.delete, color: Colors.red),
-                                      title: Text(AppLocalizations.of(context)!.delete("")),
-                                      onTap: () {
-                                        Navigator.of(context).pop();
-                                        deleteItem(
-                                          shareData['index'] as int,
-                                          shareType.toString(),
-                                          parsedUrl,
-                                        );
-                                      },
-                                    ),
-                                  ],
+                        return SwitchListTile(
+                          title: Text("Ask when sharing"),
+                          subtitle: Text("When sharing into the app, let me choose which uploader to use."),
+                          value: askEveryTime,
+                          onChanged: (value) {
+                            prefs.put(SharePrefs.keyAskEveryTime, value);
+                          },
+                        );
+                      },
+                    ),
+
+                    const Divider(height: 1),
+
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: combinedShares.length,
+                        itemBuilder: (context, index) {
+                          final shareData = combinedShares[index];
+                          final share = shareData['share'];
+                          final shareType = shareData['type'];
+                          final shareIndex = shareData['index'] as int;
+                          final parsedUrl = shareType == 'http'
+                              ? removeProtocol((shareData['share'] as Share).uploaderUrl)
+                              : removeProtocol((shareData['share'] as NetworkShare).domain);
+                          final bool isPgp = share is Share && (share.pgpPublicKey != null && share.pgpPublicKey!.isNotEmpty);
+
+                          return GestureDetector(
+                              onLongPress: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) {
+                                    return SafeArea(
+                                      child: Wrap(
+                                        children: [
+                                          ListTile(
+                                            leading: const Icon(Icons.edit, color: Colors.amber),
+                                            title: Text(AppLocalizations.of(context)!.edit),
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                              editItem(share!, shareType.toString());
+                                            },
+                                          ),
+                                          ListTile(
+                                            leading: const Icon(Icons.delete, color: Colors.red),
+                                            title: Text(AppLocalizations.of(context)!.delete("")),
+                                            onTap: () {
+                                              Navigator.of(context).pop();
+                                              deleteItem(
+                                                shareData['index'] as int,
+                                                shareType.toString(),
+                                                parsedUrl,
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Dismissible(
+                                key: Key(parsedUrl),
+                                background: Container(
+                                  color: Colors.amber,
+                                  alignment: Alignment.centerLeft,
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: const Icon(Icons.edit, color: Colors.white),
                                 ),
-                              );
-                            },
+                                secondaryBackground: Container(
+                                  color: Colors.red,
+                                  alignment: Alignment.centerRight,
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: const Icon(Icons.delete, color: Colors.white),
+                                ),
+                                confirmDismiss: (direction) async {
+                                  if (direction == DismissDirection.startToEnd) {
+                                    editItem(share!, shareType.toString());
+                                  } else if (direction == DismissDirection.endToStart) {;
+                                  deleteItem(shareData['index'] as int, shareType.toString(), parsedUrl);
+                                  }
+                                  return null;
+                                },
+                                child: Column(
+                                    children: [
+                                      ListTile(
+                                          leading: shareType == 'http'
+                                              ? buildFaviconImage((share as Share).uploaderUrl)
+                                              : buildFaviconImage((share as NetworkShare).domain ?? ""),
+                                          title: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  parsedUrl,
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: (share is Share && share.selectedUploader) ||
+                                                        (share is NetworkShare && (share.selected))
+                                                        ? Colors.blueAccent
+                                                        : null,
+                                                  ),
+                                                ),
+                                              ),
+
+                                              if (isPgp) ...[
+                                                const SizedBox(width: 6),
+                                                const Icon(
+                                                  Icons.lock,
+                                                  size: 18,
+                                                  color: Colors.amber,
+                                                ),
+                                              ],
+                                            ],
+                                          ),
+                                          subtitle: share is Share
+                                              ? Text(
+                                            AppLocalizations.of(context)!.upload_method_and_type(
+                                                share.method!, shareType.toString().toUpperCase()),
+                                          )
+                                              : Text(
+                                            AppLocalizations.of(context)!.upload_type_only(
+                                              shareType.toString().toUpperCase(),
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            final shareBox = shareType == 'http' ? httpBox : ftpBox;
+                                            updateSelectedUploader(shareIndex, share, shareBox);
+                                          }
+                                      ),
+                                      Divider(height: 1, thickness: 1, color: Colors.grey[700]),
+                                    ]
+                                ),
+                              )
                           );
                         },
-                      child: Dismissible(
-                        key: Key(parsedUrl),
-                        background: Container(
-                          color: Colors.amber,
-                          alignment: Alignment.centerLeft,
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: const Icon(Icons.edit, color: Colors.white),
-                        ),
-                        secondaryBackground: Container(
-                          color: Colors.red,
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: const Icon(Icons.delete, color: Colors.white),
-                        ),
-                        confirmDismiss: (direction) async {
-                          if (direction == DismissDirection.startToEnd) {
-                            editItem(share!, shareType.toString());
-                          } else if (direction == DismissDirection.endToStart) {;
-                            deleteItem(shareData['index'] as int, shareType.toString(), parsedUrl);
-                          }
-                          return null;
-                        },
-                        child: Column(
-                          children: [
-                          ListTile(
-                            leading: shareType == 'http'
-                                ? buildFaviconImage((share as Share).uploaderUrl)
-                                : buildFaviconImage((share as NetworkShare).domain ?? ""),
-                              title: Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      parsedUrl,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: (share is Share && share.selectedUploader) ||
-                                            (share is NetworkShare && (share.selected))
-                                            ? Colors.blueAccent
-                                            : null,
-                                      ),
-                                    ),
-                                  ),
-
-                                  if (isPgp) ...[
-                                    const SizedBox(width: 6),
-                                    const Icon(
-                                      Icons.lock,
-                                      size: 18,
-                                      color: Colors.amber,
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            subtitle: share is Share
-                                ? Text(
-                                AppLocalizations.of(context)!.upload_method_and_type(
-                                   share.method!, shareType.toString().toUpperCase()),
-                                  )
-                                : Text(
-                              AppLocalizations.of(context)!.upload_type_only(
-                                shareType.toString().toUpperCase(),
-                              ),
-                                  ),
-                            onTap: () {
-                              final shareBox = shareType == 'http' ? httpBox : ftpBox;
-                              updateSelectedUploader(shareIndex, share, shareBox);
-                            }
-                            ),
-                            Divider(height: 1, thickness: 1, color: Colors.grey[700]),
-                        ]
-                        ),
                       )
-                    );
-                  },
+                    ),
+                  ],
                 );
+
               },
             );
           },
@@ -381,16 +408,7 @@ class _MyUploaderState extends State<Uploaders> {
             backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
             onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) =>  HTTPShareForm(editor: null))),
-          ),
-          // SpeedDialChild(
-          //   child: const Icon(Icons.folder_shared, size: 32),
-          //   label: 'SMB Upload',
-          //   labelStyle: Theme.of(context).textTheme.labelLarge,
-          //   labelBackgroundColor: Theme.of(context).colorScheme.surfaceVariant,
-          //   backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-          //   foregroundColor: Theme.of(context).colorScheme.onSecondaryContainer,
-          //   onTap: () => Navigator.pushNamed(context, '/smb'),
-          // ),
+          )
         ],
       )
     );

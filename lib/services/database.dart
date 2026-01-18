@@ -112,3 +112,11 @@ class NetworkShare extends HiveObject {
     selected = value;
   }
 }
+
+class SharePrefs {
+  static const boxName = 'share_prefs';
+
+  static const keyAskEveryTime = 'ask_every_time';
+  static const keyLastUploaderKey = 'last_share_uploader_key';
+  static const keyLastUploaderType = 'last_share_uploader_type'; // 'http' | 'ftp'
+}

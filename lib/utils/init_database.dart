@@ -14,6 +14,7 @@ Future<void> initializeDatabase() async {
     Hive.openBox<Share>("custom_upload"),
     Hive.openBox<NetworkShare>("share_upload"),
     Hive.openBox('custom_view'),
+    Hive.openBox(SharePrefs.boxName)
   ]);
 
   final shareBox = futures[0] as Box<Share>;

@@ -3,7 +3,6 @@ import 'dart:math';
 
 import 'package:custom_uploader/services/file_upload.dart';
 import 'package:custom_uploader/utils/scaffold_fix.dart';
-import 'package:custom_uploader/utils/show_message.dart';
 import 'package:custom_uploader/views/uploaders.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -19,6 +18,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:custom_uploader/l10n/app_localizations.dart';
 
 import '../services/database.dart';
+import '../services/share_target_resolver.dart';
+import '../utils/show_message.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -28,7 +29,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
-  Box<Share> shareBox = Hive.box<Share>("custom_upload");
 
   String _fileName = "";
   double _progressPercentValue = 0;
@@ -74,56 +74,67 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
     _setUploadProgress(0, 0);
 
-    shareFile(List<SharedFile> value) async {
-      if (shareBox.isNotEmpty) {
-        if (value.isNotEmpty) {
-          List<String> urls = [];
+    Future<void> shareFile(List<SharedFile> value) async {
+      if (value.isEmpty) {
+        FlutterSharingIntent.instance.reset();
+        return;
+      }
 
-          for (int i = 0; i < value.length; i++) {
-            final file = File(value[i].value ?? "");
-            _setState(AppLocalizations.of(context)!.uploadingFile(
-                i + 1, file.path.split("/").last, value.length
-            ));
+      List<String> urls = [];
 
-            File uploadFile;
-            if (value[i].type == SharedMediaType.TEXT) {
-              final tempDir = await getTemporaryDirectory();
-              final String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-              uploadFile = File('${tempDir.path}/shared_text_$timestamp.txt');
-              await uploadFile.writeAsString(value[i].value ?? "");
-            } else {
-              uploadFile = file;
-            }
+      Box<Share> shareBox = Hive.box<Share>("custom_upload");
+      Box<NetworkShare> networkBox = Hive.box("share_upload");
+      if(shareBox.isNotEmpty && networkBox.isNotEmpty) {
+        final ShareTarget? target = await resolveShareTargetIntent(context);
+        for (int i = 0; i < value.length; i++) {
+          final file = File(value[i].value ?? "");
+          _setState(AppLocalizations.of(context)!.uploadingFile(
+            i + 1, file.path
+              .split("/")
+              .last, value.length,
+          ));
 
-            final String? returnedUrl = await FileService.fileUploadMultiPart(
-              file: uploadFile,
-              setOnUploadProgress: _setUploadProgress,
-              context: context,
-              setOnEncrypting: (isEncrypting) {
-                setState(() {
-                  _isEncrypting = isEncrypting;
-                });
-              },
-            );
-
-            if (value[i].type == SharedMediaType.TEXT && await uploadFile.exists()) {
-              await uploadFile.delete();
-            }
-
-            if (returnedUrl != null) {
-              urls.add(returnedUrl);
-            }
+          File uploadFile;
+          if (value[i].type == SharedMediaType.TEXT) {
+            final tempDir = await getTemporaryDirectory();
+            final String timestamp = DateTime
+                .now()
+                .millisecondsSinceEpoch
+                .toString();
+            uploadFile = File('${tempDir.path}/shared_text_$timestamp.txt');
+            await uploadFile.writeAsString(value[i].value ?? "");
+          } else {
+            uploadFile = file;
           }
 
-          setState(() {
-            _uploadedUrls.addAll(urls);
-          });
-          _setState("");
+          final String? returnedUrl = await FileService.fileUploadMultiPart(
+            file: uploadFile,
+            target: target!,
+            setOnUploadProgress: _setUploadProgress,
+            context: context,
+            setOnEncrypting: (isEncrypting) {
+              setState(() {
+                _isEncrypting = isEncrypting;
+              });
+            },
+          );
+
+          if (value[i].type == SharedMediaType.TEXT &&
+              await uploadFile.exists()) {
+            await uploadFile.delete();
+          }
+
+          if (returnedUrl != null) urls.add(returnedUrl);
         }
       } else {
         SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, AppLocalizations.of(context)!.no_custom_uploaders,  AppLocalizations.of(context)!.before_you_can_upload_files));
       }
-      // clear the data from the sharing intent
+
+      setState(() {
+        _uploadedUrls.addAll(urls);
+      });
+      _setState("");
+
       FlutterSharingIntent.instance.reset();
     }
 
@@ -221,7 +232,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   percent: _progressPercentValue,
                   center: ElevatedButton(
                     onPressed: () async {
-                      if (shareBox.isNotEmpty && !_hasBeenPressed) {
+                      var target = resolveShareTargetUI(context);
+                      if (target != null && !_hasBeenPressed) {
                         _uploadedUrls.clear();
                         final filePicker = await FilePicker.platform.pickFiles(allowMultiple: true);
                         if (filePicker == null || filePicker.files.isEmpty) {
@@ -242,6 +254,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             file: file,
                             setOnUploadProgress: _setUploadProgress,
                             context: context,
+                            target: target,
                             setOnEncrypting: (isEncrypting) {
                               setState(() {
                                 _isEncrypting = isEncrypting;
@@ -256,7 +269,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           }
                         }
                         _setState("");
-                      } else if (shareBox.isEmpty) {
+                      } else  {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {

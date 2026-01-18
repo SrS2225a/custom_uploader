@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:custom_uploader/services/pgp_service.dart';
+import 'package:custom_uploader/services/share_target_resolver.dart';
 import 'package:custom_uploader/utils/response_parser.dart';
 import 'package:custom_uploader/utils/show_message.dart';
 import 'package:custom_uploader/services/response_logger.dart';
@@ -110,18 +111,10 @@ class FileService {
     required OnUploadProgressCallback setOnUploadProgress,
     required IsEncryptingCallback setOnEncrypting,
     required BuildContext context,
+    required ShareTarget target,
   }) async {
-    // Fetch selected uploader
-    Box<Share> shareBox = Hive.box<Share>("custom_upload");
-    Share? uploader = shareBox.values.cast<Share?>().firstWhere(
-      (share) => share?.selectedUploader ?? false,
-      orElse: () => null,
-    );
-    Box<NetworkShare> networkShareBox = Hive.box<NetworkShare>("share_upload");
-    NetworkShare? networkUploader = networkShareBox.values.cast<NetworkShare?>().firstWhere(
-      (share) => share?.selected ?? false,
-      orElse: () => null,
-    );
+    Share? uploader = target.http;
+    NetworkShare? networkUploader = target.network;
 
     // Perform file upload
     if(uploader != null) {
