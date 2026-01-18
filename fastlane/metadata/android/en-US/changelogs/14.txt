@@ -1,0 +1,2 @@
+1. Support for E2E encryption is now supported (with pgp)
+2. You can now choose to select the uploader to use when sharing into the app
