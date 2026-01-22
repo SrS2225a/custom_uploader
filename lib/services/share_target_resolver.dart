@@ -30,7 +30,7 @@ List<ShareTarget> _getAllUploadTargets() {
   return targets;
 }
 
-Future<ShareTarget?> _showSharePicker(BuildContext context, List<ShareTarget> targets, [ShareTarget? defaultTarget]) async {
+Future<ShareTarget?> _showSharePicker(BuildContext context, List<ShareTarget> targets) async {
   if (targets.isEmpty) return null;
   if (targets.length == 1) return targets.first;
 
@@ -39,61 +39,60 @@ Future<ShareTarget?> _showSharePicker(BuildContext context, List<ShareTarget> ta
     barrierDismissible: true,
     builder: (_) => RadialUploaderPicker(
       targets: targets,
-      defaultShare: defaultTarget,
       onSelected: (target) => Navigator.pop(context, target),
     ),
   );
 }
 
-Future<ShareTarget?> resolveShareTargetIntent(BuildContext context) async {
+Future<(ShareTarget?, bool)> resolveShareTargetIntent(BuildContext context) async {
   final targets = _getAllUploadTargets();
-  if (targets.isEmpty) return null;
-  if (targets.length == 1) return targets.first;
+  if (targets.isEmpty) return (null, false);
 
   final settingsBox = Hive.box(SharePrefs.boxName);
   final askEveryTime = settingsBox.get(
-      SharePrefs.keyAskEveryTime, defaultValue: false);
-
-  ShareTarget? lastSelected;
+      SharePrefs.keyAskEveryTime, defaultValue: false) as bool;
 
   // Find previously selected uploader
-  final httpBox = Hive.box<Share>("custom_upload");
-  final selectedHttp = httpBox.values.firstWhereOrNull((s) =>
-  s.selectedUploader);
-  if (selectedHttp != null) lastSelected = ShareTarget.http(selectedHttp);
+  if(askEveryTime) {
+    final selected = await _showSharePicker(context, targets);
+    if (selected != null) {
+      final prefs = Hive.box(SharePrefs.boxName);
 
-  if (lastSelected == null) {
-    final networkBox = Hive.box<NetworkShare>("share_upload");
-    final selectedNetwork = networkBox.values.firstWhereOrNull((n) =>
-    n.selected);
-    if (selectedNetwork != null) {
-      lastSelected = ShareTarget.network(selectedNetwork);
+      if (selected.http != null) {
+        prefs.put(SharePrefs.keyLastUploaderType, 'http');
+        prefs.put(
+          SharePrefs.keyLastUploaderKey,
+          selected.http!.key,
+        );
+      } else if (selected.network != null) {
+        prefs.put(SharePrefs.keyLastUploaderType, 'ftp');
+        prefs.put(
+          SharePrefs.keyLastUploaderKey,
+          selected.network!.key,
+        );
+      }
+      return (selected, askEveryTime);
     }
   }
+  else {
+    ShareTarget? lastSelected;
+    final httpBox = Hive.box<Share>("custom_upload");
+    final selectedHttp = httpBox.values.firstWhereOrNull((s) =>
+    s.selectedUploader);
+    if (selectedHttp != null) lastSelected = ShareTarget.http(selectedHttp);
 
-  if (!askEveryTime && lastSelected != null) return lastSelected;
-  
-  final selected = await _showSharePicker(context, targets, lastSelected);
-
-  if (selected != null) {
-    final prefs = Hive.box(SharePrefs.boxName);
-
-    if (selected.http != null) {
-      prefs.put(SharePrefs.keyLastUploaderType, 'http');
-      prefs.put(
-        SharePrefs.keyLastUploaderKey,
-        selected.http!.key,
-      );
-    } else if (selected.network != null) {
-      prefs.put(SharePrefs.keyLastUploaderType, 'ftp');
-      prefs.put(
-        SharePrefs.keyLastUploaderKey,
-        selected.network!.key,
-      );
+    if (lastSelected == null) {
+      final networkBox = Hive.box<NetworkShare>("share_upload");
+      final selectedNetwork = networkBox.values.firstWhereOrNull((n) =>
+      n.selected);
+      if (selectedNetwork != null) {
+        lastSelected = ShareTarget.network(selectedNetwork);
+      }
     }
-    return selected;
+    return (lastSelected, askEveryTime);
   }
-  return null;
+
+  return (null, askEveryTime);
 }
 
 ShareTarget? resolveShareTargetUI(BuildContext context) {

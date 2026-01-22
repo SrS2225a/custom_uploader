@@ -84,8 +84,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
       Box<Share> shareBox = Hive.box<Share>("custom_upload");
       Box<NetworkShare> networkBox = Hive.box("share_upload");
-      if(shareBox.isNotEmpty && networkBox.isNotEmpty) {
-        final ShareTarget? target = await resolveShareTargetIntent(context);
+      if(shareBox.isNotEmpty || networkBox.isNotEmpty) {
+        final (ShareTarget?, bool) target = await resolveShareTargetIntent(context);
+        if(target.$1== null && !target.$2) {
+          SchedulerBinding.instance.addPostFrameCallback((_) => showAlert(context, AppLocalizations.of(context)!.no_custom_uploaders,  AppLocalizations.of(context)!.before_you_can_upload_files));
+          return;
+        }
         for (int i = 0; i < value.length; i++) {
           final file = File(value[i].value ?? "");
           _setState(AppLocalizations.of(context)!.uploadingFile(
@@ -109,7 +113,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
           final String? returnedUrl = await FileService.fileUploadMultiPart(
             file: uploadFile,
-            target: target!,
+            target: target.$1!,
             setOnUploadProgress: _setUploadProgress,
             context: context,
             setOnEncrypting: (isEncrypting) {
