@@ -1,0 +1,6 @@
+host: 127.0.0.1
+port: 21  # default 21 for FTP/FTPES, 990 for FTPS
+username: fenix
+password: redeyescat312_
+active_host: "localhost"
+active_port: 1035

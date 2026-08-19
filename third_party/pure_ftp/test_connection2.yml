@@ -1,0 +1,4 @@
+host: 192.168.1.200
+port: 21  # default 21 for FTP/FTPES, 990 for FTPS
+username: fenix
+password: redeyescat312

@@ -1,0 +1,9 @@
+# https://dlptest.com/ftp-test/
+host: ftp.dlptest.com
+# port: 21  # default 21 for FTP/FTPES, 990 for FTPS
+username: dlpuser
+password: rNrKYTX9g7z3RgJRmxWuGHbeu
+# account:   # if account required by server
+# active_host: # if you want to use active mode pls set this value
+active_host: "194.158.212.5"
+active_port: 1035

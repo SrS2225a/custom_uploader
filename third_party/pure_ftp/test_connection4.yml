@@ -1,0 +1,4 @@
+host: 127.0.0.1
+port: 8080  # default 21 for FTP/FTPES, 990 for FTPS
+username: admin
+password: admin
