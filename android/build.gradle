@@ -13,6 +13,23 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
+// F-Droid reproducible-build fix for package:jni / libdartjni.so
+subprojects {
+    plugins.withId("com.android.library") {
+        if (project.name == "jni") {
+            android {
+                defaultConfig {
+                    externalNativeBuild {
+                        cmake {
+                            arguments "-DCMAKE_SHARED_LINKER_FLAGS=-Wl,--build-id=none"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
